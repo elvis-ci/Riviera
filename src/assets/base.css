@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------
+   Radiant Perfume Theme — High Contrast & Accessibility
+   ---------------------------------------------------- */
+@theme {
+  /* 🌤️ LIGHT THEME (Accessible Contrast) */
+  --color-primary: rgb(255, 252, 250); /* Porcelain White — base background */
+  --color-secondary: rgb(242, 191, 208); /* Rose Petal — soft supporting tone */
+  --color-accent: rgb(160, 102, 26); /* Burnished Gold — bold accent */
+  --color-accent-hover: rgb(120, 75, 18); /* Deep Bronze — stronger hover contrast */
+  --color-neutral: rgb(28, 23, 21); /* Espresso — high-contrast text */
+  --color-muted: rgb(236, 226, 228); /* Mist Mauve — gentle surface tone */
+  --color-border: rgb(165, 140, 130); /* Muted Cocoa Border */
+
+  --color-background: var(--color-primary);
+  --color-surface: var(--color-muted);
+  --color-text: var(--color-neutral);
+  --color-heading: var(--color-neutral);
+  --color-border-hover: var(--color-accent);
+}
+
+/* 🌙 DARK THEME — Optimized for Luminance and Depth */
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-primary: rgb(15, 11, 11); /* Obsidian Mocha — deep background */
+    --color-secondary: rgb(142, 77, 98); /* Rosewood Plum — accent depth */
+    --color-accent: rgb(243, 198, 102); /* Golden Aura — glowing accent */
+    --color-accent-hover: rgb(255, 210, 120); /* Brighter gold for hover/focus */
+    --color-neutral: rgb(248, 245, 242); /* Ivory text */
+    --color-muted: rgb(36, 28, 30); /* Velvet Surface */
+    --color-border: rgb(90, 70, 60); /* Soft Mocha Border */
+
+    --color-background: var(--color-primary);
+    --color-surface: var(--color-muted);
+    --color-text: var(--color-neutral);
+    --color-heading: var(--color-neutral);
+    --color-border-hover: var(--color-accent);
+  }
+}
+
+/* ----------------------------------------------------
+   Manual Toggle (data-theme)
+   ---------------------------------------------------- */
+:root[data-theme="light"] {
+  --color-primary: rgb(255, 252, 250);
+  --color-secondary: rgb(242, 191, 208);
+  --color-accent: rgb(160, 102, 26);
+  --color-accent-hover: rgb(120, 75, 18);
+  --color-neutral: rgb(28, 23, 21);
+  --color-muted: rgb(236, 226, 228);
+  --color-border: rgb(165, 140, 130);
+
+  --color-background: var(--color-primary);
+  --color-surface: var(--color-muted);
+  --color-text: var(--color-neutral);
+  --color-heading: var(--color-neutral);
+  --color-border-hover: var(--color-accent);
+}
+
+:root[data-theme="dark"] {
+  --color-primary: rgb(15, 11, 11);
+  --color-secondary: rgb(142, 77, 98);
+  --color-accent: rgb(243, 198, 102);
+  --color-accent-hover: rgb(255, 210, 120);
+  --color-neutral: rgb(248, 245, 242);
+  --color-muted: rgb(36, 28, 30);
+  --color-border: rgb(90, 70, 60);
+
+  --color-background: var(--color-primary);
+  --color-surface: var(--color-muted);
+  --color-text: var(--color-neutral);
+  --color-heading: var(--color-neutral);
+  --color-border-hover: var(--color-accent);
+}
+
+/* ----------------------------------------------------
+   Global & Component Styling
+   ---------------------------------------------------- */
+body {
+  min-height: 100vh;
+  @apply bg-background text-text transition-colors duration-300 ease-in-out;
+  font-family: "Playfair Display", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.btn-primary {
+  @apply font-medium rounded-2xl px-8 py-3.5 shadow-sm 
+         transition-all duration-200 ease-in-out 
+         focus-visible:ring-2 focus-visible:ring-accent 
+         focus-visible:ring-offset-2 focus-visible:ring-offset-background 
+         active:scale-95;
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--color-accent-hover);
+  color: white;
+}
+
+.btn-secondary {
+  @apply font-medium rounded-2xl px-8 py-3.5 transition-all duration-200 ease-in-out
+         focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background 
+         active:scale-95;
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  background-color: transparent;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background-color: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent-hover);
+}
+
+/* Links — clear focus & hover */
+a,
+.router-link {
+  @apply font-semibold transition-colors duration-200 ease-in-out;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+a:hover,
+.router-link:hover,
+a:focus,
+.router-link:focus {
+  color: var(--color-accent);
+}
+
+/* Focus Ring — visible in both modes */
+a:focus-visible,
+button:focus-visible {
+  @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-background;
+}
+
+/* Active Nav Links */
+.router-link-active {
+  color: var(--color-accent);
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+
+/* Icons */
+.icon-btn {
+  @apply transition-transform duration-200 ease-in-out;
+  color: var(--color-text);
+}
+
+.icon-btn:hover,
+.icon-btn:focus {
+  color: var(--color-accent);
+  transform: scale(1.1);
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  a,
+  button,
+  .router-link,
+  .icon-btn {
+    transition: none !important;
+  }
+}
