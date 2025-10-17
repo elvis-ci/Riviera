@@ -3,6 +3,9 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 import NavBar from "./components/NavBar.vue";
 import Footer from "./components/Footer.vue";
+import { useFragranceStore } from "@/stores/useFragranceStore";
+
+const fragranceStore = useFragranceStore();
 
 // --- Scroll to Top Logic ---
 const showScrollTop = ref(false);
@@ -15,8 +18,12 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-onMounted(() => {
+onMounted(async () => {
+  // ✅ Register scroll listener
   window.addEventListener("scroll", handleScroll);
+
+  // ✅ Fetch fragrances (only once when app mounts)
+  await fragranceStore.fetchFragrances();
 });
 
 onUnmounted(() => {
@@ -38,7 +45,7 @@ onUnmounted(() => {
         v-if="showScrollTop"
         @click="scrollToTop"
         aria-label="Scroll to top"
-        class="scroll-to-top fixed bottom-8 right-8 bg-accent text-background  rounded-full shadow-lg hover:bg-accent/90 transition-colors"
+        class="scroll-to-top fixed bottom-8 right-8 bg-accent text-background rounded-full shadow-lg hover:bg-accent/90 transition-colors"
       >
         ^
       </button>
@@ -55,12 +62,13 @@ onUnmounted(() => {
 .fade-leave-to {
   opacity: 0;
 }
-.scroll-to-top{
- width: 3rem;
- height: 3rem;
- font-size: 1.5rem;
- display:flex;
- align-items: center;
- justify-content: center;
+.scroll-to-top {
+  width: 3rem;
+  height: 3rem;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 </style>
