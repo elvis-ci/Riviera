@@ -1,16 +1,21 @@
 <script setup>
-import { useFragranceStore } from "@/stores/useFragranceStore";
 import { computed } from "vue";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import "vue3-carousel/dist/carousel.css";
 
-const store = useFragranceStore();
-const categories = computed(() => store.categories);
+// ✅ Accept categories as a prop
+const props = defineProps({
+  categories: {
+    type: Array,
+    required: true,
+    default: () => [],
+  },
+});
 
-// Responsive settings
+// ✅ Responsive carousel breakpoints
 const breakpoints = {
   0: {
-    itemsToShow: 1.2, // slightly peeks next card on mobile
+    itemsToShow: 1.2, // slightly peek next card on mobile
     snapAlign: "center",
   },
   768: {
@@ -25,40 +30,38 @@ const breakpoints = {
 </script>
 
 <template>
-  <section class="py-20 px-6 text-text" aria-labelledby="fragrance-categories-heading">
+  <section class="py-20 px-6  text-text" aria-labelledby="fragrance-categories-heading">
     <!-- Section Header -->
     <div class="max-w-7xl mx-auto text-center mb-12">
       <h2 id="fragrance-categories-heading" class="text-4xl font-heading text-heading mb-4">
-        Fragrance Categories
+        Find Fragrance by Category
       </h2>
       <p class="text-text/90 text-lg max-w-2xl mx-auto">
         Explore scents crafted for every occasion — from floral dreams to woody elegance.
       </p>
     </div>
 
+    <!-- Loading State -->
+    <div v-if="!props.categories?.length" class="text-center py-10 text-text/70">
+      Loading categories...
+    </div>
+
     <!-- Category Carousel -->
-    <div class="max-w-7xl mx-auto relative">
+    <div v-else class="max-w-7xl mx-auto relative">
       <Carousel
-        :wrap-around="true"
+        :wrap-around="false"
         :transition="500"
         :breakpoints="breakpoints"
         class="category-carousel"
       >
-        <Slide v-for="cat in categories" :key="cat.id">
+        <Slide v-for="cat in props.categories" :key="cat.id">
           <article
             role="listitem"
             :aria-labelledby="`category-${cat.id}-title`"
             :aria-describedby="`category-${cat.id}-desc`"
             class="relative group bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:border-border-hover focus-within:shadow-2xl focus-within:border-border-hover transform hover:-translate-y-2 transition-all duration-500 ease-out mx-4"
           >
-            <!-- Price Ribbon -->
-            <div
-              class="absolute top-0 left-0 bg-accent text-white text-xs font-semibold px-3 py-1 rounded-br-lg shadow"
-            >
-              From ${{ cat.priceRange.min }}
-            </div>
-
-            <!-- Image Section -->
+            <!-- Image -->
             <div class="relative overflow-hidden">
               <img
                 :src="cat.image"
@@ -79,7 +82,7 @@ const breakpoints = {
               </div>
             </div>
 
-            <!-- Details Section -->
+            <!-- Details -->
             <div class="relative z-10 p-6 text-center bg-background">
               <h3 :id="`category-${cat.id}-title`" class="text-xl font-semibold text-heading mb-2">
                 {{ cat.name }}
@@ -94,7 +97,12 @@ const breakpoints = {
                 aria-label="Category details"
               >
                 <li>
-                  💧 Available: <span class="font-semibold">{{ cat.availableQuantity }}</span>
+                  💧 Available:
+                  <span class="font-semibold">{{ cat.availableQuantity }}</span>
+                </li>
+                <li>
+                  From:
+                  <span class="font-semibold">$ {{ cat.priceRange.min }}</span>
                 </li>
               </ul>
 
@@ -140,7 +148,7 @@ const breakpoints = {
 </template>
 
 <style scoped>
-/* Motion safety */
+/* Accessibility-friendly motion */
 @media (prefers-reduced-motion: reduce) {
   * {
     transition-duration: 0.01ms !important;
@@ -148,10 +156,9 @@ const breakpoints = {
   }
 }
 
-/* Hover float */
+/* Hover float animation */
 @keyframes float {
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
   50% {
@@ -163,7 +170,7 @@ article:hover {
   animation: float 3s ease-in-out infinite;
 }
 
-/* Focus styles */
+/* Focus ring */
 button:focus-visible,
 article:focus-within {
   outline: none;
@@ -178,7 +185,7 @@ article:focus-within {
   position: relative;
 }
 
-/* Pagination spacing */
+/* Pagination adjustments */
 .category-carousel :deep(.carousel__pagination) {
   margin-top: 2rem;
   padding-top: 1rem;
@@ -187,12 +194,11 @@ article:focus-within {
   bottom: -10px;
 }
 
-/* Pagination dots styling */
 .category-carousel :deep(.carousel__pagination-button) {
   margin-inline: 0.5rem;
 }
 
-/* High-contrast mode adjustments */
+/* High contrast mode */
 @media (forced-colors: active) {
   button {
     forced-color-adjust: none;
