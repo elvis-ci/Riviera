@@ -1,11 +1,56 @@
 <script setup>
-import Featured from "@/components/Featured.vue";
-import Categories from "@/components/Categories.vue";
+import { onMounted, ref } from "vue";
 import { useFragranceStore } from "@/stores/useFragranceStore";
+import Categories from "@/components/Categories.vue";
+import Featured from "@/components/Featured.vue";
 
-const store = useFragranceStore();
-const featuredFragrances = store.featuredFragrances;
-const categories = store.categories
+const fragranceStore = useFragranceStore();
+const { categories, featuredFragrances, fetchFragrances } = fragranceStore;
+
+// Local refs for categories (cached)
+const cachedCategories = localStorage.getItem("categories");
+const lastFetch = localStorage.getItem("categoriesLastFetch");
+const cachedFeatured = localStorage.getItem("featuredFragrances");
+const lastFeaturedFetch = localStorage.getItem("featuredLastFetch");
+
+onMounted(async () => {
+  // --- Restore cached categories ---
+  if (cachedCategories) {
+    try {
+      fragranceStore.categories = JSON.parse(cachedCategories);
+    } catch {
+      console.warn("Corrupt category cache, clearing...");
+      localStorage.removeItem("categories");
+    }
+  }
+
+  // --- Restore cached featured fragrances ---
+  if (cachedFeatured) {
+    try {
+      fragranceStore.featuredFragrances = JSON.parse(cachedFeatured);
+    } catch {
+      console.warn("Corrupt featured cache, clearing...");
+      localStorage.removeItem("featuredFragrances");
+    }
+  }
+
+  // --- Fetch fresh categories if missing or older than 1 day ---
+  const oneDay = 24 * 60 * 60 * 1000;
+  const isCategoryExpired = !lastFetch || Date.now() - Number(lastFetch) > oneDay;
+  const isFeaturedExpired = !lastFeaturedFetch || Date.now() - Number(lastFeaturedFetch) > oneDay;
+
+  if (!fragranceStore.categories.length || isCategoryExpired || isFeaturedExpired) {
+    await fetchFragrances(true);
+
+    // ✅ Save categories
+    localStorage.setItem("categories", JSON.stringify(fragranceStore.categories));
+    localStorage.setItem("categoriesLastFetch", Date.now().toString());
+
+    // ✅ Save featured fragrances (new or refreshed)
+    localStorage.setItem("featuredFragrances", JSON.stringify(fragranceStore.featuredFragrances));
+    localStorage.setItem("featuredLastFetch", Date.now().toString());
+  }
+});
 </script>
 
 <template>
@@ -23,7 +68,7 @@ const categories = store.categories
       <p class="text-xl md:text-2xl text-text/90 mb-10 italic">
         A fragrance that captures your story in every note.
       </p>
-      <RouterLink to="/products" class="btn-primary"> Shop Now </RouterLink>
+      <RouterLink to="/products" class="btn-primary">Shop Now</RouterLink>
     </div>
   </section>
 
@@ -31,7 +76,8 @@ const categories = store.categories
   <Featured :featuredFragrances="featuredFragrances" />
 
   <!-- Categories Section -->
-  <categories :categories="categories" />
+  <Categories :categories="categories" />
+
   <!-- Newsletter -->
   <section class="py-20 bg-surface px-6 text-center">
     <div class="max-w-2xl mx-auto">
