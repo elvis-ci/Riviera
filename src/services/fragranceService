@@ -19,7 +19,7 @@ function validateFragrance(fragrance) {
     discount: Number(fragrance.discount || 0),
     stock: Number(fragrance.stock || 0),
     category: String(fragrance.category || 'Uncategorized'),
-    image: String(fragrance.image || ''),
+    image_url: String(fragrance.image_url || ''),
     slug: String(fragrance.slug || ''),
     created_at: fragrance.created_at
   };
