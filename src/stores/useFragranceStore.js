@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import { getFragrances } from "@/services/fragranceService";
+import { getFragrances } from "@/services/fragranceService.js";
 
 export const useFragranceStore = defineStore("fragranceStore", () => {
   // --- State ---
@@ -41,6 +41,7 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
         discount: Number(f.discount) || 0,
         category: f.category || "Uncategorized",
         rating: Number(f.rating) || 0,
+        currentPrice: Number(f.currentPrice)
       }));
 
       console.log("🌸 Fetched fragrances", fragrances.value);
@@ -55,7 +56,7 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
           id: createCategoryId(cat),
           name: cat,
           description: getCategoryDescription(cat),
-          image: catFragrances[0]?.image_url || '', // Assuming image_url field
+          image: catFragrances[0]?.image_url || "", // Assuming image_url field
           count: catFragrances.length,
           priceRange: {
             min: Math.min(...prices),
