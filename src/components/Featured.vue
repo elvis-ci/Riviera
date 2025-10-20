@@ -205,7 +205,7 @@ const renderStars = (rating) => {
                     ${{ fragrance.price }}
                   </span>
                   <span class="text-xl font-bold text-accent">
-                    ${{ calculateCurrentPrice(fragrance.price, fragrance.discount) }}
+                    ${{ fragrance.currentPrice }}
                   </span>
                 </div>
               </div>

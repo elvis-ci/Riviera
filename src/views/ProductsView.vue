@@ -1,46 +1,74 @@
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useFragranceStore } from "@/stores/useFragranceStore";
+import { useCartStore } from "@/stores/useCartStore";
 import { useRoute } from "vue-router";
 
-// --- Pinia store ---
 const store = useFragranceStore();
+const cartStore = useCartStore();
+const route = useRoute();
 
 // --- Filters ---
 const searchQuery = ref("");
 const selectedCategory = ref(null);
-const selectedPriceRange = ref([0, 200]);
+const maxPriceFilter = ref(200);
 const selectedRating = ref(0);
 
-// --- Route for preset category filter ---
-const route = useRoute();
+// --- Local state for product quantities ---
+const quantities = ref({}); // e.g. { "id1": 2, "id2": 1 }
+
 onMounted(() => {
   if (route.query.category) {
     selectedCategory.value = route.query.category;
   }
 });
 
-// --- Filtered fragrances ---
+// --- Safe computed for max price ---
+const maxPrice = computed(() => {
+  return store.fragranceList.length
+    ? Math.ceil(Math.max(...store.fragranceList.map((f) => f.price)))
+    : 200;
+});
+
+// --- Filtered Fragrances ---
 const filteredFragrances = computed(() => {
-  return store.fragranceList.filter(f => {
+  return store.fragranceList.filter((f) => {
     const matchesCategory = selectedCategory.value ? f.category === selectedCategory.value : true;
-    const matchesPrice = f.price >= selectedPriceRange.value[0] && f.price <= selectedPriceRange.value[1];
+    const matchesPrice = f.price <= maxPriceFilter.value;
     const matchesRating = f.rating >= selectedRating.value;
     const matchesSearch = f.name.toLowerCase().includes(searchQuery.value.toLowerCase());
     return matchesCategory && matchesPrice && matchesRating && matchesSearch;
   });
 });
 
-// --- Price range slider max ---
-const maxPrice = computed(() => Math.max(...store.fragranceList.map(f => f.price)));
+// --- Check if in cart ---
+const isInCart = (id) => {
+  return cartStore.cartItems.some((item) => item.id === id);
+};
+
+// --- Update Quantity (before adding to cart) ---
+const updateQuantity = (item, newQty) => {
+  if (newQty < 1) newQty = 1;
+  quantities.value[item.id] = newQty;
+
+  //If the item is already in the cart, update its quantity directly
+  if (isInCart(item.id)) {
+    cartStore.updateQuantity(item.id, newQty);
+  }
+};
+
+// --- Add / Remove from Cart ---
+const toggleCart = (item) => {
+  const quantity = quantities.value[item.id] || 1;
+  if (isInCart(item.id)) {
+    cartStore.removeFromCart(item.id);
+  } else {
+    cartStore.addToCart(item, quantity);
+  }
+};
 
 // --- Ratings options ---
 const ratingsOptions = [5, 4, 3, 2, 1];
-
-// --- Add to cart ---
-function addToCart(item) {
-  store.addToCart(item, 1);
-}
 </script>
 
 <template>
@@ -48,12 +76,14 @@ function addToCart(item) {
     <!-- Header -->
     <div class="max-w-7xl mx-auto mb-8 text-center">
       <h1 class="text-4xl font-heading text-heading mb-2">Shop Fragrances</h1>
-      <p class="text-text/90">Discover your perfect scent — filter by category, price, rating, or search by name.</p>
+      <p class="text-text/90">
+        Discover your perfect scent — filter by category, price, rating, or search by name.
+      </p>
     </div>
 
     <div class="max-w-7xl mx-auto grid lg:grid-cols-[250px_1fr] gap-8">
-      <!-- Filters Sidebar -->
-      <aside class="flex flex-col gap-6">
+      <!-- Sidebar Filters -->
+      <aside class="flex flex-col gap-6" aria-label="Filter options">
         <!-- Search -->
         <div>
           <label for="search" class="block text-sm font-medium mb-1">Search</label>
@@ -62,24 +92,21 @@ function addToCart(item) {
             type="text"
             v-model="searchQuery"
             placeholder="Search fragrances..."
-            class="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent"
+            class="w-full px-3 py-2 border border-border rounded-md focus:ring-2 focus:ring-accent focus:border-accent outline-none"
           />
         </div>
 
         <!-- Categories -->
         <div>
           <p class="text-sm font-medium mb-2">Category</p>
-          <ul class="flex flex-col gap-1">
-            <li
-              v-for="cat in store.categories"
-              :key="cat.id"
-            >
+          <ul class="flex flex-col gap-1" role="radiogroup">
+            <li v-for="cat in store.categories" :key="cat.id">
               <label class="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
                   :value="cat.name"
                   v-model="selectedCategory"
-                  class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
+                  class="accent-accent"
                 />
                 {{ cat.name }}
               </label>
@@ -88,9 +115,9 @@ function addToCart(item) {
               <label class="flex items-center gap-2 cursor-pointer">
                 <input
                   type="radio"
-                  value=""
+                  :value="null"
                   v-model="selectedCategory"
-                  class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
+                  class="accent-accent"
                 />
                 All Categories
               </label>
@@ -100,37 +127,35 @@ function addToCart(item) {
 
         <!-- Price -->
         <div>
-          <p class="text-sm font-medium mb-2">Price (max: ${{ maxPrice }})</p>
+          <label class="text-sm font-medium mb-2 block" for="price-range">
+            Max Price: ${{ maxPriceFilter }}
+          </label>
           <input
+            id="price-range"
             type="range"
             :max="maxPrice"
-            v-model="selectedPriceRange[1]"
-            class="w-full h-2 accent-accent"
+            min="0"
+            v-model="maxPriceFilter"
+            class="w-full accent-accent"
           />
-          <div class="text-xs mt-1">Up to ${{ selectedPriceRange[1] }}</div>
         </div>
 
         <!-- Rating -->
         <div>
           <p class="text-sm font-medium mb-2">Minimum Rating</p>
-          <ul class="flex flex-col gap-1">
+          <ul class="flex flex-col gap-1" role="radiogroup">
             <li v-for="r in ratingsOptions" :key="r">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  :value="r"
-                  v-model="selectedRating"
-                  class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
-                />
+                <input type="radio" :value="r" v-model="selectedRating" class="accent-accent" />
                 <span>
                   <span v-for="i in r" :key="i" class="text-accent">★</span>
-                  <span v-for="i in 5-r" :key="i" class="text-text/50">★</span>
+                  <span v-for="i in 5 - r" :key="i" class="text-gray-300">★</span>
                 </span>
               </label>
             </li>
             <li>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" value="0" v-model="selectedRating" class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border" />
+                <input type="radio" value="0" v-model="selectedRating" class="accent-accent" />
                 All Ratings
               </label>
             </li>
@@ -138,22 +163,27 @@ function addToCart(item) {
         </div>
       </aside>
 
-      <!-- Products Grid -->
+      <!-- Product Grid -->
       <main>
         <div
           v-if="filteredFragrances.length === 0"
-          class="text-center text-text/70 py-20"
+          class="text-center text-gray-500 py-20"
+          role="status"
         >
           No fragrances match your filters.
         </div>
 
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          v-else
+          class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          role="list"
+          aria-label="Fragrance product list"
+        >
           <article
             v-for="item in filteredFragrances"
             :key="item.id"
-            class="bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl focus-within:shadow-xl transform transition-all duration-300 focus-within:ring-2 focus-within:ring-accent"
+            class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2"
           >
-            <!-- Image -->
             <img
               :src="item.image_url"
               :alt="item.name"
@@ -161,30 +191,58 @@ function addToCart(item) {
               loading="lazy"
             />
 
-            <!-- Details -->
             <div class="p-4 flex flex-col gap-2">
-              <h3 class="text-lg font-semibold text-heading">{{ item.name }}</h3>
-              <p class="text-sm text-text/80 line-clamp-2">{{ item.short }}</p>
+              <h2 class="text-lg font-semibold text-heading truncate">{{ item.name }}</h2>
+              <p class="text-sm text-gray-600 line-clamp-2">
+                {{ item.description || "A delightful fragrance." }}
+              </p>
 
-              <!-- Price -->
-              <div class="text-accent font-semibold text-base mt-1">
-                ${{ item.price }}
-              </div>
-
-              <!-- Rating -->
-              <div class="flex items-center gap-1" :aria-label="`${item.rating} out of 5 stars`">
+              <div class="flex items-center gap-1">
                 <span v-for="i in 5" :key="i" class="text-sm">
-                  <span :class="i <= item.rating ? 'text-accent' : 'text-text/50'">★</span>
+                  <span :class="i <= item.rating ? 'text-accent' : 'text-gray-300'">★</span>
                 </span>
+                <span class="text-xs text-gray-600 ml-1">({{ item.rating }})</span>
               </div>
 
-              <!-- Add to Cart -->
+              <div class="flex justify-between items-center mt-1">
+                <div>
+                  <span
+                    v-if="item.currentPrice < item.price"
+                    class="text-gray-400 line-through text-sm"
+                    >${{ item.price }}</span
+                  >
+                  <span class="text-accent font-bold text-lg ml-1">${{ item.currentPrice }}</span>
+                </div>
+                <!-- Quantity Selector -->
+                <div class="flex items-center gap-2">
+                  <button
+                    @click="updateQuantity(item, (quantities[item.id] || 1) - 1)"
+                    class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10"
+                  >
+                    −
+                  </button>
+                  <span class="w-8 text-center font-medium">
+                    {{ quantities[item.id] || 1 }}
+                  </span>
+                  <button
+                    @click="updateQuantity(item, (quantities[item.id] || 1) + 1)"
+                    class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
               <button
-                @click="addToCart(item)"
-                class="mt-3 w-full flex justify-center items-center gap-2 bg-accent text-white px-4 py-2 rounded-lg text-sm font-medium shadow-md hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1"
-                aria-label="Add {{ item.name }} to cart"
+                @click="toggleCart(item)"
+                class="mt-3 w-full py-3 font-bold rounded-lg text-sm shadow-md transition focus:ring-2 focus:ring-accent focus:ring-offset-1"
+                :class="
+                  isInCart(item.id)
+                    ? 'text-accent border-accent border-2 hover:bg-accent/30'
+                    : 'bg-accent text-white hover:bg-accent-hover'
+                "
               >
-                Add to Cart
+                {{ isInCart(item.id) ? "Remove from Cart" : "Add to Cart" }}
               </button>
             </div>
           </article>
@@ -195,35 +253,10 @@ function addToCart(item) {
 </template>
 
 <style scoped>
-/* Motion safety */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition-duration: 0.01ms !important;
-    animation-duration: 0.01ms !important;
-  }
-}
-
-/* Focus styles */
-button:focus-visible,
-input:focus-visible,
-article:focus-within {
-  outline: none;
-  box-shadow: 0 0 0 4px var(--color-accent, #b48a4a);
-}
-
-/* Line clamp support */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
-}
-
-/* Slider accent for Tailwind variables */
-input[type="range"]::-webkit-slider-thumb {
-  background-color: var(--color-accent, #b48a4a);
-}
-input[type="range"]::-moz-range-thumb {
-  background-color: var(--color-accent, #b48a4a);
 }
 </style>
