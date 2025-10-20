@@ -155,7 +155,7 @@ function addToCart(item) {
           >
             <!-- Image -->
             <img
-              :src="item.image"
+              :src="item.image_url"
               :alt="item.name"
               class="w-full h-64 object-cover"
               loading="lazy"

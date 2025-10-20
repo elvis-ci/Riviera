@@ -1,0 +1,96 @@
+import { supabase } from "../lib/supabaseClient";
+
+// Cache configuration
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+let cachedFragrances = null;
+let lastFetchTimestamp = null;
+
+/**
+ * Validates and transforms a fragrance object
+ * @param {Object} fragrance - Raw fragrance data
+ * @returns {Object} - Validated fragrance object
+ */
+function validateFragrance(fragrance) {
+  return {
+    id: String(fragrance.id),
+    name: String(fragrance.name || ""),
+    description: String(fragrance.description || ""),
+    price: Number(fragrance.price || 0),
+    discount: Number(fragrance.discount || 0),
+    stock: Number(fragrance.stock || 0),
+    category: String(fragrance.category || "Uncategorized"),
+    image_url: String(fragrance.image_url || ""),
+    slug: String(fragrance.slug || ""),
+    created_at: fragrance.created_at,
+    rating: Number(fragrance.rating || 0),
+    currentPrice: Number(fragrance.discount > 0 ? calculateCurrentPrice(fragrance.price, fragrance.discount) : fragrance.price),
+  };
+}
+
+// Calculate discounted price
+const calculateCurrentPrice = (originalPrice, discount) => {
+  const currentPrice = originalPrice - originalPrice * (discount / 100);
+  return Math.round(currentPrice);
+};
+
+/**
+ * Fetches fragrances from the database with caching
+ * @param {boolean} [force=false] - Force fetch from database, ignoring cache
+ * @returns {Promise<{data: Array|null, error: Error|null}>}
+ */
+export async function getFragrances(force = false) {
+  try {
+    // Return cached data if valid
+    if (
+      !force &&
+      cachedFragrances &&
+      lastFetchTimestamp &&
+      Date.now() - lastFetchTimestamp < CACHE_DURATION
+    ) {
+      return {
+        data: cachedFragrances,
+        error: null,
+      };
+    }
+
+    // Fetch fresh data
+    const { data, error } = await supabase
+      .from("fragrances")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw new Error(`Supabase error: ${error.message}`);
+    }
+
+    if (!data) {
+      throw new Error("No data received from database");
+    }
+
+    // Validate and transform data
+    const validatedData = data.map(validateFragrance);
+
+    // Update cache
+    cachedFragrances = validatedData;
+    lastFetchTimestamp = Date.now();
+
+    return {
+      data: validatedData,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Error fetching fragrances:", error);
+    return {
+      data: null,
+      error: error instanceof Error ? error : new Error("Unknown error occurred"),
+    };
+  }
+}
+
+/**
+ * Clears the fragrances cache
+ */
+export function clearFragrancesCache() {
+  cachedFragrances = null;
+  lastFetchTimestamp = null;
+}

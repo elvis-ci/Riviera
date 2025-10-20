@@ -1,11 +1,31 @@
 <script setup>
-import Featured from "@/components/Featured.vue";
-import Categories from "@/components/Categories.vue";
+import { onMounted, computed } from "vue";
+import { RouterLink } from "vue-router";
 import { useFragranceStore } from "@/stores/useFragranceStore";
+import Categories from "@/components/Categories.vue";
+import Featured from "@/components/Featured.vue";
 
-const store = useFragranceStore();
-const featuredFragrances = store.featuredFragrances;
-const categories = store.categories
+const fragranceStore = useFragranceStore();
+
+// ✅ Wrap reactive store state in computed to keep reactivity
+const categories = computed(() => fragranceStore.categories);
+const featuredFragrances = computed(() => fragranceStore.featuredFragrances);
+
+onMounted(async () => {
+  // --- Determine if we need to force fetch ---
+  const oneDay = 24 * 60 * 60 * 1000;
+  const lastFetch = Number(localStorage.getItem("lastFetch")) || 0;
+  const lastFeaturedUpdate = Number(localStorage.getItem("lastFeaturedUpdate")) || 0;
+
+  const isCategoryExpired = !categories.value.length || Date.now() - lastFetch > oneDay;
+  const isFeaturedExpired =
+    !featuredFragrances.value.length || Date.now() - lastFeaturedUpdate > oneDay;
+
+  // Fetch fragrances if first load or expired
+  if (isCategoryExpired || isFeaturedExpired) {
+    await fragranceStore.fetchFragrances(true);
+  }
+});
 </script>
 
 <template>
@@ -23,15 +43,15 @@ const categories = store.categories
       <p class="text-xl md:text-2xl text-text/90 mb-10 italic">
         A fragrance that captures your story in every note.
       </p>
-      <RouterLink to="/products" class="btn-primary"> Shop Now </RouterLink>
+      <RouterLink to="/products" class="btn-primary">Shop Now</RouterLink>
     </div>
   </section>
 
   <!-- Featured Fragrances -->
-  <Featured :featuredFragrances="featuredFragrances" />
-
+  <Featured :featuredFragrances="featuredFragrances" :loading="fragranceStore.loading" />
   <!-- Categories Section -->
-  <categories :categories="categories" />
+  <Categories :categories="categories" />
+
   <!-- Newsletter -->
   <section class="py-20 bg-surface px-6 text-center">
     <div class="max-w-2xl mx-auto">
