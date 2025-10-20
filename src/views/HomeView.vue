@@ -1,54 +1,29 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, computed } from "vue";
+import { RouterLink } from "vue-router";
 import { useFragranceStore } from "@/stores/useFragranceStore";
 import Categories from "@/components/Categories.vue";
 import Featured from "@/components/Featured.vue";
 
 const fragranceStore = useFragranceStore();
-const { categories, featuredFragrances, fetchFragrances } = fragranceStore;
 
-// Local refs for categories (cached)
-const cachedCategories = localStorage.getItem("categories");
-const lastFetch = localStorage.getItem("categoriesLastFetch");
-const cachedFeatured = localStorage.getItem("featuredFragrances");
-const lastFeaturedFetch = localStorage.getItem("featuredLastFetch");
+// ✅ Wrap reactive store state in computed to keep reactivity
+const categories = computed(() => fragranceStore.categories);
+const featuredFragrances = computed(() => fragranceStore.featuredFragrances);
 
 onMounted(async () => {
-  // --- Restore cached categories ---
-  if (cachedCategories) {
-    try {
-      fragranceStore.categories = JSON.parse(cachedCategories);
-    } catch {
-      console.warn("Corrupt category cache, clearing...");
-      localStorage.removeItem("categories");
-    }
-  }
-
-  // --- Restore cached featured fragrances ---
-  if (cachedFeatured) {
-    try {
-      fragranceStore.featuredFragrances = JSON.parse(cachedFeatured);
-    } catch {
-      console.warn("Corrupt featured cache, clearing...");
-      localStorage.removeItem("featuredFragrances");
-    }
-  }
-
-  // --- Fetch fresh categories if missing or older than 1 day ---
+  // --- Determine if we need to force fetch ---
   const oneDay = 24 * 60 * 60 * 1000;
-  const isCategoryExpired = !lastFetch || Date.now() - Number(lastFetch) > oneDay;
-  const isFeaturedExpired = !lastFeaturedFetch || Date.now() - Number(lastFeaturedFetch) > oneDay;
+  const lastFetch = Number(localStorage.getItem("lastFetch")) || 0;
+  const lastFeaturedUpdate = Number(localStorage.getItem("lastFeaturedUpdate")) || 0;
 
-  if (!fragranceStore.categories.length || isCategoryExpired || isFeaturedExpired) {
-    await fetchFragrances(true);
+  const isCategoryExpired = !categories.value.length || Date.now() - lastFetch > oneDay;
+  const isFeaturedExpired =
+    !featuredFragrances.value.length || Date.now() - lastFeaturedUpdate > oneDay;
 
-    // ✅ Save categories
-    localStorage.setItem("categories", JSON.stringify(fragranceStore.categories));
-    localStorage.setItem("categoriesLastFetch", Date.now().toString());
-
-    // ✅ Save featured fragrances (new or refreshed)
-    localStorage.setItem("featuredFragrances", JSON.stringify(fragranceStore.featuredFragrances));
-    localStorage.setItem("featuredLastFetch", Date.now().toString());
+  // Fetch fragrances if first load or expired
+  if (isCategoryExpired || isFeaturedExpired) {
+    await fragranceStore.fetchFragrances(true);
   }
 });
 </script>
@@ -73,8 +48,7 @@ onMounted(async () => {
   </section>
 
   <!-- Featured Fragrances -->
-  <Featured :featuredFragrances="featuredFragrances" />
-
+  <Featured :featuredFragrances="featuredFragrances" :loading="fragranceStore.loading" />
   <!-- Categories Section -->
   <Categories :categories="categories" />
 

@@ -1,16 +1,24 @@
+// ...existing code...
 <script setup>
 import { computed } from "vue";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import "vue3-carousel/dist/carousel.css";
 
-// ✅ Accept categories as a prop
+// ✅ Accept categories and loading as props
 const props = defineProps({
   categories: {
     type: Array,
     required: true,
     default: () => [],
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
+
+// show skeleton while loading or no items yet
+const showSkeleton = computed(() => props.loading || !props.categories?.length);
 
 // ✅ Responsive carousel breakpoints
 const breakpoints = {
@@ -30,7 +38,11 @@ const breakpoints = {
 </script>
 
 <template>
-  <section class="py-20 px-6  text-text" aria-labelledby="fragrance-categories-heading">
+  <section
+    class="py-20 px-6 text-text"
+    aria-labelledby="fragrance-categories-heading"
+    :aria-busy="showSkeleton ? 'true' : 'false'"
+  >
     <!-- Section Header -->
     <div class="max-w-7xl mx-auto text-center mb-12">
       <h2 id="fragrance-categories-heading" class="text-4xl font-heading text-heading mb-4">
@@ -41,84 +53,105 @@ const breakpoints = {
       </p>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="!props.categories?.length" class="text-center py-10 text-text/70">
-      Loading categories...
-    </div>
-
-    <!-- Category Carousel -->
-    <div v-else class="max-w-7xl mx-auto relative">
+    <!-- Category Carousel (shows skeleton when loading) -->
+    <div class="max-w-7xl mx-auto relative">
       <Carousel
         :wrap-around="false"
         :transition="500"
         :breakpoints="breakpoints"
         class="category-carousel"
+        aria-label="Fragrance categories carousel"
       >
-        <Slide v-for="cat in props.categories" :key="cat.id">
-          <article
-            role="listitem"
-            :aria-labelledby="`category-${cat.id}-title`"
-            :aria-describedby="`category-${cat.id}-desc`"
-            class="relative group bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:border-border-hover focus-within:shadow-2xl focus-within:border-border-hover transform hover:-translate-y-2 transition-all duration-500 ease-out mx-4"
-          >
-            <!-- Image -->
-            <div class="relative overflow-hidden">
-              <img
-                :src="cat.image"
-                :alt="`${cat.name} fragrance category`"
-                class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
-                decoding="async"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-20"
-                aria-hidden="true"
-              >
-                <span
-                  class="text-white text-lg font-medium italic opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
-                >
-                  Discover More
-                </span>
+        <!-- Skeleton slides when loading or no categories yet -->
+        <template v-if="showSkeleton">
+          <Slide v-for="n in 5" :key="'cat-skel-' + n" aria-hidden="false">
+            <article
+              class="animate-pulse bg-surface rounded-2xl h-96 w-full p-6 flex flex-col justify-between"
+              role="status"
+              aria-label="Loading category"
+            >
+              <div class="bg-gray-300/40 rounded-lg h-48 w-full mb-4" />
+              <div class="space-y-3">
+                <div class="h-6 bg-gray-300/40 rounded w-3/4 mx-auto"></div>
+                <div class="h-4 bg-gray-300/40 rounded w-5/6 mx-auto"></div>
+                <div class="flex items-center justify-center gap-3 mt-4">
+                  <div class="h-6 w-20 bg-gray-300/40 rounded" />
+                  <div class="h-8 w-28 bg-gray-300/40 rounded" />
+                </div>
               </div>
-            </div>
+              <span class="sr-only">Loading categories</span>
+            </article>
+          </Slide>
+        </template>
 
-            <!-- Details -->
-            <div class="relative z-10 p-6 text-center bg-background">
-              <h3 :id="`category-${cat.id}-title`" class="text-xl font-semibold text-heading mb-2">
-                {{ cat.name }}
-              </h3>
-              <p :id="`category-${cat.id}-desc`" class="text-text/80 text-sm mb-4 line-clamp-2">
-                {{ cat.description }}
-              </p>
-
-              <!-- Stats -->
-              <ul
-                class="flex justify-center items-center gap-3 text-sm text-text/90"
-                aria-label="Category details"
-              >
-                <li>
-                  💧 Available:
-                  <span class="font-semibold">{{ cat.availableQuantity }}</span>
-                </li>
-                <li>
-                  From:
-                  <span class="font-semibold">$ {{ cat.priceRange.min }}</span>
-                </li>
-              </ul>
-
-              <!-- Button -->
-              <div class="flex justify-center">
-                <button
-                  class="group/btn mt-5 flex items-center gap-2 bg-accent text-white hover:bg-accent-hover px-6 py-2.5 rounded-lg text-sm font-medium shadow-md transition-all duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 hover:gap-3"
-                  :aria-label="`Browse fragrances in ${cat.name} category`"
+        <!-- Actual category slides -->
+        <template v-else>
+          <Slide v-for="cat in props.categories" :key="cat.id">
+            <article
+              role="listitem"
+              :aria-labelledby="`category-${cat.id}-title`"
+              :aria-describedby="`category-${cat.id}-desc`"
+              class="relative group bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:border-border-hover focus-within:shadow-2xl focus-within:border-border-hover transform hover:-translate-y-2 transition-all duration-500 ease-out mx-4"
+            >
+              <!-- Image -->
+              <div class="relative overflow-hidden">
+                <img
+                  :src="cat.image"
+                  :alt="`${cat.name} fragrance category`"
+                  class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-20"
+                  aria-hidden="true"
                 >
-                  Browse Collection
-                  <span class="opacity-100 duration-200" aria-hidden="true">→</span>
-                </button>
+                  <span
+                    class="text-white text-lg font-medium italic opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
+                  >
+                    Discover More
+                  </span>
+                </div>
               </div>
-            </div>
-          </article>
-        </Slide>
+
+              <!-- Details -->
+              <div class="relative z-10 p-6 text-center bg-background">
+                <h3 :id="`category-${cat.id}-title`" class="text-xl font-semibold text-heading mb-2">
+                  {{ cat.name }}
+                </h3>
+                <p :id="`category-${cat.id}-desc`" class="text-text/80 text-sm mb-4 line-clamp-2">
+                  {{ cat.description }}
+                </p>
+
+                <!-- Stats -->
+                <ul
+                  class="flex justify-center items-center gap-3 text-sm text-text/90"
+                  aria-label="Category details"
+                >
+                  <li>
+                    💧 Available:
+                    <span class="font-semibold">{{ cat.availableQuantity }}</span>
+                  </li>
+                  <li>
+                    From:
+                    <span class="font-semibold">$ {{ cat.priceRange.min }}</span>
+                  </li>
+                </ul>
+
+                <!-- Button -->
+                <div class="flex justify-center">
+                  <button
+                    class="group/btn mt-5 flex items-center gap-2 bg-accent text-white hover:bg-accent-hover px-6 py-2.5 rounded-lg text-sm font-medium shadow-md transition-all duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 hover:gap-3"
+                    :aria-label="`Browse fragrances in ${cat.name} category`"
+                  >
+                    Browse Collection
+                    <span class="opacity-100 duration-200" aria-hidden="true">→</span>
+                  </button>
+                </div>
+              </div>
+            </article>
+          </Slide>
+        </template>
 
         <!-- Navigation & Pagination -->
         <template #addons>
@@ -207,3 +240,4 @@ article:focus-within {
   }
 }
 </style>
+// ...existing code...

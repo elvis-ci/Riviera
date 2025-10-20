@@ -1,175 +1,144 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { getFragrances } from "@/services/fragranceService.js";
 
-// --- Base Category Metadata ---
-const baseCategories = [
-  {
-    id: 1,
-    name: "Amber Floral",
-    image: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=800&q=80",
-    description: "A radiant blend of amber warmth and delicate floral notes for timeless elegance.",
-  },
-  {
-    id: 2,
-    name: "Woody Amber",
-    image: "https://images.unsplash.com/photo-1541644159112-7d1f6c3c34d7?auto=format&fit=crop&w=800&q=80",
-    description: "Earthy woods wrapped in smooth amber undertones — bold, grounded, and luxurious.",
-  },
-  {
-    id: 3,
-    name: "Aquatic Citrus",
-    image: "https://images.unsplash.com/photo-1602333860594-08efb7d208f6?auto=format&fit=crop&w=800&q=80",
-    description: "Fresh oceanic notes infused with zesty citrus for an invigorating modern touch.",
-  },
-  {
-    id: 4,
-    name: "Floral Musk",
-    image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=800&q=80",
-    description: "Soft blossoms meet sensual musk in this harmonious, versatile fragrance family.",
-  },
-  {
-    id: 5,
-    name: "Oriental",
-    image: "https://images.unsplash.com/photo-1616627984410-6d5b0f2d64e1?auto=format&fit=crop&w=800&q=80",
-    description: "Spicy, exotic notes that transport you through rich and mysterious aromas.",
-  },
-];
-
-// --- Helper: Generate a fragrance object ---
-function generateFragrance(id) {
-  const names = [
-    "Noir Lumière", "Velvet Oud", "Azure Mist", "Golden Bloom", "Crimson Dawn", "Luna Rosa",
-    "Amber Veil", "Sapphire Drift", "Wild Iris", "Midnight Whisper", "Citrus Ember", "Opal Mirage",
-    "Silver Fern", "Rose Mirage", "Orchid Haze", "Mystic Dew", "Pure Grace", "Obsidian Sky",
-    "Twilight Amber", "Cedar Bloom", "Emerald Soul", "Royal Musk", "Ivory Bloom", "Shadow Petal",
-    "Ocean Veil", "Violet Ash", "Amber Frost", "Pearl Essence", "Velour Mist", "Cherry Noir",
-    "Floral Veil", "Golden Sand", "Oud Reverie", "Velvet Bloom", "Eclipse Noir", "Lush Horizon",
-    "Amber Drift", "Desert Rose", "Silk Ember", "Iris Noir", "Orchid Drift", "Citrus Noir",
-    "Honey Veil", "Rosewood Glow", "Velvet Dusk", "Emerald Mist", "Ocean Drift", "Golden Veil",
-    "Amber Lace", "Velvet Echo",
-  ];
-
-  const category = baseCategories[id % baseCategories.length].name;
-  const name = names[id % names.length];
-  const slug = name.toLowerCase().replace(/\s+/g, "-");
-
-  const price = Math.floor(Math.random() * 80) + 80; // $80–$160
-  const discount = Math.floor(Math.random() * 30) + 5; // $5–$30
-  const stock = Math.floor(Math.random() * 40) + 10; // 10–50
-  const discountPercent = Math.round((discount / price) * 100);
-  const currentPrice = price - discount;
-
-  return {
-    id,
-    name,
-    slug,
-    image: `https://source.unsplash.com/600x600/?perfume,bottle,${slug}`,
-    short: `A captivating fragrance blending modern elegance with timeless notes of ${category.toLowerCase()}.`,
-    category,
-    stock,
-    price,
-    discount,
-    discountPercent,
-    currentPrice,
-  };
-}
-
-// --- Helper: Week number for featured rotation ---
-function getCurrentWeek() {
-  const now = new Date();
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
-  const days = Math.floor((now - startOfYear) / (24 * 60 * 60 * 1000));
-  return Math.ceil((days + startOfYear.getDay() + 1) / 7);
-}
-
-// --- Store Definition ---
 export const useFragranceStore = defineStore("fragranceStore", () => {
-  const STORAGE_KEY = "fragranceData";
-  const FEATURE_KEY = "featuredWeekData";
+  // --- State ---
+  const fragrances = ref([]);
+  const featuredFragrances = ref(JSON.parse(localStorage.getItem("featuredFragrances")) || []); // ✅ persisted
+  const categories = ref(JSON.parse(localStorage.getItem("categories")) || []);
+  const loading = ref(false);
+  const error = ref(null);
+  const lastFetch = ref(Number(localStorage.getItem("lastFetch")) || 0);
+  const lastFeaturedUpdate = ref(Number(localStorage.getItem("lastFeaturedUpdate")) || 0); // ✅ track featured refresh time
 
-  // ✅ Load fragrances from localStorage (if any)
-  const stored = localStorage.getItem(STORAGE_KEY);
-  const fragrances = ref(stored ? JSON.parse(stored) : []);
+  // --- Actions ---
+  async function fetchFragrances(force = false) {
+    try {
+      loading.value = true;
+      error.value = null;
 
-  // Generate sample data once if empty
-  if (fragrances.value.length === 0) {
-    fragrances.value = Array.from({ length: 50 }, (_, i) => generateFragrance(i + 1));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(fragrances.value));
+      const oneDay = 24 * 60 * 60 * 1000; // 24h in ms
+      const isCacheValid = categories.value.length && Date.now() - lastFetch.value < oneDay;
+
+      const isFeaturedValid =
+        featuredFragrances.value.length && Date.now() - lastFeaturedUpdate.value < oneDay;
+
+      // ✅ If both categories and featured are fresh, skip fetch
+      if (!force && isCacheValid && isFeaturedValid && fragrances.value.length) {
+        console.log("✅ Using cached data — no fetch needed");
+        return;
+      }
+
+      console.log("🌐 Fetching fragrances from backend...");
+      const { data, error: fetchError } = await getFragrances();
+      if (fetchError) throw fetchError;
+      // Normalize fragrance data
+      fragrances.value = data.map((f) => ({
+        ...f,
+        price: Number(f.price) || 0,
+        stock: Number(f.stock) || 0,
+        discount: Number(f.discount) || 0,
+        category: f.category || "Uncategorized",
+        rating: Number(f.rating) || 0,
+        currentPrice: Number(f.currentPrice)
+      }));
+
+      console.log("🌸 Fetched fragrances", fragrances.value);
+
+      // ✅ Recompute categories
+      const uniqueCategories = [...new Set(fragrances.value.map((f) => f.category))];
+
+      categories.value = uniqueCategories.map((cat) => {
+        const catFragrances = fragrances.value.filter((f) => f.category === cat);
+        const prices = catFragrances.map((f) => f.price);
+        return {
+          id: createCategoryId(cat),
+          name: cat,
+          description: getCategoryDescription(cat),
+          image: catFragrances[0]?.image_url || "", // Assuming image_url field
+          count: catFragrances.length,
+          priceRange: {
+            min: Math.min(...prices),
+            max: Math.max(...prices),
+          },
+        };
+      });
+
+      // Update featured fragrances only if expired or forced
+      if (!isFeaturedValid || force) {
+        featuredFragrances.value = getRandomItems(fragrances.value, 5);
+        localStorage.setItem("featuredFragrances", JSON.stringify(featuredFragrances.value));
+        lastFeaturedUpdate.value = Date.now();
+        localStorage.setItem("lastFeaturedUpdate", String(lastFeaturedUpdate.value));
+        console.log("🌟 Featured fragrances updated", featuredFragrances.value);
+      } else {
+        console.log("🌟 Using cached featured fragrances", featuredFragrances.value);
+      }
+
+      // ✅ Persist categories and fetch time
+      localStorage.setItem("categories", JSON.stringify(categories.value));
+      lastFetch.value = Date.now();
+      localStorage.setItem("lastFetch", String(lastFetch.value));
+
+      console.log("✅ Categories updated and cached");
+    } catch (err) {
+      console.error("❌ Error fetching fragrances:", err);
+      error.value = err.message || "Failed to fetch fragrances";
+      fragrances.value = [];
+    } finally {
+      loading.value = false;
+    }
   }
 
-  // --- Save Action ---
-  function saveFragrances() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(fragrances.value));
+  // --- Helpers ---
+  function createCategoryId(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   }
 
-  // --- Computed Lists ---
+  function getCategoryDescription(category) {
+    const descriptions = {
+      Floral: "Delicate blooms and romantic bouquets for the graceful spirit.",
+      Woody: "Rich, warm scents inspired by nature's finest timber.",
+      Oriental: "Exotic spices and mysterious aromas from the Far East.",
+      Fresh: "Crisp, clean fragrances that invigorate the senses.",
+      Uncategorized: "Unique scents waiting to be discovered.",
+    };
+    return descriptions[category] || "Explore our unique collection of fragrances.";
+  }
+
+  // ✅ Helper: Random item selection
+  function getRandomItems(array, count) {
+    if (!array.length) return [];
+    const shuffled = [...array].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
+  // --- Getters ---
   const fragranceList = computed(() => fragrances.value);
+  const getOutOfStock = computed(() => fragrances.value.filter((f) => f.stock === 0));
+  const getLowStock = computed(() => fragrances.value.filter((f) => f.stock > 0 && f.stock <= 5));
 
-  const getBySlug = (slug) => fragranceList.value.find((f) => f.slug === slug);
-  const getByCategory = (category) => fragranceList.value.filter((f) => f.category === category);
-
-  // --- Stock modification ---
-  function reduceStock(id, quantity = 1) {
-    const item = fragrances.value.find((f) => f.id === id);
-    if (item && item.stock >= quantity) {
-      item.stock -= quantity;
-      saveFragrances();
-    }
-  }
-
-  function restock(id, amount = 1) {
-    const item = fragrances.value.find((f) => f.id === id);
-    if (item) {
-      item.stock += amount;
-      saveFragrances();
-    }
-  }
-
-  // --- Weekly Featured Fragrances ---
-  const featuredFragrances = ref([]);
-
-  const loadFeatured = () => {
-    const currentWeek = getCurrentWeek();
-    const storedFeatured = JSON.parse(localStorage.getItem(FEATURE_KEY) || "{}");
-
-    if (storedFeatured.week === currentWeek && storedFeatured.items) {
-      featuredFragrances.value = storedFeatured.items;
-    } else {
-      const shuffled = [...fragrances.value].sort(() => 0.5 - Math.random());
-      featuredFragrances.value = shuffled.slice(0, 3);
-      localStorage.setItem(FEATURE_KEY, JSON.stringify({ week: currentWeek, items: featuredFragrances.value }));
-    }
-  };
-
-  loadFeatured();
-
-  // --- Computed Categories ---
-  const categories = computed(() => {
-    return baseCategories.map((cat) => {
-      const items = fragranceList.value.filter((f) => f.category === cat.name);
-      const availableQuantity = items.reduce((sum, f) => sum + f.stock, 0);
-      const prices = items.map((f) => f.price);
-      const priceRange = prices.length
-        ? { min: Math.min(...prices), max: Math.max(...prices) }
-        : { min: 0, max: 0 };
-
-      return {
-        ...cat,
-        availableQuantity,
-        priceRange,
-      };
-    });
-  });
+  const getBySlug = (slug) => fragrances.value.find((f) => f.slug === slug);
+  const getByCategory = (name) => fragrances.value.filter((f) => f.category === name);
 
   // --- Return everything ---
   return {
+    // State
     fragrances,
-    fragranceList,
-    featuredFragrances,
     categories,
+    featuredFragrances, // ✅ now persisted
+    loading,
+    error,
+
+    // Computed
+    fragranceList,
+    getOutOfStock,
+    getLowStock,
+
+    // Actions
+    fetchFragrances,
     getBySlug,
     getByCategory,
-    reduceStock,
-    restock,
   };
 });
