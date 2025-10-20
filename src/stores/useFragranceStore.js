@@ -40,6 +40,7 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
         stock: Number(f.stock) || 0,
         discount: Number(f.discount) || 0,
         category: f.category || "Uncategorized",
+        rating: Number(f.rating) || 0,
       }));
 
       console.log("🌸 Fetched fragrances", fragrances.value);
@@ -54,7 +55,7 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
           id: createCategoryId(cat),
           name: cat,
           description: getCategoryDescription(cat),
-          image: getDefaultCategoryImage(cat),
+          image: catFragrances[0]?.image_url || '', // Assuming image_url field
           count: catFragrances.length,
           priceRange: {
             min: Math.min(...prices),
@@ -65,7 +66,7 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
 
       // Update featured fragrances only if expired or forced
       if (!isFeaturedValid || force) {
-        featuredFragrances.value = getRandomItems(fragrances.value, 5); 
+        featuredFragrances.value = getRandomItems(fragrances.value, 5);
         localStorage.setItem("featuredFragrances", JSON.stringify(featuredFragrances.value));
         lastFeaturedUpdate.value = Date.now();
         localStorage.setItem("lastFeaturedUpdate", String(lastFeaturedUpdate.value));
@@ -92,17 +93,6 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
   // --- Helpers ---
   function createCategoryId(name) {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  }
-
-  function getDefaultCategoryImage(category) {
-    const defaults = {
-      Floral: "/images/categories/floral.jpg",
-      Woody: "/images/categories/woody.jpg",
-      Oriental: "/images/categories/oriental.jpg",
-      Fresh: "/images/categories/fresh.jpg",
-      Uncategorized: "/images/categories/default.jpg",
-    };
-    return defaults[category] || defaults.Uncategorized;
   }
 
   function getCategoryDescription(category) {

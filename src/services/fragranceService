@@ -21,7 +21,8 @@ function validateFragrance(fragrance) {
     category: String(fragrance.category || 'Uncategorized'),
     image_url: String(fragrance.image_url || ''),
     slug: String(fragrance.slug || ''),
-    created_at: fragrance.created_at
+    created_at: fragrance.created_at,
+    rating: Number(fragrance.rating || 0),
   };
 }
 
