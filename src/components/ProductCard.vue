@@ -12,9 +12,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["updateQuantity", "addToCart"]);
 const quantity = ref(1);
-// --- Computed ---
 const isInCart = computed(() =>
   props.cartStore.cartItems.some((cartItem) => cartItem.id === props.item.id)
 );
@@ -49,64 +47,95 @@ watch(
 
 <template>
   <article
-    class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2"
+    class="bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 max-w-xs sm:max-w-sm mx-auto flex flex-col"
   >
-    <img :src="item.image_url" :alt="item.name" class="w-full h-64 object-cover" loading="lazy" />
+    <!-- Image Section (shorter height now) -->
+    <div class="relative w-full overflow-hidden h-44 sm:h-52 md:h-56">
+      <img
+        :src="item.image_url"
+        :alt="item.name"
+        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        loading="lazy"
+      />
+    </div>
 
-    <div class="p-4 flex flex-col gap-2">
-      <h2 class="text-lg font-semibold text-heading truncate">{{ item.name }}</h2>
-      <p class="text-sm text-gray-600 line-clamp-2">
-        {{ item.description || "A delightful fragrance." }}
-      </p>
-
-      <!-- Ratings -->
-      <div class="flex items-center gap-1">
-        <span v-for="i in 5" :key="i" class="text-sm">
-          <span :class="i <= item.rating ? 'text-accent' : 'text-gray-300'">★</span>
-        </span>
+    <!-- Content Section -->
+    <div
+      class="relative z-10 bg-white rounded-t-2xl -mt-5 shadow-md p-3 sm:p-3 flex flex-col justify-between"
+    >
+      <div>
+        <div class="flex w-full justify-between items-center pb-1.5">
+          <h2 class="text-base sm:text-lg font-semibold text-accent-hover truncate">
+            {{ item.name }}
+          </h2>
+          <!-- Rating -->
+          <div class="flex items-end gap-0.5 mb-2">
+            <span
+              v-for="i in 5"
+              :key="i"
+              class="text-[13px] sm:text-sm"
+              :class="i <= item.rating ? 'text-accent' : 'text-gray-300'"
+              aria-hidden="true"
+            >
+              ★
+            </span>
+          </div>
+        </div>
+        <p class="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2">
+          {{ item.description || "A delightful fragrance that embodies elegance." }}
+        </p>
       </div>
 
-      <!-- Price + Quantity -->
-      <div class="flex justify-between items-center mt-1">
-        <div>
-          <span v-if="item.currentPrice < item.price" class="text-gray-400 line-through text-sm"
-            >${{ item.price }}</span
-          >
-          <span class="text-accent font-bold text-lg ml-1">${{ item.currentPrice }}</span>
+      <!-- Price + Quantity + Button -->
+      <div class="flex flex-col gap-2 mt-2">
+        <div class="flex justify-between items-end">
+          <div class="flex flex-col items-start">
+            <span class="text-sm sm:text-md font-semibold text-text/70">Price</span>
+            <div class="flex items-center gap-2">
+              <span
+                v-if="item.currentPrice < item.price"
+                class="text-gray-400 line-through text-xs font-semibold sm:text-sm"
+              >
+                ${{ item.price }}
+              </span>
+              <span class="text-accent font-bold text-lg sm:text-xl">
+                ${{ item.currentPrice }}
+              </span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              @click="decreaseQuantity"
+              class="w-7 h-7 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+            <span class="w-6 text-center font-bold text-sm">{{ quantity }}</span>
+            <button
+              @click="increaseQuantity"
+              class="w-7 h-7 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
         </div>
 
-        <!-- Quantity Selector -->
-        <div class="flex items-center gap-2">
-          <button
-            @click="decreaseQuantity"
-            class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10"
-          >
-            −
-          </button>
-          <span class="w-8 text-center font-medium">
-            {{ quantity }}
-          </span>
-          <button
-            @click="increaseQuantity"
-            class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10"
-          >
-            +
-          </button>
-        </div>
+        <button
+          @click="isInCart ? removeFromCart() : addToCart()"
+          class="mt-2 flex justify-center gap-3 w-full py-2 font-semibold rounded-lg text-xs sm:text-sm shadow-md transition focus:ring-2 focus:ring-accent focus:ring-offset-1"
+          :class="[
+            isInCart
+              ? 'text-accent border-accent border-2 hover:bg-accent/10'
+              : 'bg-accent text-white hover:bg-accent-hover',
+          ]"
+        >
+          <IconMdiCartOutline size="20" />
+          {{ isInCart ? "Remove" : "Add to Cart" }}
+        </button>
       </div>
-
-      <!-- Add/Remove Button -->
-      <button
-        @click="isInCart ? removeFromCart() : addToCart()"
-        class="mt-3 w-full py-3 font-bold rounded-lg text-sm shadow-md transition focus:ring-2 focus:ring-accent focus:ring-offset-1"
-        :class="
-          isInCart
-            ? 'text-accent border-accent border-2 hover:bg-accent/30'
-            : 'bg-accent text-white hover:bg-accent-hover'
-        "
-      >
-        {{ isInCart ? "Remove from Cart" : "Add to Cart" }}
-      </button>
     </div>
   </article>
 </template>
@@ -117,5 +146,16 @@ watch(
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+}
+
+article:hover img {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 </style>
