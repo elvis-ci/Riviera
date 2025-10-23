@@ -9,28 +9,24 @@
     role="banner"
   >
     <div
-      class="max-w-full mx-auto px-6 py-4 flex items-center justify-between text-gray-900 dark:text-gray-100"
+      class="relative max-w-full mx-auto px-6 py-2 flex flex-wrap items-center justify-between text-gray-900 dark:text-gray-100"
     >
       <!-- Logo -->
       <RouterLink
         to="/"
-        class="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg"
+        class="flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg"
         aria-label="Go to homepage"
       >
-        <img
-          src="@/assets/logo.svg"
-          alt="Perfume Brand Logo"
-          class="h-10 w-auto"
-        />
-        <span class="font-semibold text-lg hidden sm:inline">Perfume</span>
+        <img src="@/assets/logo.png" alt="Perfume Brand Logo" class="h-10 w-auto" />
+        <span class="font-semibold text-lg hidden sm:inline font-serif">Riviera</span>
       </RouterLink>
 
       <!-- Mobile Menu & Theme Toggle -->
-      <div class="flex items-center gap-4 md:hidden">
+      <div class="flex items-center gap-4 lg:hidden">
         <!-- Theme Toggle -->
         <button
           @click="toggleTheme"
-          class="hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
+          class="text-text hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
           aria-label="Toggle dark mode"
         >
           <IconMdiWeatherSunny v-if="!isDark" size="24" />
@@ -40,7 +36,7 @@
         <!-- Mobile Menu Toggle -->
         <button
           @click="toggleMenu"
-          class="hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
+          class="text-text hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
           aria-label="Toggle navigation menu"
         >
           <IconMdiMenu v-if="!isOpen" size="26" />
@@ -50,7 +46,7 @@
 
       <!-- Desktop Navigation -->
       <nav
-        class="hidden md:flex items-center gap-8"
+        class="hidden lg:flex items-center gap-8 xl:absolute xl:left-1/2 xl:-translate-x-1/2"
         aria-label="Primary navigation"
       >
         <RouterLink
@@ -58,10 +54,11 @@
           :key="item.id"
           :to="item.link"
           class="focus-visible:ring-2 focus-visible:ring-accent rounded-md px-1"
-          :class="({ isActive }) =>
-            isActive
-              ? 'text-accent font-semibold transition-colors'
-              : 'text-gray-800 dark:text-gray-200 hover:text-accent font-medium transition-colors'
+          :class="
+            ({ isActive }) =>
+              isActive
+                ? 'text-accent font-semibold transition-colors'
+                : 'text-gray-800 dark:text-gray-200 hover:text-accent font-medium transition-colors'
           "
         >
           {{ item.title }}
@@ -69,25 +66,26 @@
       </nav>
 
       <!-- Right Icons -->
-      <div class="hidden md:flex items-center gap-6 relative">
+      <div class="hidden lg:flex items-center gap-6 relative">
         <!-- Cart -->
         <RouterLink
           to="/cart"
-          class="hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
+          class="text-text flex items-center gap-1 hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
           aria-label="Shopping cart"
         >
-          <IconMdiCartOutline size="22" />
+          <IconMdiCartOutline class="scale-110" size="22" />
+          <span class="hidden sm:inline">Cart</span>
         </RouterLink>
 
         <!-- Profile Dropdown -->
         <div class="relative group">
           <button
-            class=" text-text hover:text-accent transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-accent rounded-md px-2 py-1"
+            class="text-text hover:text-accent transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-accent rounded-md px-2 py-1"
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <IconMdiAccountCircle size="22" />
-            <span class="hidden sm:inline text-sm">Profile</span>
+            <IconMdiAccountCircle size="22" class="scale-120" />
+            <span class="hidden sm:inline">Profile</span>
           </button>
 
           <div
@@ -148,17 +146,18 @@
     <transition name="slide-fade">
       <nav
         v-if="isOpen"
-        class="md:hidden bg-white/95 dark:bg-zinc-900/95 border-t border-border py-4 px-6 space-y-4 shadow-lg backdrop-blur-md"
+        class="lg:hidden bg-white dark:bg-surface border-t border-border py-4 px-6 space-y-4 shadow-lg backdrop-blur-md"
         aria-label="Mobile navigation"
       >
         <ul class="flex flex-col gap-3">
           <li v-for="item in navigation" :key="item.id">
             <RouterLink
               :to="item.link"
-              :class="({ isActive }) =>
-                isActive
-                  ? 'text-accent font-semibold transition-colors'
-                  : 'text-gray-800 dark:text-gray-100 hover:text-accent font-medium transition-colors'
+              :class="
+                ({ isActive }) =>
+                  isActive
+                    ? 'text-accent font-semibold transition-colors'
+                    : 'text-gray-800 dark:text-gray-100 hover:text-accent font-medium transition-colors'
               "
               class="focus-visible:ring-2 focus-visible:ring-accent rounded-md px-1"
             >
@@ -178,10 +177,7 @@
             <RouterLink to="/orders" class="hover:text-accent transition-colors">
               Orders
             </RouterLink>
-            <button
-              @click="signOut"
-              class="text-left hover:text-accent transition-colors"
-            >
+            <button @click="signOut" class="text-left hover:text-accent transition-colors">
               Sign Out
             </button>
           </template>
