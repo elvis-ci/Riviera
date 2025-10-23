@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useFragranceStore } from "@/stores/useFragranceStore";
 import { useCartStore } from "@/stores/useCartStore";
 import { useRoute } from "vue-router";
@@ -15,6 +15,10 @@ const selectedCategory = ref(null);
 const selectedPriceRange = ref([0, 200]);
 const selectedRating = ref(0);
 
+// --- Collapsible filter states ---
+const showCategories = ref(true);
+const showRatings = ref(true);
+
 // --- Route for preset category filter ---
 const route = useRoute();
 onMounted(() => {
@@ -26,22 +30,27 @@ onMounted(() => {
 // --- Filtered fragrances ---
 const filteredFragrances = computed(() => {
   return store.fragranceList.filter((f) => {
-    const matchesCategory = selectedCategory.value ? f.category === selectedCategory.value : true;
+    const matchesCategory = selectedCategory.value
+      ? f.category === selectedCategory.value
+      : true;
     const matchesPrice =
-      f.price >= selectedPriceRange.value[0] && f.price <= selectedPriceRange.value[1];
+      f.price >= selectedPriceRange.value[0] &&
+      f.price <= selectedPriceRange.value[1];
     const matchesRating = f.rating >= selectedRating.value;
-    const matchesSearch = f.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+    const matchesSearch = f.name
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase());
     return matchesCategory && matchesPrice && matchesRating && matchesSearch;
   });
 });
 
 // --- Price range slider max ---
-const maxPrice = computed(() => Math.max(...store.fragranceList.map((f) => f.price)));
+const maxPrice = computed(() =>
+  Math.max(...store.fragranceList.map((f) => f.price))
+);
 
 // --- Ratings options ---
 const ratingsOptions = [5, 4, 3, 2, 1];
-
-
 </script>
 
 <template>
@@ -54,11 +63,14 @@ const ratingsOptions = [5, 4, 3, 2, 1];
       </p>
     </div>
 
-    <div class="max-w-7xl mx-auto grid lg:grid-cols-[250px_1fr] gap-8">
-      <!-- Filters Sidebar -->
-      <aside class="flex flex-col gap-6">
+    <!-- Layout -->
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-[280px_1fr] gap-8 relative">
+      <!-- Sidebar -->
+      <aside
+        class="hidden lg:block sticky top-24 self-start h-fit bg-surface border border-border rounded-2xl p-6 shadow-sm"
+      >
         <!-- Search -->
-        <div>
+        <div class="mb-6">
           <label for="search" class="block text-sm font-medium mb-1">Search</label>
           <input
             id="search"
@@ -69,37 +81,51 @@ const ratingsOptions = [5, 4, 3, 2, 1];
           />
         </div>
 
-        <!-- Categories -->
-        <div>
-          <p class="text-sm font-medium mb-2">Category</p>
-          <ul class="flex flex-col gap-1">
-            <li v-for="cat in store.categories" :key="cat.id">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  :value="cat.name"
-                  v-model="selectedCategory"
-                  class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
-                />
-                {{ cat.name }}
-              </label>
-            </li>
-            <li>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value=""
-                  v-model="selectedCategory"
-                  class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
-                />
-                All Categories
-              </label>
-            </li>
-          </ul>
+        <!-- Categories (Collapsible) -->
+        <div class="mb-6">
+          <button
+            @click="showCategories = !showCategories"
+            class="w-full flex justify-between items-center text-sm font-medium mb-2 text-heading"
+          >
+            <span>Category</span>
+            <span
+              class="transform transition-transform duration-200"
+              :class="{ 'rotate-180': showCategories }"
+            >
+              ▼
+            </span>
+          </button>
+
+          <transition name="fade">
+            <ul v-if="showCategories" class="flex flex-col gap-1">
+              <li v-for="cat in store.categories" :key="cat.id">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    :value="cat.name"
+                    v-model="selectedCategory"
+                    class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
+                  />
+                  {{ cat.name }}
+                </label>
+              </li>
+              <li>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value=""
+                    v-model="selectedCategory"
+                    class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
+                  />
+                  All Categories
+                </label>
+              </li>
+            </ul>
+          </transition>
         </div>
 
         <!-- Price -->
-        <div>
+        <div class="mb-6">
           <p class="text-sm font-medium mb-2">Price (max: ${{ maxPrice }})</p>
           <input
             type="range"
@@ -110,41 +136,55 @@ const ratingsOptions = [5, 4, 3, 2, 1];
           <div class="text-xs mt-1">Up to ${{ selectedPriceRange[1] }}</div>
         </div>
 
-        <!-- Rating -->
+        <!-- Ratings (Collapsible) -->
         <div>
-          <p class="text-sm font-medium mb-2">Minimum Rating</p>
-          <ul class="flex flex-col gap-1">
-            <li v-for="r in ratingsOptions" :key="r">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  :value="r"
-                  v-model="selectedRating"
-                  class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
-                />
-                <span>
-                  <span v-for="i in r" :key="i" class="text-accent">★</span>
-                  <span v-for="i in 5 - r" :key="i" class="text-text/50">★</span>
-                </span>
-              </label>
-            </li>
-            <li>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="0"
-                  v-model="selectedRating"
-                  class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
-                />
-                All Ratings
-              </label>
-            </li>
-          </ul>
+          <button
+            @click="showRatings = !showRatings"
+            class="w-full flex justify-between items-center text-sm font-medium mb-2 text-heading"
+          >
+            <span>Minimum Rating</span>
+            <span
+              class="transform transition-transform duration-200"
+              :class="{ 'rotate-180': showRatings }"
+            >
+              ▼
+            </span>
+          </button>
+
+          <transition name="fade">
+            <ul v-if="showRatings" class="flex flex-col gap-1">
+              <li v-for="r in ratingsOptions" :key="r">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    :value="r"
+                    v-model="selectedRating"
+                    class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
+                  />
+                  <span>
+                    <span v-for="i in r" :key="i" class="text-accent">★</span>
+                    <span v-for="i in 5 - r" :key="i" class="text-text/50">★</span>
+                  </span>
+                </label>
+              </li>
+              <li>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    value="0"
+                    v-model="selectedRating"
+                    class="focus:ring-accent focus:ring-2 h-4 w-4 text-accent border-border"
+                  />
+                  All Ratings
+                </label>
+              </li>
+            </ul>
+          </transition>
         </div>
       </aside>
 
-      <!-- Products Grid -->
-      <section>
+      <!-- Product Grid -->
+      <section class="overflow-y-auto min-h-[70vh] pr-2">
         <div v-if="filteredFragrances.length === 0" class="text-center text-text/70 py-20">
           No fragrances match your filters.
         </div>
@@ -168,5 +208,32 @@ const ratingsOptions = [5, 4, 3, 2, 1];
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+}
+
+/* Smooth dropdown animation */
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.25s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: scaleY(0.95);
+}
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  max-height: 500px;
+  transform: scaleY(1);
+}
+
+/* Optional visual polish */
+aside {
+  transition: top 0.3s ease;
+}
+button span:last-child {
+  font-size: 0.8rem;
+  color: var(--accent);
 }
 </style>
