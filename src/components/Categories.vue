@@ -76,8 +76,6 @@ const breakpoints = {
           <Slide v-for="cat in categories" :key="cat.id">
             <article
               class="relative group bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:border-border-hover transition-all duration-500 ease-out mx-3 sm:mx-4 flex flex-col h-[460px]"
-              role="listitem"
-              :aria-label="`Category: ${cat.name}`"
             >
               <!-- Image -->
               <div class="relative h-[65%] overflow-hidden rounded-t-2xl">

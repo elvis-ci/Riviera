@@ -104,7 +104,6 @@ const renderStars = (rating) => {
         >
           <article
             class="relative group bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl sm:hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 mx-1 sm:mx-3 h-[24rem] sm:h-[26rem] md:h-[28rem]"
-            :aria-label="`Fragrance: ${fragrance.name}`"
           >
             <!-- Image Section -->
             <div
@@ -134,7 +133,7 @@ const renderStars = (rating) => {
                 </h3>
 
                 <!-- ⭐ Rating Section -->
-                <div class="flex items-center justify-start mt-1" aria-label="Fragrance rating">
+                <div class="flex items-center justify-start mt-1">
                   <template v-for="(star, i) in renderStars(fragrance.rating)" :key="i">
                     <!-- Full Star -->
                     <svg
