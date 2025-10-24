@@ -130,7 +130,7 @@ a:hover,
 .router-link:hover,
 a:focus,
 .router-link:focus {
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
 }
 
 /* Focus Ring — visible in both modes */
@@ -141,7 +141,7 @@ button:focus-visible {
 
 /* Active Nav Links */
 .router-link-active {
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
   font-weight: 600;
   text-underline-offset: 4px;
 }

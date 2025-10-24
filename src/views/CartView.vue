@@ -1,10 +1,10 @@
 <template>
   <section class="py-12 px-6 bg-surface text-text min-h-screen" aria-labelledby="cart-heading">
     <!-- Header -->
-    <header class="max-w-7xl mx-auto mb-10 text-center">
+    <div class="max-w-7xl mx-auto mb-10 text-center">
       <h1 id="cart-heading" class="text-4xl font-heading text-heading mb-2">Your Cart</h1>
       <p class="text-text/90">Review your selected fragrances before checkout.</p>
-    </header>
+    </div>
 
     <div
       class="max-w-7xl mx-auto grid lg:grid-cols-[2fr_1fr] gap-10"
@@ -65,7 +65,7 @@
               >
                 <div class="flex items-center gap-2">
                   <button
-                    @click="updateQuantity(item.id, item.quantity - 1)"
+                    @click="decreaseQuantity(item)"
                     class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent"
                     aria-label="Decrease quantity"
                   >
@@ -75,7 +75,7 @@
                     {{ item.quantity }}
                   </span>
                   <button
-                    @click="updateQuantity(item.id, item.quantity + 1)"
+                    @click="increaseQuantity(item)"
                     class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent"
                     aria-label="Increase quantity"
                   >
@@ -150,9 +150,14 @@ const subtotal = computed(() =>
 );
 const total = computed(() => cartStore.cartTotal);
 
-function updateQuantity(item, newQty) {
-  if (newQty < 1) return;
-  cartStore.updateQuantity(item.id, newQty);
+function increaseQuantity(item) {
+  cartStore.updateQuantity(item.id, item.quantity + 1);
+}
+
+function decreaseQuantity(item) {
+  if (item.quantity > 1) {
+    cartStore.updateQuantity(item.id, item.quantity - 1);
+  }
 }
 
 function removeFromCart(item) {
@@ -162,6 +167,7 @@ function removeFromCart(item) {
 function checkout() {
   alert("Checkout coming soon!");
 }
+
 </script>
 
 <style scoped>
