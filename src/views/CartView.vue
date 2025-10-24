@@ -1,10 +1,10 @@
 <template>
   <section class="py-12 px-6 bg-surface text-text min-h-screen" aria-labelledby="cart-heading">
     <!-- Header -->
-    <header class="max-w-7xl mx-auto mb-10 text-center">
+    <div class="max-w-7xl mx-auto mb-10 text-center">
       <h1 id="cart-heading" class="text-4xl font-heading text-heading mb-2">Your Cart</h1>
       <p class="text-text/90">Review your selected fragrances before checkout.</p>
-    </header>
+    </div>
 
     <div
       class="max-w-7xl mx-auto grid lg:grid-cols-[2fr_1fr] gap-10"
