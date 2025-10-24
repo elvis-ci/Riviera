@@ -50,56 +50,56 @@ watch(
     class="bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 max-w-xs sm:max-w-sm mx-auto flex flex-col"
   >
     <!-- Image Section (shorter height now) -->
-    <div class="relative w-full overflow-hidden h-44 sm:h-52 md:h-56">
+    <div class="relative w-full overflow-hidden h-44 sm:h-52 md:h-40">
       <img
         :src="item.image_url"
         :alt="item.name"
-        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        class="w-full h-full object-cover scale-96 rounded-xl transition-transform duration-700 ease-out group-hover:scale-105"
         loading="lazy"
       />
     </div>
 
     <!-- Content Section -->
     <div
-      class="relative z-10 bg-white rounded-t-2xl -mt-5 shadow-md p-3 sm:p-3 flex flex-col justify-between"
+      class="relative z-10 bg-white rounded-t-2xl -mt-3 shadow-md p-3 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
     >
       <div>
-        <div class="flex w-full justify-between items-center pb-1.5">
-          <h2 class="text-base sm:text-lg font-semibold text-accent-hover truncate">
+        <div class="flex w-full justify-between items-center pb-1">
+          <h2 class="text-base sm:text-md font-semibold text-accent-hover truncate">
             {{ item.name }}
           </h2>
           <!-- Rating -->
-          <div class="flex items-end gap-0.5 mb-2">
+          <div class="flex items-end gap-0.5">
             <span
               v-for="i in 5"
               :key="i"
               class="text-[13px] sm:text-sm"
-              :class="i <= item.rating ? 'text-accent' : 'text-gray-300'"
+              :class="i <= item.rating ? 'text-yellow-400' : 'text-gray-300'"
               aria-hidden="true"
             >
               ★
             </span>
           </div>
         </div>
-        <p class="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2">
+        <p class="text-xs sm:text-xs text-gray-600 line-clamp-2">
           {{ item.description || "A delightful fragrance that embodies elegance." }}
         </p>
       </div>
 
       <!-- Price + Quantity + Button -->
-      <div class="flex flex-col gap-2 mt-2">
+      <div class="flex flex-col gap-2 mt-1">
         <div class="flex justify-between items-end">
           <div class="flex flex-col items-start">
-            <span class="text-sm sm:text-md font-semibold text-text/70">Price</span>
+            <span class="text-sm sm:text-xs text-text/70">Price</span>
             <div class="flex items-center gap-2">
+              <span class="text-accent font-bold text-lg sm:text-lg">
+                ${{ item.currentPrice }}
+              </span>
               <span
                 v-if="item.currentPrice < item.price"
-                class="text-gray-400 line-through text-xs font-semibold sm:text-sm"
+                class="text-gray-500 line-through text-xs sm:text-xs"
               >
                 ${{ item.price }}
-              </span>
-              <span class="text-accent font-bold text-lg sm:text-xl">
-                ${{ item.currentPrice }}
               </span>
             </div>
           </div>
@@ -107,7 +107,7 @@ watch(
           <div class="flex items-center gap-2">
             <button
               @click="decreaseQuantity"
-              class="w-7 h-7 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              class="w-6 h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
               aria-label="Decrease quantity"
             >
               −
@@ -115,7 +115,7 @@ watch(
             <span class="w-6 text-center font-bold text-sm">{{ quantity }}</span>
             <button
               @click="increaseQuantity"
-              class="w-7 h-7 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              class="w-6 h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
               aria-label="Increase quantity"
             >
               +
@@ -125,7 +125,7 @@ watch(
 
         <button
           @click="isInCart ? removeFromCart() : addToCart()"
-          class="mt-2 flex justify-center gap-3 w-full py-2 font-semibold rounded-lg text-xs sm:text-sm shadow-md transition focus:ring-2 focus:ring-accent focus:ring-offset-1"
+          class="flex justify-center gap-3 w-full py-2 font-semibold mb-1 rounded-lg text-xs sm:text-sm shadow-md transition focus:ring-2 focus:ring-accent focus:ring-offset-1"
           :class="[
             isInCart
               ? 'text-accent border-accent border-2 hover:bg-accent/10'
@@ -133,7 +133,7 @@ watch(
           ]"
         >
           <IconMdiCartOutline size="20" />
-          {{ isInCart ? "Remove" : "Add to Cart" }}
+          {{ isInCart ? "Remove from Cart" : "Add to Cart" }}
         </button>
       </div>
     </div>
