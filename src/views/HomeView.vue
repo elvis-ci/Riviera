@@ -1,115 +1,136 @@
 <template>
-  <!-- 🌸 Hero Section -->
+  <!-- Hero Section -->
   <section
-    class="relative h-[90vh] md:h-screen flex items-center justify-center text-center overflow-hidden bg-background"
+    class="relative flex flex-col md:flex-row items-center justify-between bg-background text-text overflow-hidden min-h-[90vh] lg:max-w-[1400px] lg:mx-auto"
+    :style="mobileBgStyle"
   >
-    <!-- Background Image -->
+    <!-- Overlay for better contrast (mobile only) -->
     <div
-      class="absolute inset-0 w-full h-full bg-cover bg-center transition-transform duration-[7000ms] ease-out scale-105 hover:scale-110"
-      style="background-image: url('https://images.unsplash.com/photo-1600180758890-6ecae4c3b4a9?auto=format&fit=crop&w=1920&q=80');"
+      class="absolute inset-0 md:hidden bg-gradient-to-t from-background/95 via-background/70 to-transparent z-0"
     ></div>
 
-    <!-- Gradient Overlay -->
+    <!-- Left: Text Content -->
     <div
-      class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-background/90"
-    ></div>
-
-    <!-- Floating Perfume Mockup -->
-    <img
-      src="https://images.unsplash.com/photo-1610078884516-5f94e3d1dbe7?auto=format&fit=crop&w=600&q=80"
-      alt="Perfume bottle mockup"
-      class="absolute bottom-16 right-10 hidden md:block w-56 drop-shadow-2xl opacity-90 hover:translate-y-[-10px] transition-transform duration-700 ease-out"
-    />
-
-    <!-- Hero Content -->
-    <div
-      class="relative z-10 max-w-4xl mx-auto px-6 text-white text-center animate-fadeInUp"
+      class="relative w-full md:w-1/2 px-6 sm:px-10 md:px-16 py-20 flex flex-col items-center md:items-start text-center md:text-left z-10 animate-fadeIn"
     >
-      <!-- Promo Badge -->
-      <p
-        class="inline-block bg-accent/20 text-accent font-semibold px-4 py-2 rounded-full text-sm uppercase tracking-wider mb-6 backdrop-blur-sm"
-      >
-        🎁 Free Shipping on Orders Over ₦50,000
-      </p>
-
       <h1
-        class="text-5xl md:text-7xl font-serif font-semibold leading-tight mb-6 tracking-tight drop-shadow-lg"
+        class="text-3xl sm:text-5xl md:text-6xl font-serif font-semibold text-heading leading-tight mb-4"
       >
-        Discover the <span class="text-accent">Essence</span> of Your Identity
+        Timeless <span class="text-accent">Elegance</span> in Every Scent
       </h1>
 
-      <p class="text-lg md:text-2xl text-white/90 mb-10 leading-relaxed max-w-2xl mx-auto">
-        Handcrafted fragrances that blend <span class="text-accent/90">art and emotion</span> —
-        because your scent should tell your story.
+      <p
+        class="text-base sm:text-lg md:text-xl text-text/80 max-w-md mx-auto md:mx-0 leading-relaxed mb-8"
+      >
+        Discover fragrances that capture your essence — crafted for those who value sophistication,
+        simplicity, and self-expression.
       </p>
 
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center md:justify-start">
         <RouterLink
           to="/products"
-          class="bg-accent hover:bg-accent-hover text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition-all transform hover:-translate-y-0.5 focus:ring-4 focus:ring-accent/50"
+          class="bg-accent hover:bg-accent-hover text-white font-semibold py-3 px-8 rounded-full sm:text-lg shadow-md transition-transform transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-accent/50 w-full sm:w-auto"
         >
           Shop Now
         </RouterLink>
+
         <RouterLink
           to="/about"
-          class="border border-white/70 hover:border-accent text-white/90 hover:text-accent py-3 px-8 rounded-full text-lg font-medium transition-all"
+          class="border border-border hover:bg-accent/30 hover:border-accent text-heading py-3 px-8 rounded-full text-base sm:text-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent/30 w-full sm:w-auto !important"
         >
-          Discover More
+          Learn More
         </RouterLink>
       </div>
     </div>
 
-    <!-- Decorative Bottom Curve -->
-    <svg
-      class="absolute bottom-0 left-0 w-full text-background"
-      viewBox="0 0 1440 320"
-      xmlns="http://www.w3.org/2000/svg"
+    <!-- Right: Hero Image -->
+    <div
+      class="hidden md:block relative w-full md:w-1/2 h-[60vh] lg:h-screen overflow-hidden rounded-none md:rounded-l-2xl z-10"
+      role="img"
+      aria-label="Luxury perfume bottle display"
     >
-      <path
-        fill="currentColor"
-        fill-opacity="1"
-        d="M0,224L60,224C120,224,240,224,360,186.7C480,149,600,75,720,58.7C840,43,960,85,1080,117.3C1200,149,1320,171,1380,181.3L1440,192V320H1380C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320H0Z"
-      ></path>
-    </svg>
+      <img
+        :src="heroImg"
+        alt="Luxury fragrance bottles on a marble table"
+        class="absolute w-fit h-full scale-120 object-cover object-center transform transition-transform duration-[2000ms] ease-out"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-l from-background/70 via-transparent to-background/30"
+      ></div>
+    </div>
+
+    <!-- Decorative Gradient Line -->
+    <div
+      class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-border to-transparent opacity-70 hidden md:block"
+      aria-hidden="true"
+    ></div>
   </section>
 
-  <!-- Featured Fragrances -->
+  <!-- 🌿 Featured Fragrances -->
   <Featured :featuredFragrances="featuredFragrances" :loading="fragranceStore.loading" />
 
-  <!-- Categories Section -->
+  <!-- 🪷 Categories -->
   <Categories :categories="categories" />
 
-  <!-- Newsletter -->
-  <section class="py-20 bg-surface px-6 text-center">
-    <div class="max-w-2xl mx-auto">
-      <h3 class="text-3xl font-heading mb-4 text-heading">Join Our Circle</h3>
-      <p class="text-text mb-8">
-        Be the first to experience new releases, special offers, and fragrance tips.
+  <!-- 💌 Newsletter -->
+  <section class="py-16 md:py-20 bg-surface text-center px-6">
+    <div class="max-w-2xl mx-auto space-y-6">
+      <h3 class="text-2xl sm:text-3xl md:text-4xl font-heading text-heading">
+        Join Our Inner Circle
+      </h3>
+      <p class="text-text/80 text-base sm:text-lg max-w-lg mx-auto">
+        Get early access to exclusive launches, private sales, and scent stories from our atelier.
       </p>
-      <form class="flex flex-col sm:flex-row gap-4 justify-center">
+
+      <form
+        class="flex flex-col sm:flex-row gap-4 justify-center items-center"
+        aria-label="Subscribe to our newsletter"
+      >
         <input
           type="email"
           placeholder="Enter your email"
-          class="w-full sm:w-80 p-3 rounded-lg border border-border bg-background text-text focus:ring-2 focus:ring-accent"
+          aria-label="Email address"
+          class="w-full sm:w-80 p-3 rounded-lg border border-border bg-background text-text focus:ring-2 focus:ring-accent focus:outline-none placeholder:text-text/50"
         />
-        <button class="btn-primary w-full sm:w-auto">Subscribe</button>
+        <button
+          type="submit"
+          class="bg-accent hover:bg-accent-hover text-white font-semibold py-3 px-8 rounded-lg transition-all focus:outline-none focus:ring-4 focus:ring-accent/50 w-full sm:w-auto"
+        >
+          Subscribe
+        </button>
       </form>
     </div>
   </section>
 </template>
 
 <script setup>
-import { onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import { RouterLink } from "vue-router";
 import { useFragranceStore } from "@/stores/useFragranceStore";
 import Categories from "@/components/Categories.vue";
 import Featured from "@/components/Featured.vue";
+import heroImg from "@/assets/img/chat.png";
 
 const fragranceStore = useFragranceStore();
-
-// ✅ Computed for reactivity
 const categories = computed(() => fragranceStore.categories);
 const featuredFragrances = computed(() => fragranceStore.featuredFragrances);
+
+const isMobile = ref(window.innerWidth < 768);
+const mobileBgStyle = computed(() =>
+  isMobile.value
+    ? {
+        backgroundImage: `url(${heroImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }
+    : {}
+);
+
+const handleResize = () => {
+  isMobile.value = window.innerWidth < 768;
+};
+window.addEventListener("resize", handleResize);
+onBeforeUnmount(() => window.removeEventListener("resize", handleResize));
 
 onMounted(async () => {
   const oneDay = 24 * 60 * 60 * 1000;
@@ -127,18 +148,31 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-@keyframes fadeInUp {
+@keyframes fadeIn {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(25px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
   }
 }
+.animate-fadeIn {
+  animation: fadeIn 1s ease-out forwards;
+}
 
-.animate-fadeInUp {
-  animation: fadeInUp 1s ease-out forwards;
+/* Small improvements for very narrow screens */
+@media (max-width: 380px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+  p {
+    font-size: 0.95rem;
+  }
+  .py-3 {
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+  }
 }
 </style>
