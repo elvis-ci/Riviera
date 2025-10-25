@@ -31,9 +31,6 @@ const breakpoints = {
     class="py-24 px-6 text-text bg-background relative overflow-hidden"
     aria-labelledby="fragrance-categories-heading"
   >
-    <div
-      class="absolute inset-0 bg-gradient-to-b from-secondary/10 via-transparent to-secondary/5 pointer-events-none"
-    ></div>
 
     <!-- Section Header -->
     <div class="max-w-7xl mx-auto relative z-10 text-center mb-16">
