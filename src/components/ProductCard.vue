@@ -61,7 +61,7 @@ watch(
 
     <!-- Content Section -->
     <div
-      class="relative z-10 bg-white rounded-t-2xl -mt-3 shadow-md p-3 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
+      class="relative z-10 bg-background rounded-t-2xl -mt-3 shadow-md p-3 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
     >
       <div>
         <div class="flex w-full justify-between items-center pb-1">
@@ -81,7 +81,7 @@ watch(
             </span>
           </div>
         </div>
-        <p class="text-xs sm:text-xs text-gray-600 line-clamp-2">
+        <p class="text-xs sm:text-xs text-text/70 line-clamp-2">
           {{ item.description || "A delightful fragrance that embodies elegance." }}
         </p>
       </div>
