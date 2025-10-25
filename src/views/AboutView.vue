@@ -6,7 +6,7 @@ import aboutImage from "@/assets/img/orchid haze.jpg";
 <template>
   <!-- Section 1: Brand Story -->
   <section
-    class="relative py-20 px-6 bg-surface text-white overflow-hidden"
+    class="relative pt-20 px-6 bg-background text-white overflow-hidden"
     aria-labelledby="about-heading"
   >
     <!-- 🌸 Background image for small screens -->
@@ -28,10 +28,10 @@ import aboutImage from "@/assets/img/orchid haze.jpg";
 
     <!-- Main content -->
     <div
-      class="relative max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center text-text md:text-inherit"
+      class="overflow-visible relative max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center text-text md:text-inherit"
     >
       <!-- Image (only visible on medium+ screens) -->
-      <div class="relative hidden md:block">
+      <div class="relative hidden md:block overflow-visible">
         <img
           src="@/assets/img/amber2.png"
           alt="Perfume bottles and flowers"
@@ -62,7 +62,7 @@ import aboutImage from "@/assets/img/orchid haze.jpg";
   </section>
 
   <!-- Section 2: Brand Values & Mission -->
-  <section class="py-20 px-6 bg-secondary/10">
+  <section class="py-20 px-6 bg-surface">
     <div class="max-w-6xl mx-auto text-center mb-12">
       <h2 class="text-3xl font-heading text-heading mb-4">Our Heart & Vision</h2>
       <p class="text-text/80 max-w-3xl mx-auto">
@@ -72,29 +72,29 @@ import aboutImage from "@/assets/img/orchid haze.jpg";
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto text-center">
-      <div class="p-6 bg-surface rounded-2xl shadow-md hover:shadow-lg transition">
+      <div class="p-6 bg-background rounded-2xl shadow-md hover:shadow-lg transition">
         <span class="text-3xl mb-3 block">✨</span>
-        <h3 class="font-semibold text-heading text-lg mb-2">Authenticity</h3>
+        <h3 class="font-semibold text-accent-hover text-lg mb-2">Authenticity</h3>
         <p class="text-text/80">Every scent is crafted to feel genuine, personal, and timeless.</p>
       </div>
 
-      <div class="p-6 bg-surface rounded-2xl shadow-md hover:shadow-lg transition">
+      <div class="p-6 bg-background rounded-2xl shadow-md hover:shadow-lg transition">
         <span class="text-3xl mb-3 block">🌿</span>
-        <h3 class="font-semibold text-heading text-lg mb-2">Sustainability</h3>
+        <h3 class="font-semibold text-accent-hover text-lg mb-2">Sustainability</h3>
         <p class="text-text/80">
           We prioritize ethical sourcing and eco-friendly production processes.
         </p>
       </div>
 
-      <div class="p-6 bg-surface rounded-2xl shadow-md hover:shadow-lg transition">
+      <div class="p-6 bg-background rounded-2xl shadow-md hover:shadow-lg transition">
         <span class="text-3xl mb-3 block">🤝</span>
-        <h3 class="font-semibold text-heading text-lg mb-2">Inclusivity</h3>
+        <h3 class="font-semibold text-accent-hover text-lg mb-2">Inclusivity</h3>
         <p class="text-text/80">Luxury should be accessible. We create fragrances for everyone.</p>
       </div>
 
-      <div class="p-6 bg-surface rounded-2xl shadow-md hover:shadow-lg transition">
+      <div class="p-6 bg-background rounded-2xl shadow-md hover:shadow-lg transition">
         <span class="text-3xl mb-3 block">🌍</span>
-        <h3 class="font-semibold text-heading text-lg mb-2">Legacy</h3>
+        <h3 class="font-semibold text-accent-hover text-lg mb-2">Legacy</h3>
         <p class="text-text/80">
           Our goal is to craft timeless fragrances that evoke memories for generations.
         </p>
@@ -157,15 +157,15 @@ import aboutImage from "@/assets/img/orchid haze.jpg";
   </section>
 
   <!-- Section 4: Call-to-Action -->
-  <section class="bg-accent text-white py-20 px-6 text-center">
+  <section class="bg-surface/10 text-text py-20 px-6 text-center">
     <h2 class="text-3xl font-heading mb-4">Redefine Confidence. Redefine You.</h2>
-    <p class="max-w-2xl mx-auto mb-8 text-white/90">
+    <p class="max-w-2xl mx-auto mb-8 text-text">
       Discover how a single fragrance can transform your presence, elevate your confidence, and
       leave a lasting impression wherever you go.
     </p>
     <a
       href="#products"
-      class="inline-flex items-center gap-2 bg-white text-accent px-6 py-3 rounded-lg font-semibold hover:bg-neutral/10 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/50 transition"
+      class="inline-flex items-center gap-2 bg-accent text-accent px-6 py-3 rounded-lg font-semibold hover:bg-neutral/10 focus:outline-none focus-visible:ring-4 focus-visible:ring-white/50 transition"
     >
       Explore Our Collection
       <span aria-hidden="true">→</span>
