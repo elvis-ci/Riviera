@@ -73,7 +73,7 @@
   <Categories :categories="categories" />
 
   <!-- 💌 Newsletter -->
-  <section class="py-16 md:py-20 bg-surface text-center px-6">
+  <section class="py-16 md:py-20 bg-secondary/10 text-center px-6">
     <div class="max-w-2xl mx-auto space-y-6">
       <h3 class="text-2xl sm:text-3xl md:text-4xl font-heading text-heading">
         Join Our Inner Circle

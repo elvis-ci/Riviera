@@ -91,11 +91,11 @@ const filteredFragrances = computed(() => {
 const currentPage = ref(1);
 const itemsPerPage = ref(12);
 
-const paginatedFragrances = computed (() => {
+const paginatedFragrances = computed(() => {
   const start = 0;
   const end = start + currentPage.value * itemsPerPage.value;
   return filteredFragrances.value.slice(start, end);
-})
+});
 
 watch(filteredFragrances, () => {
   currentPage.value = 1; // Reset to first page on filter change
@@ -107,9 +107,7 @@ watch(filteredFragrances, () => {
   <section class="py-12 bg-background text-text">
     <!-- Header -->
     <!-- Modern Hero / Intro Section -->
-    <section
-      class="relative overflow-hidden  py-20 sm:py-28"
-    >
+    <section class="relative overflow-hidden py-20 sm:py-28">
       <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
         <h1
           class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#2B1A10] dark:text-text mb-4"
@@ -121,7 +119,6 @@ watch(filteredFragrances, () => {
           Explore our curated collection of timeless fragrances — filter by category, mood, or price
           to discover a scent that’s uniquely yours.
         </p>
-
       </div>
     </section>
 
@@ -188,12 +185,13 @@ watch(filteredFragrances, () => {
 
         <!-- Dual range price filter (desktop) -->
         <div class="mb-6">
-          <p class="text-sm font-medium mb-2">Price (max: ${{ maxPrice }})</p>
+          <label for="range" class="text-sm font-medium mb-2">Price (max: ${{ maxPrice }})</label>
 
           <!-- Range Track -->
           <div class="relative w-full h-2 rounded-md" :style="rangeTrackStyle">
             <input
               type="range"
+              id="range"
               :min="0"
               :max="maxPrice"
               v-model.number="minPrice"
@@ -202,6 +200,7 @@ watch(filteredFragrances, () => {
               style="z-index: 3"
             />
             <input
+              id="range"
               type="range"
               :min="0"
               :max="maxPrice"
@@ -402,11 +401,14 @@ watch(filteredFragrances, () => {
         </div>
 
         <!-- Pagination Controls -->
-         <div class="w-full flex justify-center items-center mt-10">
-          <button @click="currentPage++" class=" bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition">
+        <div class="w-full flex justify-center items-center mt-10">
+          <button
+            @click="currentPage++"
+            class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition"
+          >
             Load More ...
           </button>
-         </div>
+        </div>
       </section>
     </div>
   </section>
