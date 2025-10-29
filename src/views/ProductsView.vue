@@ -1,17 +1,16 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useFragranceStore } from "@/stores/useFragranceStore";
 import { useCartStore } from "@/stores/useCartStore";
-import { useRoute } from "vue-router";
 import ProductCard from "@/components/ProductCard.vue";
 
 // --- Pinia stores ---
 const store = useFragranceStore();
 const cartStore = useCartStore();
-
 // --- Filters ---
 const searchQuery = ref("");
-const selectedCategory = ref(null);
+const selectedCategory = computed(() => route.query.category);
 const minPrice = ref(0);
 const maxPriceVal = ref(200000);
 const selectedPriceRange = ref([minPrice.value, maxPriceVal.value]);
@@ -101,6 +100,12 @@ watch(filteredFragrances, () => {
   currentPage.value = 1; // Reset to first page on filter change
   window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top on filter change
 });
+watch(
+  () => route.query.category,
+  (newCategory) => {
+    selectedCategory.value = newCategory || "";
+  }
+);
 </script>
 
 <template>
@@ -150,8 +155,7 @@ watch(filteredFragrances, () => {
             <span
               class="transform transition-transform duration-200"
               :class="{ 'rotate-180': showCategories }"
-            >
-              ▼
+              >▼
             </span>
           </button>
 
@@ -391,12 +395,12 @@ watch(filteredFragrances, () => {
           No fragrances match your filters.
         </div>
 
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           <ProductCard
             v-for="item in paginatedFragrances"
             :key="item.id"
             :item="item"
-            :cart-store="cartStore"
+            :cartStore="cartStore"
           />
         </div>
 
