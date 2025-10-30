@@ -100,12 +100,11 @@ const router = createRouter({
       path: "/admin",
       name: "admin",
       component: () => import("../views/AdminView.vue"),
-      meta: { title: "Riviera | Admin Dashboard", requiresAdmin: true },
       children: [
         {
-          path: "overview",
-          name: "admin-overview",
-          component: () => import("../views/admin/AdminOverview.vue"),
+          path: "dashboard",
+          name: "admin-dashboard",
+          component: () => import("../views/admin/AdminDashboard.vue"),
         },
         {
           path: "products",
@@ -127,10 +126,9 @@ const router = createRouter({
           name: "admin-settings",
           component: () => import("../views/admin/AdminSettings.vue"),
         },
-        { path: "", redirect: "products" },
+        { path: "", redirect: "/admin/dashboard" },
       ],
     },
-    
     // 404 Page
     {
       path: "/:pathMatch(.*)*",
