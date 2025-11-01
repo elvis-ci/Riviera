@@ -1,17 +1,16 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useFragranceStore } from "@/stores/useFragranceStore";
 import { useCartStore } from "@/stores/useCartStore";
-import { useRoute } from "vue-router";
 import ProductCard from "@/components/ProductCard.vue";
 
 // --- Pinia stores ---
 const store = useFragranceStore();
 const cartStore = useCartStore();
-
 // --- Filters ---
 const searchQuery = ref("");
-const selectedCategory = ref(null);
+const selectedCategory = computed(() => route.query.category);
 const minPrice = ref(0);
 const maxPriceVal = ref(200000);
 const selectedPriceRange = ref([minPrice.value, maxPriceVal.value]);
@@ -91,25 +90,29 @@ const filteredFragrances = computed(() => {
 const currentPage = ref(1);
 const itemsPerPage = ref(12);
 
-const paginatedFragrances = computed (() => {
+const paginatedFragrances = computed(() => {
   const start = 0;
   const end = start + currentPage.value * itemsPerPage.value;
   return filteredFragrances.value.slice(start, end);
-})
+});
 
 watch(filteredFragrances, () => {
   currentPage.value = 1; // Reset to first page on filter change
   window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top on filter change
 });
+watch(
+  () => route.query.category,
+  (newCategory) => {
+    selectedCategory.value = newCategory || "";
+  }
+);
 </script>
 
 <template>
   <section class="py-12 bg-background text-text">
     <!-- Header -->
     <!-- Modern Hero / Intro Section -->
-    <section
-      class="relative overflow-hidden  py-20 sm:py-28"
-    >
+    <section class="relative overflow-hidden py-20 sm:py-28">
       <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
         <h1
           class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-[#2B1A10] dark:text-text mb-4"
@@ -121,7 +124,6 @@ watch(filteredFragrances, () => {
           Explore our curated collection of timeless fragrances — filter by category, mood, or price
           to discover a scent that’s uniquely yours.
         </p>
-
       </div>
     </section>
 
@@ -153,8 +155,7 @@ watch(filteredFragrances, () => {
             <span
               class="transform transition-transform duration-200"
               :class="{ 'rotate-180': showCategories }"
-            >
-              ▼
+              >▼
             </span>
           </button>
 
@@ -188,12 +189,13 @@ watch(filteredFragrances, () => {
 
         <!-- Dual range price filter (desktop) -->
         <div class="mb-6">
-          <p class="text-sm font-medium mb-2">Price (max: ${{ maxPrice }})</p>
+          <label for="range" class="text-sm font-medium mb-2">Price (max: ${{ maxPrice }})</label>
 
           <!-- Range Track -->
           <div class="relative w-full h-2 rounded-md" :style="rangeTrackStyle">
             <input
               type="range"
+              id="range"
               :min="0"
               :max="maxPrice"
               v-model.number="minPrice"
@@ -202,6 +204,7 @@ watch(filteredFragrances, () => {
               style="z-index: 3"
             />
             <input
+              id="range"
               type="range"
               :min="0"
               :max="maxPrice"
@@ -392,21 +395,24 @@ watch(filteredFragrances, () => {
           No fragrances match your filters.
         </div>
 
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           <ProductCard
             v-for="item in paginatedFragrances"
             :key="item.id"
             :item="item"
-            :cart-store="cartStore"
+            :cartStore="cartStore"
           />
         </div>
 
         <!-- Pagination Controls -->
-         <div class="w-full flex justify-center items-center mt-10">
-          <button @click="currentPage++" class=" bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition">
+        <div class="w-full flex justify-center items-center mt-10">
+          <button
+            @click="currentPage++"
+            class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition"
+          >
             Load More ...
           </button>
-         </div>
+        </div>
       </section>
     </div>
   </section>

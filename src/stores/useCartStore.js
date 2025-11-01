@@ -1,6 +1,5 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { getFragrances } from "@/services/fragranceService.js";
 
 export const useCartStore = defineStore("cartStore", () => {
   // --- State ---

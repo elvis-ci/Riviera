@@ -65,19 +65,28 @@
         </RouterLink>
       </nav>
 
-      <!-- Right Icons -->
+      <!-- Right Icons (Cart + Profile + Theme) -->
       <div class="hidden lg:flex items-center gap-6 relative">
-        <!-- Cart -->
+        <!-- 🛒 Cart -->
         <RouterLink
           to="/cart"
-          class="text-text flex items-center gap-1 hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
+          class="text-text flex items-center gap-1 hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1 relative"
           aria-label="Shopping cart"
         >
           <IconMdiCartOutline class="scale-110" size="22" />
           <span class="hidden sm:inline">Cart</span>
+          <span
+            v-if="cartCount > 0"
+            :class="[
+              'absolute -top-1 -right-2 bg-accent text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold transform transition-transform duration-300',
+              animate ? 'bounce' : '',
+            ]"
+          >
+            {{ cartCount }}
+          </span>
         </RouterLink>
 
-        <!-- Profile Dropdown -->
+        <!-- 👤 Profile Dropdown -->
         <div class="relative group">
           <button
             class="text-text hover:text-accent transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-accent rounded-md px-2 py-1"
@@ -197,7 +206,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
+import { useCartStore } from "@/stores/useCartStore";
+import IconMdiWeatherSunny from "~icons/mdi/weather-sunny";
+import IconMdiWeatherNight from "~icons/mdi/weather-night";
+import IconMdiCartOutline from "~icons/mdi/cart-outline";
+import IconMdiAccountCircle from "~icons/mdi/account-circle";
+import IconMdiMenu from "~icons/mdi/menu";
+import IconMdiClose from "~icons/mdi/close";
+
+// Cart Store
+const cartStore = useCartStore();
+const cartCount = ref(cartStore.itemCount);
+const animate = ref(false);
+
+// Trigger bounce when cart count increases
+watch(
+  () => cartStore.itemCount,
+  (newVal, oldVal) => {
+    cartCount.value = newVal;
+    if ((newVal > oldVal) || (newVal < oldVal)) {
+      animate.value = true;
+      setTimeout(() => (animate.value = false), 400);
+    }
+  },
+  { immediate: true }
+);
 
 const isOpen = ref(false);
 const isDark = ref(false);
@@ -232,20 +266,12 @@ const toggleTheme = () => {
 
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);
-
   const saved = localStorage.getItem("theme");
   if (saved === "dark" || saved === "light") {
     applyTheme(saved === "dark");
   } else {
     applyTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
   }
-
-  const mq = window.matchMedia("(prefers-color-scheme: dark)");
-  mq.addEventListener?.("change", (e) => {
-    if (!localStorage.getItem("theme")) {
-      applyTheme(e.matches);
-    }
-  });
 });
 
 onUnmounted(() => {
@@ -269,10 +295,22 @@ function signOut() {
   transform: translateY(-10px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition: none !important;
-    animation: none !important;
+@keyframes bounce-scale {
+  0% {
+    transform: scale(1);
   }
+  40% {
+    transform: scale(1.5);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.bounce {
+  animation: bounce-scale 0.4s ease-in-out;
 }
 </style>

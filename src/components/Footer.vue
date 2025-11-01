@@ -45,7 +45,7 @@
     </div>
 
     <!-- Bottom Bar -->
-    <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-border text-center text-sm text-text/60">
+    <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-border text-center text-sm text-text/80">
       © {{ new Date().getFullYear() }} Perfume. All rights reserved.
     </div>
   </footer>

@@ -47,10 +47,10 @@ watch(
 
 <template>
   <article
-    class="bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 max-w-xs sm:max-w-sm mx-auto flex flex-col"
+    class="bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 max-w-lg sm:max-w-md mx-auto flex flex-col"
   >
     <!-- Image Section (shorter height now) -->
-    <div class="relative w-full overflow-hidden h-44 sm:h-52 md:h-40">
+    <div class="relative w-full overflow-hidden h-44 sm:h-52 md:h-50">
       <img
         :src="item.image_url"
         :alt="item.name"
@@ -61,7 +61,7 @@ watch(
 
     <!-- Content Section -->
     <div
-      class="relative z-10 bg-white rounded-t-2xl -mt-3 shadow-md p-3 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
+      class="relative z-10 bg-background rounded-t-2xl -mt-3 shadow-md p-3 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
     >
       <div>
         <div class="flex w-full justify-between items-center pb-1">
@@ -70,20 +70,18 @@ watch(
           </h2>
           <!-- Rating -->
           <div class="flex items-end gap-0.5">
-            <span
-              v-for="i in 5"
-              :key="i"
-              class="text-[13px] sm:text-sm"
-              :class="i <= item.rating ? 'text-yellow-400' : 'text-gray-300'"
-              aria-hidden="true"
-            >
-              ★
-            </span>
+            <p  class="flex items-center text-sm text-gray-500">
+              <span
+                class="text-[13px] sm:text-xl text-yellow-500"
+                :class="i <= item.rating ? 'text-yellow-400' : 'text-gray-300'"
+                aria-hidden="true"
+              >
+                ★
+              </span>
+              {{ item.rating.toFixed(1) }}
+            </p>
           </div>
         </div>
-        <p class="text-xs sm:text-xs text-gray-600 line-clamp-2">
-          {{ item.description || "A delightful fragrance that embodies elegance." }}
-        </p>
       </div>
 
       <!-- Price + Quantity + Button -->

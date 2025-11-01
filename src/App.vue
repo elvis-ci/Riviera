@@ -34,9 +34,7 @@ onUnmounted(() => {
 <template>
   <div class="relative">
     <NavBar />
-    <main>
-      <RouterView />
-    </main>
+    <RouterView />
     <Footer />
 
     <!-- Scroll To Top Button -->
