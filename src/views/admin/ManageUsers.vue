@@ -53,7 +53,7 @@ const sortBy = ref("None");
 const sortOrder = ref("asc");
 const isSorted = ref(false);
 const showFilters = ref(true);
-const showSummaries = ref(false);
+const showSummaries = ref(true);
 
 // Computed Stats
 const totalUsers = computed(() => users.value.length);

@@ -89,7 +89,7 @@ const summmaries = ref([
     icon: { iconName: IconMdiCloseCircle, iconClass: "text-red-600" },
   },
 ]);
-const showSummaries = ref(false);
+const showSummaries = ref(true);
 const uniqueDates = computed(() => {
   const dates = products.value.map((p) => p.dateCreated);
   return ["All", ...new Set(dates)];
