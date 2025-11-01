@@ -81,7 +81,7 @@ function getStatusColor(status) {
 </script>
 
 <template>
-  <section class="p-4 sm:p-6 lg:p-8 bg-background min-h-screen">
+  <section class="bg-background min-h-screen">
     <!-- Header -->
     <div class="mb-6">
       <h1 class="text-2xl font-bold text-heading mb-2">Manage Orders</h1>
@@ -91,14 +91,14 @@ function getStatusColor(status) {
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <div
-        class="bg-white border border-border rounded-xl shadow-sm p-4 flex flex-col justify-center"
+        class="bg-surface border border-border rounded-xl shadow-sm p-4 flex flex-col justify-center"
       >
         <h2 class="text-sm text-text/70 font-medium">Total Orders</h2>
         <p class="text-2xl font-bold text-heading mt-1">{{ totalOrders }}</p>
       </div>
 
       <div
-        class="bg-white border border-border rounded-xl shadow-sm p-4 flex flex-col justify-center"
+        class="bg-surface border border-border rounded-xl shadow-sm p-4 flex flex-col justify-center"
       >
         <h2 class="text-sm text-text/70 font-medium">Today's Orders</h2>
         <p class="text-2xl font-bold text-heading mt-1">{{ todayOrders }}</p>
@@ -107,7 +107,7 @@ function getStatusColor(status) {
 
     <!-- Filters -->
     <div
-      class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6 bg-white border border-border rounded-xl p-4 shadow-sm"
+      class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6 bg-surface border border-border rounded-xl p-4 shadow-sm"
     >
       <!-- Search -->
       <div class="w-full sm:w-72">
@@ -117,6 +117,7 @@ function getStatusColor(status) {
         <div class="relative">
           <input
             id="order-search"
+            name="order-search"
             v-model="searchQuery"
             type="text"
             placeholder="Search by customer name..."
@@ -135,6 +136,7 @@ function getStatusColor(status) {
         <label for="status" class="block text-sm font-medium text-text/80 mb-1">Status</label>
         <select
           id="status"
+          name="order-status"
           v-model="statusFilter"
           class="w-full sm:w-44 py-2 px-3 border border-border rounded-xl focus:ring-2 focus:ring-accent focus:outline-none bg-background text-text"
         >
@@ -172,7 +174,7 @@ function getStatusColor(status) {
     </div>
 
     <!-- Orders Table -->
-    <div class="overflow-x-auto bg-white border border-border rounded-2xl shadow-sm">
+    <div class="overflow-x-auto bg-surface/10 border border-border rounded-2xl shadow-sm">
       <table class="w-full text-left border-collapse">
         <thead class="bg-accent/10 text-text uppercase text-sm">
           <tr>
