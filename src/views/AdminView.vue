@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex bg-background text-text min-h-[92vh]">
+  <div class="box-border relative flex bg-background text-text min-h-[92vh]">
     <!-- Sidebar -->
     <aside
       :class="[
@@ -44,13 +44,17 @@
           class="flex font-bold items-center gap-3 w-full text-left py-2 hover:bg-accent-hover rounded-md transition focus:ring-2 focus:ring-white/70"
         >
           <IconMdiLogout class="text-lg shrink-0" />
-          <span v-if="isSidebarOpen" class="whitespace-nowrap ">Logout</span>
+          <span v-if="isSidebarOpen" class="whitespace-nowrap">Logout</span>
         </button>
       </div>
     </aside>
 
     <!-- Main Content -->
-    <RouterView />
+    <main class="w-full max-w-[1400px] px-6 py-10 transition-all duration-300">
+      <div class=" ">
+        <RouterView />
+      </div>
+    </main>
   </div>
 </template>
 
@@ -70,13 +74,14 @@ const links = [
   { name: "Dashboard", path: "/admin/dashboard", icon: IconMdiViewDashboard },
   { name: "Manage Orders", path: "/admin/orders", icon: IconMdiCart },
   { name: "Manage Products", path: "/admin/products", icon: IconMdiPackageVariant },
-  { name: "Users", path: "/admin/users", icon: IconMdiAccountGroup },
+  { name: "Manage Users", path: "/admin/users", icon: IconMdiAccountGroup },
   { name: "Settings", path: "/admin/settings", icon: IconMdiCog },
 ];
 </script>
 
 <style scoped>
-a:hover, a:focus {
+a:hover,
+a:focus {
   color: var(--text-text);
 }
 
