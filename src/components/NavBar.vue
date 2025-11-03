@@ -239,7 +239,7 @@ const isScrolled = ref(false);
 const isSignedIn = ref(true);
 
 const navigation = [
-  { id: 1, title: "Home", link: "/" },
+  { id: 1, title: "Home", link: "/home" },
   { id: 2, title: "Shop", link: "/products" },
   { id: 3, title: "About Us", link: "/about" },
   { id: 4, title: "Contact", link: "/contact" },

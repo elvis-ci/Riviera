@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     // Home
     {
-      path: "/",
+      path: "/home",
       name: "home",
       component: HomeView,
       meta: { title: "Riviera | Home" },
