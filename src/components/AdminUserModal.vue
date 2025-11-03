@@ -1,7 +1,32 @@
+<script setup>
+import { computed } from "vue";
+
+const props = defineProps({
+  isModalOpen: { 
+    type: Boolean, 
+    required: true 
+  },
+  user: {
+    type: Object,
+    required: true,
+  },
+});
+
+const emit = defineEmits(["close", "cancel-order", "toggle-restriction", "change-role"]);
+
+const closeModal = () => emit("close");
+const cancelOrder = (id) => emit("cancel-order", id);
+const toggleRestriction = () => emit("toggle-restriction");
+const changeRole = (role) => emit("change-role", role);
+
+const ongoingOrders = computed(() => props.user.orders.filter((o) => o.status === "Ongoing"));
+const previousOrders = computed(() => props.user.orders.filter((o) => o.status !== "Ongoing"));
+</script>
+
 <template>
   <!-- Backdrop -->
   <div
-    v-if="isOpen"
+    v-if="isModalOpen"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
     @click.self="closeModal"
   >
@@ -30,11 +55,14 @@
             <p><span class="font-semibold">Name:</span> {{ user.name }}</p>
             <p><span class="font-semibold">Email:</span> {{ user.email }}</p>
             <p><span class="font-semibold">Role:</span> {{ user.role }}</p>
-            <p><span class="font-semibold">Status:</span>
+            <p>
+              <span class="font-semibold">Status:</span>
               <span
-                :class="user.isRestricted ? 'text-red-500 font-medium' : 'text-green-500 font-medium'"
+                :class="
+                  user.isRestricted ? 'text-red-500 font-medium' : 'text-green-500 font-medium'
+                "
               >
-                {{ user.isRestricted ? 'Restricted' : 'Active' }}
+                {{ user.isRestricted ? "Restricted" : "Active" }}
               </span>
             </p>
             <p><span class="font-semibold">Joined:</span> {{ user.joinedDate }}</p>
@@ -104,7 +132,7 @@
               class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition"
               @click="toggleRestriction"
             >
-              {{ user.isRestricted ? 'Unrestrict User' : 'Restrict User' }}
+              {{ user.isRestricted ? "Unrestrict User" : "Restrict User" }}
             </button>
 
             <button
@@ -137,39 +165,16 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from "vue";
-
-const props = defineProps({
-  isOpen: Boolean,
-  user: {
-    type: Object,
-    default: () => ({
-      name: "",
-      email: "",
-      role: "",
-      joinedDate: "",
-      isRestricted: false,
-      orders: [],
-    }),
-  },
-});
-
-const emit = defineEmits(["close", "cancel-order", "toggle-restriction", "change-role"]);
-
-const closeModal = () => emit("close");
-const cancelOrder = (id) => emit("cancel-order", id);
-const toggleRestriction = () => emit("toggle-restriction");
-const changeRole = (role) => emit("change-role", role);
-
-const ongoingOrders = computed(() => props.user.orders.filter(o => o.status === "Ongoing"));
-const previousOrders = computed(() => props.user.orders.filter(o => o.status !== "Ongoing"));
-</script>
-
 <style scoped>
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-in-out;
