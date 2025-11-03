@@ -9,7 +9,7 @@ import IconMdiAccountOff from "~icons/mdi/account-off";
 import IconMdiAccountCancel from "~icons/mdi/account-cancel";
 import IconMdiSortAscending from "~icons/mdi/sort-ascending";
 import IconMdiSortDescending from "~icons/mdi/sort-descending";
-
+import AdminUserModal from "@/components/AdminUserModal.vue";
 const users = ref([
   {
     id: "#U1001",
@@ -17,7 +17,13 @@ const users = ref([
     email: "john@example.com",
     role: "Customer",
     status: "Active",
-    dateJoined: "2025-10-25",
+    joinedDate: "2025-10-25",
+    isRestricted: false,
+    orders: [
+      { id: 301, total: 120.5, date: "2025-10-28", status: "Ongoing" },
+      { id: 285, total: 80.0, date: "2025-10-10", status: "Completed" },
+      { id: 270, total: 45.9, date: "2025-09-22", status: "Completed" },
+    ],
   },
   {
     id: "#U1002",
@@ -25,7 +31,12 @@ const users = ref([
     email: "jane@example.com",
     role: "Admin",
     status: "Active",
-    dateJoined: "2025-10-20",
+    joinedDate: "2025-10-20",
+    isRestricted: false,
+    orders: [
+      { id: 310, total: 150.0, date: "2025-10-24", status: "Completed" },
+      { id: 299, total: 200.75, date: "2025-10-14", status: "Completed" },
+    ],
   },
   {
     id: "#U1003",
@@ -33,7 +44,12 @@ const users = ref([
     email: "michael@example.com",
     role: "Customer",
     status: "Inactive",
-    dateJoined: "2025-10-15",
+    joinedDate: "2025-10-15",
+    isRestricted: true,
+    orders: [
+      { id: 275, total: 60.0, date: "2025-09-30", status: "Cancelled" },
+      { id: 260, total: 99.99, date: "2025-09-18", status: "Completed" },
+    ],
   },
   {
     id: "#U1004",
@@ -41,10 +57,29 @@ const users = ref([
     email: "sarah@example.com",
     role: "Customer",
     status: "Banned",
-    dateJoined: "2025-09-30",
+    joinedDate: "2025-09-30",
+    isRestricted: true,
+    orders: [
+      { id: 240, total: 180.0, date: "2025-09-22", status: "Cancelled" },
+      { id: 210, total: 210.5, date: "2025-08-15", status: "Completed" },
+    ],
+  },
+  {
+    id: "#U1005",
+    name: "David Kim",
+    email: "david@example.com",
+    role: "Customer",
+    status: "Active",
+    joinedDate: "2025-10-12",
+    isRestricted: false,
+    orders: [
+      { id: 320, total: 55.0, date: "2025-10-29", status: "Ongoing" },
+      { id: 300, total: 70.75, date: "2025-10-05", status: "Completed" },
+    ],
   },
 ]);
 
+const isModalOpen = ref(false);
 const searchQuery = ref("");
 const selectedRole = ref("All");
 const selectedStatus = ref("All");
@@ -53,26 +88,42 @@ const sortBy = ref("None");
 const sortOrder = ref("asc");
 const isSorted = ref(false);
 const showFilters = ref(true);
-const showSummaries = ref(false);
+const showSummaries = ref(true);
 
 // Computed Stats
 const totalUsers = computed(() => users.value.length);
-const activeUsers = computed(() => users.value.filter(u => u.status === "Active").length);
-const inactiveUsers = computed(() => users.value.filter(u => u.status === "Inactive").length);
-const bannedUsers = computed(() => users.value.filter(u => u.status === "Banned").length);
+const activeUsers = computed(() => users.value.filter((u) => u.status === "Active").length);
+const inactiveUsers = computed(() => users.value.filter((u) => u.status === "Inactive").length);
+const bannedUsers = computed(() => users.value.filter((u) => u.status === "Banned").length);
 
 const summaries = ref([
-  { label: "Total Users", value: totalUsers.value, icon: { iconName: IconMdiAccountGroup, iconClass: "text-accent" }},
-  { label: "Active", value: activeUsers.value, icon: { iconName: IconMdiAccountCheck, iconClass: "text-green-600" }},
-  { label: "Inactive", value: inactiveUsers.value, icon: { iconName: IconMdiAccountOff, iconClass: "text-yellow-600" }},
-  { label: "Banned", value: bannedUsers.value, icon: { iconName: IconMdiAccountCancel, iconClass: "text-red-600" }},
+  {
+    label: "Total Users",
+    value: totalUsers.value,
+    icon: { iconName: IconMdiAccountGroup, iconClass: "text-accent" },
+  },
+  {
+    label: "Active",
+    value: activeUsers.value,
+    icon: { iconName: IconMdiAccountCheck, iconClass: "text-green-600" },
+  },
+  {
+    label: "Inactive",
+    value: inactiveUsers.value,
+    icon: { iconName: IconMdiAccountOff, iconClass: "text-yellow-600" },
+  },
+  {
+    label: "Banned",
+    value: bannedUsers.value,
+    icon: { iconName: IconMdiAccountCancel, iconClass: "text-red-600" },
+  },
 ]);
 
 // Filtered and Sorted Users
-const uniqueDates = computed(() => ["All", ...new Set(users.value.map(u => u.dateJoined))]);
+const uniqueDates = computed(() => ["All", ...new Set(users.value.map((u) => u.dateJoined))]);
 
 const filteredUsers = computed(() => {
-  let result = users.value.filter(user => {
+  let result = users.value.filter((user) => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.value.toLowerCase());
     const matchesRole = selectedRole.value === "All" || user.role === selectedRole.value;
     const matchesStatus = selectedStatus.value === "All" || user.status === selectedStatus.value;
@@ -85,9 +136,15 @@ const filteredUsers = computed(() => {
     result.sort((a, b) => {
       let comparison = 0;
       switch (sortBy.value) {
-        case "Name": comparison = a.name.localeCompare(b.name); break;
-        case "Role": comparison = a.role.localeCompare(b.role); break;
-        case "Date Joined": comparison = new Date(a.dateJoined) - new Date(b.dateJoined); break;
+        case "Name":
+          comparison = a.name.localeCompare(b.name);
+          break;
+        case "Role":
+          comparison = a.role.localeCompare(b.role);
+          break;
+        case "Date Joined":
+          comparison = new Date(a.dateJoined) - new Date(b.dateJoined);
+          break;
       }
       return sortOrder.value === "asc" ? comparison : -comparison;
     });
@@ -115,7 +172,9 @@ function getStatusColor(status) {
       return "text-red-800 bg-red-100";
   }
 }
-
+function toggleModal() {
+  isModalOpen.value = !isModalOpen.value;
+}
 </script>
 
 <template>
@@ -139,7 +198,9 @@ function getStatusColor(status) {
 
       <div v-if="showSummaries" class="grid grid-cols-1 sm:grid-cols-4 gap-4 my-4">
         <div v-for="summary in summaries" :key="summary.label">
-          <div class="flex items-center gap-3 p-4 rounded-2xl border border-border bg-surface/70 shadow-sm">
+          <div
+            class="flex items-center gap-3 p-4 rounded-2xl border border-border bg-surface/70 shadow-sm"
+          >
             <component
               :is="summary.icon.iconName"
               :class="[summary.icon.iconClass, 'text-3xl']"
@@ -170,7 +231,10 @@ function getStatusColor(status) {
             class="pl-10 pr-4 py-2 rounded-xl border border-border focus:ring-2 focus:ring-accent focus:outline-none bg-background text-text placeholder:text-text/60"
           />
           <IconMdiMagnify class="absolute left-3 top-2.5 text-text/70" size="20" />
-          <button @click="toggleFilters" class="ml-2 bg-accent text-white p-3 rounded-xl text-xs sm:text-sm absolute right-1 top-1">
+          <button
+            @click="toggleFilters"
+            class="ml-2 bg-accent text-white p-3 rounded-xl text-xs sm:text-sm absolute right-1 top-1"
+          >
             {{ showFilters ? "Hide Filters" : "Show Filters" }}
           </button>
         </div>
@@ -308,16 +372,23 @@ function getStatusColor(status) {
               </span>
             </td>
             <td class="py-3 px-4 text-sm text-center text-text/80">
-              {{ user.dateJoined }}
+              {{ user.joinedDate }}
             </td>
             <td class="py-3 px-4 text-right">
               <button
+                @click="openModal"
                 class="flex items-center text-accent hover:text-accent-hover font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded-lg px-2"
               >
                 <IconMdiDotsVertical size="18" />
                 Manage User
               </button>
             </td>
+            <AdminUserModal
+              v-if="isModalOpen"
+              @close="toggleModal"
+              :user="user"
+              :isModalOpen="isModalOpen"
+            />
           </tr>
         </tbody>
       </table>

@@ -9,13 +9,13 @@ import aboutImage from "@/assets/img/orchid haze.jpg";
     class="relative pt-20 px-6 bg-background text-white overflow-hidden"
     aria-labelledby="about-heading"
   >
-    <!-- 🌸 Background image for small screens -->
+    <!--Background image for small screens -->
     <div
       class="absolute inset-0 bg-cover bg-top md:hidden"
       :style="{ backgroundImage: `url(${aboutHero})` }"
     ></div>
 
-    <!-- 🌒 Overlay for contrast -->
+    <!--Overlay for contrast -->
     <div
       class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/50 md:hidden"
     ></div>
@@ -104,13 +104,13 @@ import aboutImage from "@/assets/img/orchid haze.jpg";
 
   <!-- Section 3: Custom Experience -->
   <section class="relative py-20 px-6 bg-surface overflow-hidden" aria-labelledby="about-heading">
-    <!-- 🌸 Background image for small screens -->
+    <!--Background image for small screens -->
     <div
       class="absolute inset-0 bg-cover bg-center md:hidden"
       :style="{ backgroundImage: `url(${aboutImage})` }"
     ></div>
 
-    <!-- 🌒 Overlay for contrast -->
+    <!--Overlay for contrast -->
     <div
       class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/50 md:hidden"
     ></div>
