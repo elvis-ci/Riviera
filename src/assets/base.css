@@ -61,7 +61,7 @@
 :root[data-theme="dark"] {
   --color-primary: rgb(15, 11, 11);
   --color-secondary: rgb(142, 77, 98);
-  --color-accent: rgb(243, 198, 102);
+  --color-accent:  rgb(160, 102, 26);
   --color-accent-hover: rgb(255, 210, 120);
   --color-neutral: rgb(248, 245, 242);
   --color-muted: rgb(36, 28, 30);
@@ -130,7 +130,7 @@ a:hover,
 .router-link:hover,
 a:focus,
 .router-link:focus {
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
 }
 
 /* Focus Ring — visible in both modes */
@@ -141,7 +141,7 @@ button:focus-visible {
 
 /* Active Nav Links */
 .router-link-active {
-  color: var(--color-accent);
+  color: var(--color-accent-hover);
   font-weight: 600;
   text-underline-offset: 4px;
 }

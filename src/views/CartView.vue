@@ -1,31 +1,40 @@
 <template>
-  <section class="py-12 px-6 bg-surface text-text min-h-screen" aria-labelledby="cart-heading">
+  <section
+    class="py-16 px-6 md:px-10 bg-surface text-text min-h-screen flex flex-col items-center"
+    aria-labelledby="cart-heading"
+  >
     <!-- Header -->
-    <header class="max-w-7xl mx-auto mb-10 text-center">
-      <h1 id="cart-heading" class="text-4xl font-heading text-heading mb-2">Your Cart</h1>
-      <p class="text-text/90">Review your selected fragrances before checkout.</p>
-    </header>
+    <div class="max-w-5xl w-full text-center mb-12">
+      <h1 id="cart-heading" class="text-5xl font-heading text-heading mb-3">Your Cart</h1>
+      <p class="text-text/80 text-base md:text-lg">
+        Review your selected fragrances before completing your purchase.
+      </p>
+    </div>
 
+    <!-- Cart Grid -->
     <div
-      class="max-w-7xl mx-auto grid lg:grid-cols-[2fr_1fr] gap-10"
+      class="max-w-6xl w-full grid lg:grid-cols-[2fr_1fr] gap-10"
       role="region"
       aria-label="Shopping cart content"
     >
-      <!-- Cart Items -->
-      <section class="space-y-6" aria-label="Cart items">
+      <!-- 🛍 Cart Items -->
+      <section
+        class="space-y-6 bg-background/40 backdrop-blur-md border border-border rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300"
+        aria-label="Cart items"
+      >
         <article
           v-for="(item, index) in cartItems"
           :key="item.id || index"
-          class="flex items-center gap-6 bg-background border border-border rounded-2xl shadow-sm p-5 hover:shadow-lg transition-all duration-300 group"
+          class="flex flex-col sm:flex-row sm:items-center gap-6 bg-background border border-border/60 rounded-2xl shadow-sm p-5 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
           role="group"
           :aria-labelledby="`item-${index}-name`"
         >
           <!-- Product Image -->
-          <div class="relative shrink-0">
+          <div class="relative shrink-0 self-center sm:self-start">
             <img
               :src="item.image_url"
               :alt="`Image of ${item.name}`"
-              class="w-28 h-28 rounded-xl object-cover group-hover:scale-105 transition-transform duration-300 self-start"
+              class="w-28 h-28 rounded-xl object-cover group-hover:scale-105 transition-transform duration-300 shadow-md"
               loading="lazy"
             />
           </div>
@@ -33,11 +42,14 @@
           <!-- Item Info -->
           <div class="flex flex-col justify-between flex-1 min-w-0">
             <div>
-              <h2 :id="`item-${index}-name`" class="text-lg font-semibold text-heading truncate">
+              <h2
+                :id="`item-${index}-name`"
+                class="text-lg font-semibold text-heading truncate tracking-wide"
+              >
                 {{ item.name }}
               </h2>
               <p
-                class="text-sm text-text/70 line-clamp-2"
+                class="text-sm text-text/70 mt-1 line-clamp-2"
                 :aria-label="`Description: ${item.short}`"
               >
                 {{ item.description }}
@@ -45,28 +57,21 @@
             </div>
 
             <!-- Price + Quantity -->
-            <div class="mt-3 flex items-center justify-between flex-wrap gap-3">
+            <div class="mt-4 flex items-center justify-between flex-wrap gap-4">
               <div class="flex items-baseline gap-2">
-                <span
-                  v-if="item.price > item.currentPrice"
-                  class="text-gray-400 line-through text-sm"
-                >
-                  ${{ item.price }}
-                </span>
-                <span class="text-xl font-bold text-accent">
-                  ${{ item.currentPrice.toFixed(2) }}
-                </span>
+                <span class="text-2xl font-bold text-accent">${{ item.currentPrice }}</span>
               </div>
 
+              <!-- Quantity + Remove -->
               <div
-                class="flex flex-wrap items-center gap-2 sm:gap-4 sm:flex-nowrap justify-end"
+                class="flex flex-wrap items-center gap-3 sm:gap-4 sm:flex-nowrap justify-end"
                 role="group"
                 :aria-label="`Quantity controls for ${item.name}`"
               >
                 <div class="flex items-center gap-2">
                   <button
-                    @click="updateQuantity(item.id, item.quantity - 1)"
-                    class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent"
+                    @click="decreaseQuantity(item)"
+                    class="w-9 h-9 flex items-center justify-center border border-border rounded-lg hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent transition"
                     aria-label="Decrease quantity"
                   >
                     −
@@ -75,8 +80,8 @@
                     {{ item.quantity }}
                   </span>
                   <button
-                    @click="updateQuantity(item.id, item.quantity + 1)"
-                    class="w-8 h-8 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent"
+                    @click="increaseQuantity(item)"
+                    class="w-9 h-9 flex items-center justify-center border border-border rounded-lg hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent transition"
                     aria-label="Increase quantity"
                   >
                     +
@@ -85,7 +90,7 @@
 
                 <button
                   @click="removeFromCart(item.id)"
-                  class="text-sm text-red-600 hover:text-red-700 font-medium sm:ml-4"
+                  class="text-sm font-medium px-3 py-1.5 rounded-lg border border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700 transition"
                 >
                   Remove
                 </button>
@@ -94,18 +99,22 @@
           </div>
         </article>
 
-        <!-- Empty State -->
-        <div v-if="cartItems.length === 0" class="text-center py-20 text-text/70" role="status">
-          Your cart is empty. Go explore our fragrances!
+        <!-- 🕊 Empty State -->
+        <div
+          v-if="cartItems.length === 0"
+          class="text-center py-24 text-text/70 italic"
+          role="status"
+        >
+          Your cart is empty — go explore our fragrances!
         </div>
       </section>
 
-      <!-- Summary Section -->
+      <!-- 💰 Summary -->
       <aside
-        class="bg-background border border-border rounded-2xl p-6 shadow-md h-fit sticky top-10"
+        class="bg-background border border-border rounded-3xl p-6 shadow-md h-fit sticky top-24 space-y-5"
         aria-label="Order summary"
       >
-        <h2 class="text-2xl font-semibold text-heading mb-4">Order Summary</h2>
+        <h2 class="text-2xl font-semibold text-heading mb-2">Order Summary</h2>
 
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
@@ -114,9 +123,9 @@
           </div>
           <div class="flex justify-between">
             <span>Discount</span>
-            <span class="font-medium text-green-700" aria-label="Applied discount">
-              -${{ cartStore.generalDiscount.toFixed(2) }}
-            </span>
+            <span class="font-medium text-green-700"
+              >${{ cartStore.generalDiscount.toFixed(2) }}</span
+            >
           </div>
           <div
             class="flex justify-between border-t border-border pt-3 text-base font-semibold text-heading"
@@ -126,13 +135,20 @@
           </div>
         </div>
 
-        <button
-          @click="checkout"
-          class="mt-6 w-full bg-accent text-white font-medium py-3 rounded-lg shadow-md hover:bg-accent/90 transition-colors focus-visible:ring-2 focus-visible:ring-accent"
-          aria-label="Proceed to checkout"
-        >
-          Proceed to Checkout
-        </button>
+        <div class="flex flex-col sm:flex-row sm:justify-between gap-3 mt-6">
+          <button
+            @click="clearCart"
+            class="w-full sm:w-1/2 px-6 py-2 border-2 border-accent-hover text-accent-hover font-medium rounded-lg hover:bg-accent/10 transition"
+          >
+            Clear Cart
+          </button>
+          <button
+            @click="checkout"
+            class="w-full sm:w-1/2 px-6 py-2 bg-accent text-white font-medium rounded-lg shadow-md hover:bg-accent/90 transition"
+          >
+            Checkout
+          </button>
+        </div>
       </aside>
     </div>
   </section>
@@ -150,17 +166,30 @@ const subtotal = computed(() =>
 );
 const total = computed(() => cartStore.cartTotal);
 
-function updateQuantity(item, newQty) {
-  if (newQty < 1) return;
-  cartStore.updateQuantity(item.id, newQty);
+function increaseQuantity(item) {
+  cartStore.updateQuantity(item.id, item.quantity + 1);
 }
 
-function removeFromCart(item) {
-  cartStore.removeFromCart(item);
+function decreaseQuantity(item) {
+  if (item.quantity > 1) {
+    cartStore.updateQuantity(item.id, item.quantity - 1);
+  }
+}
+
+function removeFromCart(id) {
+  cartStore.removeFromCart(id);
+}
+
+function clearCart() {
+  cartStore.clearCart();
 }
 
 function checkout() {
   alert("Checkout coming soon!");
+}
+
+function click() {
+  classList.toggle("active");
 }
 </script>
 
@@ -171,4 +200,9 @@ function checkout() {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+button {
+  transition: all 0.25s ease;
+}
+
 </style>

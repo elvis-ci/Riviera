@@ -1,11 +1,11 @@
 <template>
-  <footer class="bg-background text-text border-t border-border py-12 px-6">
+  <footer class="bg-surface text-text border-t border-border py-12 px-6">
     <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
       <!-- Brand Section -->
       <div class="space-y-4">
         <RouterLink to="/" class="flex items-center gap-2" aria-label="Go to homepage">
-          <img src="@/assets/logo.svg" alt="Perfume Brand Logo" class="h-10 w-auto" />
-          <span class="font-semibold text-lg">Perfume</span>
+          <img src="@/assets/logo.png" alt="Perfume Brand Logo" class="h-10 w-auto" />
+          <span class="font-semibold text-lg font-sans">Riviera</span>
         </RouterLink>
 
         <p class="text-sm text-text/70 leading-relaxed">
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Bottom Bar -->
-    <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-border text-center text-sm text-text/60">
+    <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-border text-center text-sm text-text/80">
       © {{ new Date().getFullYear() }} Perfume. All rights reserved.
     </div>
   </footer>

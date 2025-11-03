@@ -24,13 +24,11 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
       const isFeaturedValid =
         featuredFragrances.value.length && Date.now() - lastFeaturedUpdate.value < oneDay;
 
-      // ✅ If both categories and featured are fresh, skip fetch
+      // If both categories and featured are fresh, skip fetch
       if (!force && isCacheValid && isFeaturedValid && fragrances.value.length) {
-        console.log("✅ Using cached data — no fetch needed");
         return;
       }
 
-      console.log("🌐 Fetching fragrances from backend...");
       const { data, error: fetchError } = await getFragrances();
       if (fetchError) throw fetchError;
       // Normalize fragrance data
@@ -41,10 +39,8 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
         discount: Number(f.discount) || 0,
         category: f.category || "Uncategorized",
         rating: Number(f.rating) || 0,
-        currentPrice: Number(f.currentPrice)
+        currentPrice: Number(f.currentPrice),
       }));
-
-      console.log("🌸 Fetched fragrances", fragrances.value);
 
       // ✅ Recompute categories
       const uniqueCategories = [...new Set(fragrances.value.map((f) => f.category))];
@@ -56,7 +52,7 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
           id: createCategoryId(cat),
           name: cat,
           description: getCategoryDescription(cat),
-          image: catFragrances[0]?.image_url || "", // Assuming image_url field
+          image: catFragrances[0]?.image_url || "",
           count: catFragrances.length,
           priceRange: {
             min: Math.min(...prices),
@@ -71,19 +67,15 @@ export const useFragranceStore = defineStore("fragranceStore", () => {
         localStorage.setItem("featuredFragrances", JSON.stringify(featuredFragrances.value));
         lastFeaturedUpdate.value = Date.now();
         localStorage.setItem("lastFeaturedUpdate", String(lastFeaturedUpdate.value));
-        console.log("🌟 Featured fragrances updated", featuredFragrances.value);
       } else {
-        console.log("🌟 Using cached featured fragrances", featuredFragrances.value);
+        return;
       }
 
       // ✅ Persist categories and fetch time
       localStorage.setItem("categories", JSON.stringify(categories.value));
       lastFetch.value = Date.now();
       localStorage.setItem("lastFetch", String(lastFetch.value));
-
-      console.log("✅ Categories updated and cached");
     } catch (err) {
-      console.error("❌ Error fetching fragrances:", err);
       error.value = err.message || "Failed to fetch fragrances";
       fragrances.value = [];
     } finally {
