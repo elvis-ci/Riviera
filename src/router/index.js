@@ -121,11 +121,6 @@ const router = createRouter({
           name: "admin-users",
           component: () => import("../views/admin/ManageUsers.vue"),
         },
-        {
-          path: "settings",
-          name: "admin-settings",
-          component: () => import("../views/admin/AdminSettings.vue"),
-        },
         { path: "", redirect: "/admin/dashboard" },
       ],
     },

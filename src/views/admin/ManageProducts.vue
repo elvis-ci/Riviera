@@ -9,6 +9,7 @@ import IconMdiPlus from "~icons/mdi/plus";
 import IconMdiSortAscending from "~icons/mdi/sort-ascending";
 import IconMdiSortDescending from "~icons/mdi/sort-descending";
 import IconMdiCloseCircle from "~icons/mdi/close-circle";
+import AdminProductModal from "@/components/AdminProductModal.vue"
 
 const products = ref([
   {
@@ -89,7 +90,7 @@ const summmaries = ref([
     icon: { iconName: IconMdiCloseCircle, iconClass: "text-red-600" },
   },
 ]);
-const showSummaries = ref(false);
+const showSummaries = ref(true);
 const uniqueDates = computed(() => {
   const dates = products.value.map((p) => p.dateCreated);
   return ["All", ...new Set(dates)];
@@ -136,6 +137,12 @@ const filteredProducts = computed(() => {
 
   return result;
 });
+const isModalOpen = ref(false);
+
+function toggleModal() {
+  isModalOpen.value = !isModalOpen.value;
+}
+
 function toggleFilters() {
   showFilters.value = !showFilters.value;
 }
@@ -229,8 +236,11 @@ function addProduct() {
             size="20"
             aria-hidden="true"
           />
-          <button @click="toggleFilters" class="ml-2 bg-accent text-white p-3 rounded-xl text-xs sm:text-sm">
-            {{showFilters ? 'Hide Filters' : 'Show Filters'}}
+          <button
+            @click="toggleFilters"
+            class="ml-2 bg-accent text-white p-3 rounded-xl text-xs sm:text-sm"
+          >
+            {{ showFilters ? "Hide Filters" : "Show Filters" }}
           </button>
         </div>
       </div>
@@ -342,7 +352,7 @@ function addProduct() {
 
     <!-- Products Table -->
     <div class="overflow-x-scroll box-content border border-border rounded-2xl shadow-sm">
-      <table class="w-full text-left border-collapse ">
+      <table class="w-full text-left border-collapse">
         <thead class="bg-surface text-xs text-text uppercase sm:text-sm">
           <tr>
             <th class="py-3 px-4 font-semibold">ID</th>
@@ -367,7 +377,7 @@ function addProduct() {
             </td>
             <td class="py-3 px-4 text-sm text-text">{{ product.name }}</td>
             <td class="py-3 px-4 text-sm text-text/80">{{ product.category }}</td>
-            <td class="py-3 px-4 text-sm  text-text/90">
+            <td class="py-3 px-4 text-sm text-text/90">
               {{ product.price.toFixed(2) }}
             </td>
             <td class="py-3 px-4 text-sm text-center text-text/80">
@@ -375,7 +385,7 @@ function addProduct() {
             </td>
             <td class="py-3 px-4 text-center">
               <span
-                class=" inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold"
+                class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold"
                 :class="getStatusColor(product.status)"
               >
                 {{ product.status }}
@@ -386,6 +396,7 @@ function addProduct() {
             </td>
             <td class="py-3 px-4 text-right">
               <button
+              @click="isModalOpen = true"
                 class="flex items-center text-accent hover:text-accent-hover font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 rounded-lg px-2"
                 aria-label="Manage product options"
               >
@@ -393,6 +404,7 @@ function addProduct() {
                 Edit
               </button>
             </td>
+            <AdminProductModal :product="product" :isModalOpen="isModalOpen" @close="toggleModal" />
           </tr>
         </tbody>
       </table>
