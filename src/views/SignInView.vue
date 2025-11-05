@@ -1,15 +1,15 @@
 <template>
   <section
-    class="min-h-screen flex items-center justify-center bg-background text-text px-6 sm:px-10"
+    class="min-h-screen my-5 flex items-center justify-center bg-background text-text px-6 sm:px-10"
     aria-labelledby="signin-heading"
   >
     <div
-      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-md p-8 sm:p-10 space-y-6"
+      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg p-8 sm:p-10 space-y-6"
       role="form"
       aria-describedby="signin-description"
     >
       <!-- Heading -->
-      <header class="text-center">
+      <div class="text-center">
         <h1
           id="signin-heading"
           class="text-3xl sm:text-4xl font-bold text-heading mb-2"
@@ -19,7 +19,7 @@
         <p id="signin-description" class="text-text/80 text-sm">
           Sign in to continue to your account
         </p>
-      </header>
+      </div>
 
       <!-- Form -->
       <form @submit.prevent="handleSignIn" class="space-y-5">
@@ -105,15 +105,16 @@
       <!-- Divider -->
       <div class="flex items-center justify-center gap-3">
         <span class="border-t border-border flex-grow"></span>
-        <span class="text-xs text-text/60 uppercase">or</span>
+        <span class="text-xs text-text uppercase">or</span>
         <span class="border-t border-border flex-grow"></span>
       </div>
 
       <!-- Social Buttons -->
       <div class="flex flex-col sm:flex-row gap-3">
         <button
+        @click="handleSignInWithGoogle"
           type="button"
-          class="w-full border border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-surface transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          class="w-full border text- border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-surface transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -121,17 +122,6 @@
             class="inline w-5 h-5 mr-2 align-middle"
           />
           Continue with Google
-        </button>
-        <button
-          type="button"
-          class="w-full border border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-surface transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-        >
-          <img
-            src="https://www.svgrepo.com/show/452196/github.svg"
-            alt=""
-            class="inline w-5 h-5 mr-2 align-middle"
-          />
-          GitHub
         </button>
       </div>
 
@@ -142,7 +132,7 @@
           to="/signup"
           class="text-accent hover:text-accent-hover font-medium focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-md"
         >
-          Create one
+          Sign Up
         </router-link>
       </p>
     </div>
@@ -152,7 +142,9 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import {useAuthStore} from "@/stores/useAuthStore.js"
 
+const auth = useAuthStore()
 const router = useRouter();
 const email = ref("");
 const password = ref("");
@@ -163,11 +155,10 @@ function handleSignIn() {
   loading.value = true;
 
   // Simulate async login (replace with Supabase/Auth0/etc)
-  setTimeout(() => {
-    loading.value = false;
-    alert(`Welcome back, ${email.value}!`);
-    router.push("/");
-  }, 1500);
+}
+
+function handleSignInWithGoogle() {
+  auth.signInWithGoogle()
 }
 </script>
 

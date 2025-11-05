@@ -19,10 +19,10 @@ const scrollToTop = () => {
 };
 
 onMounted(async () => {
-  // ✅ Register scroll listener
+  // Register scroll listener
   window.addEventListener("scroll", handleScroll);
 
-  // ✅ Fetch fragrances (only once when app mounts)
+  // Fetch fragrances (only once when app mounts)
   await fragranceStore.fetchFragrances();
 });
 
