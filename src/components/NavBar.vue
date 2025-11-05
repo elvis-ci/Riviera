@@ -171,11 +171,11 @@
       </div>
 
       <!-- Mobile Menu -->
-      <transition name="relative slide-fade" class="backdrop-blur-md">
+      <transition name="slide-fade" >
         <nav
           ref="navArea"
           v-if="isMobileMenuOpen"
-          class="lg:hidden absolute z-40 w-md right-0 bg-surface/95 border-border py-4 px-6 space-y-4 shadow-lg"
+          class="lg:hidden absolute w-full z-40 right-0 bg-surface/95 border-border py-4 px-6 space-y-4 shadow-lg"
           aria-label="Mobile navigation"
         >
           <ul class="flex flex-col gap-3">
