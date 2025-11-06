@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("UseAuthStore", () => {
   // -- state--
   const loading = ref(false);
   const user = ref(null);
+  const errorMsg = ref(null);
 
   // -- actions --
   const fetchUser = async () => {
@@ -13,20 +14,58 @@ export const useAuthStore = defineStore("UseAuthStore", () => {
     const { data, error } = await supabase.auth.getUser();
     user.value = data?.user || null;
     loading.value = false;
-    console.log(user)
+    console.log(user);
     if (error) console.log("fetch user error:", error);
   };
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: window.location.origin + "/",
       },
     });
-    if (error) console.log("signIn error:", error);
+    if (error) errorMsg.value = error.message;
+    user.value = data.user;
+    return data;
   };
 
+  const signUpWithEmail = async (email, password, name) => {
+    errorMsg.value = null;
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name: name },
+          emailRedirectTo: window.location.origin + "/signin",
+        },
+      });
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      errorMsg.value = err.message;
+    }
+  };
+
+  const signInWithEmail = async (email, password) => {
+    errorMsg.value = null;
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+
+      if (data) {
+        user.value = data.user;
+      } else {
+        user.value = null;
+      }
+    } catch (err) {
+      errorMsg.value = err.message;
+    }
+  };
   const logout = async () => {
     await supabase.auth.signOut();
     user.value = null;
@@ -39,5 +78,13 @@ export const useAuthStore = defineStore("UseAuthStore", () => {
   });
 
   // Return state + actions
-  return { user, loading, fetchUser, signInWithGoogle, logout };
+  return {
+    user,
+    fetchUser,
+    signInWithGoogle,
+    signUpWithEmail,
+    signInWithEmail,
+    errorMsg,
+    logout,
+  };
 });

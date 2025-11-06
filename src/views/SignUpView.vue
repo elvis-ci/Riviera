@@ -7,11 +7,13 @@
       class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg p-8 sm:p-10 space-y-6"
     >
       <h1 id="signup-heading" class="text-2xl sm:text-3xl font-bold text-heading text-center mb-6">
-        Create Your Account
+        {{isConfirmationSent ? 'Creating Your Account' : 'Create Your Account'}}
       </h1>
-
+      <div v-if="isConfirmationSent" class="text-center">
+        <p>A Confirmation link has been sent to your email</p>
+      </div>
       <!-- Sign Up Form -->
-      <form
+      <form v-else
         @submit.prevent="handleSignUp"
         class="flex flex-col gap-5"
         aria-describedby="signup-instructions"
@@ -83,7 +85,7 @@
           />
           <p
             v-if="confirmPassword && confirmPassword !== password"
-            class="text-red-500 text-xs mt-1"
+            class="text-red-700 text-lg mt-1"
             role="alert"
           >
             Passwords do not match
@@ -116,7 +118,7 @@
         <!-- Social Buttons -->
         <div class="flex flex-col sm:flex-row gap-3">
           <button
-          @click="auth.signInWithGoogle"
+            @click="handleSignInWithGoogle"
             type="button"
             class="w-full border text- border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-accent/30 transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
@@ -147,32 +149,37 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import {useAuthStore} from '@/stores/useAuthStore.js'
+import { useAuthStore } from "@/stores/useAuthStore.js";
 
-const auth = useAuthStore()
-
+const auth = useAuthStore();
 const router = useRouter();
 const name = ref("");
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
 const isLoading = ref(false);
+const isConfirmationSent = ref(false);
 
 const handleSignUp = async () => {
   if (password.value !== confirmPassword.value) {
-    alert("Passwords do not match!");
+    errorMsg.value = "Passwords do not match";
     return;
   }
-
-  isLoading.value = true;
-
-  // Simulated API sign-up (replace with real auth logic)
-  setTimeout(() => {
-    localStorage.setItem("user", JSON.stringify({ name: name.value, email: email.value }));
+  isLoading.value = true
+  await auth.signUpWithEmail(email.value, password.value, name.value);
+  if (!auth.errorMsg) {
     isLoading.value = false;
-    router.push("/profile");
-  }, 1500);
+    isConfirmationSent.value = true;
+    console.log("Signup successful", "user:", auth.data);
+  } else {
+    isLoading.value = false
+    console.log("error:", auth.errorMsg);
+  }
 };
+
+async function handleSignInWithGoogle() {
+  await auth.signInWithGoogle();
+}
 </script>
 
 <style scoped>
