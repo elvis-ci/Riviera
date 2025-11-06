@@ -10,10 +10,7 @@
     >
       <!-- Heading -->
       <div class="text-center">
-        <h1
-          id="signin-heading"
-          class="text-3xl sm:text-4xl font-bold text-heading mb-2"
-        >
+        <h1 id="signin-heading" class="text-3xl sm:text-4xl font-bold text-heading mb-2">
           Welcome Back
         </h1>
         <p id="signin-description" class="text-text/80 text-sm">
@@ -25,12 +22,7 @@
       <form @submit.prevent="handleSignIn" class="space-y-5">
         <!-- Email -->
         <div class="flex flex-col">
-          <label
-            for="email"
-            class="text-sm font-medium text-heading mb-1"
-          >
-            Email Address
-          </label>
+          <label for="email" class="text-sm font-medium text-heading mb-1"> Email Address </label>
           <input
             id="email"
             v-model="email"
@@ -44,12 +36,7 @@
 
         <!-- Password -->
         <div class="flex flex-col">
-          <label
-            for="password"
-            class="text-sm font-medium text-heading mb-1"
-          >
-            Password
-          </label>
+          <label for="password" class="text-sm font-medium text-heading mb-1"> Password </label>
           <input
             id="password"
             v-model="password"
@@ -62,9 +49,7 @@
         </div>
 
         <!-- Remember & Forgot -->
-        <div
-          class="flex items-center justify-between text-sm text-text/80"
-        >
+        <div class="flex items-center justify-between text-sm text-text/80">
           <label class="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -88,11 +73,8 @@
           class="w-full bg-accent hover:bg-accent-hover text-white font-semibold py-2.5 rounded-lg shadow-md focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 transition-all duration-200"
           :aria-busy="loading"
         >
-          <span v-if="!loading">Sign In</span>
-          <span
-            v-else
-            class="inline-flex items-center gap-2 justify-center"
-          >
+          <span v-if="!isLoading">Sign In</span>
+          <span v-else class="inline-flex items-center gap-2 justify-center">
             <span
               class="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"
               aria-hidden="true"
@@ -112,7 +94,7 @@
       <!-- Social Buttons -->
       <div class="flex flex-col sm:flex-row gap-3">
         <button
-        @click="handleSignInWithGoogle"
+          @click="handleSignInWithGoogle"
           type="button"
           class="w-full border text- border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-surface transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
@@ -142,23 +124,30 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import {useAuthStore} from "@/stores/useAuthStore.js"
+import { useAuthStore } from "@/stores/useAuthStore.js";
 
-const auth = useAuthStore()
+const auth = useAuthStore();
 const router = useRouter();
 const email = ref("");
 const password = ref("");
 const rememberMe = ref(false);
-const loading = ref(false);
+const isLoading = ref(false);
 
-function handleSignIn() {
-  loading.value = true;
-
-  // Simulate async login (replace with Supabase/Auth0/etc)
+async function handleSignIn() {
+  isLoading.value = true;
+  await auth.signInWithEmail(email.value, password.value);
+  if (!auth.errorMsg) {
+    isLoading.value = false;
+    router.push("/");
+    console.log("Signup successful", "user:", auth.user);
+  } else {
+    isLoading.value = false;
+    console.log("error:", auth.errorMsg);
+  }
 }
 
 function handleSignInWithGoogle() {
-  auth.signInWithGoogle()
+  auth.signInWithGoogle();
 }
 </script>
 
