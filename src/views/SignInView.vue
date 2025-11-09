@@ -37,15 +37,26 @@
         <!-- Password -->
         <div class="flex flex-col">
           <label for="password" class="text-sm font-medium text-heading mb-1"> Password </label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            autocomplete="current-password"
-            required
-            class="border border-border bg-background rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-1 transition-colors"
-            placeholder="Enter your password"
-          />
+          <div class="flex items-center relative">
+            <input
+              v-model="password"
+              id="password"
+              :type="isPasswordVisible ? 'text' : 'password'" 
+              minlength="8"
+              required
+              placeholder="enter your password"
+              autocomplete="new-password"
+              class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
+            />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="absolute right-4 text-text/70"
+            >
+              <IconMdiEye v-if="isPasswordVisible" />
+              <IconMdiEyeOff v-else />
+            </button>
+          </div>
         </div>
 
         <!-- Remember & Forgot -->
@@ -130,12 +141,13 @@ const auth = useAuthStore();
 const router = useRouter();
 const email = ref("");
 const password = ref("");
-const rememberMe = ref(false);
+const rememberMe = ref(true);
 const isLoading = ref(false);
+const isPasswordVisible = ref(false)
 
 async function handleSignIn() {
   isLoading.value = true;
-  await auth.signInWithEmail(email.value, password.value);
+  await auth.signInWithEmail(email.value, password.value, rememberMe.value);
   if (!auth.errorMsg) {
     isLoading.value = false;
     router.push("/");
@@ -146,6 +158,9 @@ async function handleSignIn() {
   }
 }
 
+function togglePasswordVisibility() {
+  isPasswordVisible.value = !isPasswordVisible.value
+}
 function handleSignInWithGoogle() {
   auth.signInWithGoogle();
 }
