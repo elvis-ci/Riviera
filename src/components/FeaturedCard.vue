@@ -60,7 +60,7 @@ const renderStars = (rating) => {
 <template>
   <!-- Actual Fragrance Cards -->
   <article
-    class="relative group bg-background border border-border overflow-hidden shadow-md hover:shadow-xl sm:hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-500 mx-1 sm:mx-3 h-fit max-w-[350px]"
+    class="relative group bg-background border border-border overflow-hidden shadow-md hover:shadow-xl sm:hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-500 mx-3 sm:mx-4 h-fit max-w-[350px]"
   >
     <!-- Image Section -->
     <div class="relative overflow-hidden h-[10rem] sm:h-[15rem]">
