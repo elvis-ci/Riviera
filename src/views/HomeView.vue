@@ -16,7 +16,7 @@
       <h1
         class="text-3xl sm:text-5xl md:text-6xl font-serif font-semibold text-heading leading-tight mb-4"
       >
-        Timeless <span class="text-accent">Elegance</span> in Every Scent
+        Timeless <span class="sm:text-accent">Elegance</span> in Every Scent
       </h1>
 
       <p
