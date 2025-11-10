@@ -10,10 +10,10 @@ const props = defineProps({
 
 <template>
   <article
-    class="relative group bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:border-border-hover transition-all duration-500 ease-out mx-3 sm:mx-4 flex flex-col h-[460px]"
+    class="relative group bg-background border border-border overflow-hidden shadow-md hover:shadow-2xl hover:border-border-hover transition-all duration-500 ease-out mx-3 sm:mx-4 max-w-[350px] flex flex-col h-fit"
   >
     <!-- Image -->
-    <div class="relative h-[65%] overflow-hidden rounded-t-2xl">
+    <div class="relative overflow-hidden h-[10rem] sm:h-[15rem]">
       <img
         :src="category.image"
         :alt="`${category.name} fragrance category`"
@@ -34,7 +34,7 @@ const props = defineProps({
 
     <!-- Content -->
     <div
-      class="relative flex flex-col items-start justify-center z-10 p-4 sm:p-6 text-center bg-background rounded-t-3xl -mt-4"
+      class="relative flex flex-col items-start justify-center z-10 px-4 sm:p-6 text-center bg-background"
     >
       <div>
         <h3 class="text-xl font-semibold text-heading mb-2">
@@ -45,34 +45,28 @@ const props = defineProps({
         </p>
       </div>
 
-      <ul
-        class="flex justify-center items-center gap-4 text-sm text-text/80 mb-5"
-        aria-label="Category details"
-      >
-        <li>
-          <span class="font-semibold text-accent">
-            {{ category.availableQuantity }}
-          </span>
-          available
-        </li>
-        <li>
+      <div class="w-full flex items-center justify-center mb-2">
+        <p>
           From
           <span class="font-semibold text-accent"> ${{ category.priceRange.min }} </span>
-        </li>
-      </ul>
-
+        </p>
+      </div>
       <router-link
         :to="{ name: 'products', query: { category: category.name } }"
-        class="btn-primary text-sm px-6 py-2.5 w-full rounded-xl shadow-sm hover:shadow-lg transition-all duration-300"
+        class="bg-accent cta hover:bg-accent-hover text-sm px-6 py-2.5 w-full rounded-lg shadow-sm hover:shadow-lg transition-all duration-300"
         :aria-label="`Browse fragrances in ${category.name}`"
       >
         Browse Collection
-    </router-link>
+      </router-link>
     </div>
   </article>
 </template>
 
 <style scoped>
+.cta {
+  color: white;
+}
+
 /* Hover lift */
 article:hover {
   transform: translateY(-6px);
@@ -81,8 +75,6 @@ article:hover {
 /* Responsive balance */
 @media (max-width: 640px) {
   article {
-    height: 400px;
-  }
-
+padding-bottom: 20px;  }
 }
 </style>

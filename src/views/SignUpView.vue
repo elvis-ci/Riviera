@@ -7,13 +7,14 @@
       class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg p-8 sm:p-10 space-y-6"
     >
       <h1 id="signup-heading" class="text-2xl sm:text-3xl font-bold text-heading text-center mb-6">
-        {{isConfirmationSent ? 'Creating Your Account' : 'Create Your Account'}}
+        {{ isConfirmationSent ? "Creating Your Account" : "Create Your Account" }}
       </h1>
       <div v-if="isConfirmationSent" class="text-center">
         <p>A Confirmation link has been sent to your email</p>
       </div>
       <!-- Sign Up Form -->
-      <form v-else
+      <form
+        v-else
         @submit.prevent="handleSignUp"
         class="flex flex-col gap-5"
         aria-describedby="signup-instructions"
@@ -56,16 +57,27 @@
           <label for="password" class="block text-sm font-medium mb-1">
             Password <span class="text-red-600">*</span></label
           >
-          <input
-            v-model="password"
-            id="password"
-            type="password"
-            required
-            minlength="8"
-            placeholder="••••••••"
-            autocomplete="new-password"
-            class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
-          />
+          <div class="flex items-center relative">
+            <input
+              v-model="password"
+              id="password"
+              :type="isPasswordVisible ? 'text' : 'password'"
+              minlength="8"
+              required
+              placeholder="••••••••"
+              autocomplete="new-password"
+              class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
+            />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="absolute right-4 text-text/70"
+            >
+              <IconMdiEye v-if="isPasswordVisible" />
+              <IconMdiEyeOff v-else />
+            </button>
+          </div>
+
           <p v-if="password && password.length < 6" class="text-red-500 text-xs mt-1" role="alert">
             Password must be at least 8 characters
           </p>
@@ -74,15 +86,25 @@
         <!-- Confirm Password -->
         <div>
           <label for="confirm" class="block text-sm font-medium mb-1"> Confirm Password </label>
-          <input
-            v-model="confirmPassword"
-            id="confirm"
-            type="password"
-            required
-            placeholder="••••••••"
-            autocomplete="new-password"
-            class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
-          />
+          <div class="flex items-center relative">
+            <input
+              v-model="confirmPassword"
+              id="confirm"
+              :type="isPasswordVisible ? 'text' : 'password'"
+              required
+              placeholder="••••••••"
+              autocomplete="new-password"
+              class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
+            />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="absolute right-4 text-text/70"
+            >
+              <IconMdiEye v-if="isPasswordVisible" />
+              <IconMdiEyeOff v-else />
+            </button>
+          </div>
           <p
             v-if="confirmPassword && confirmPassword !== password"
             class="text-red-700 text-lg mt-1"
@@ -159,26 +181,31 @@ const password = ref("");
 const confirmPassword = ref("");
 const isLoading = ref(false);
 const isConfirmationSent = ref(false);
+const isPasswordVisible = ref(false);
 
 const handleSignUp = async () => {
   if (password.value !== confirmPassword.value) {
     errorMsg.value = "Passwords do not match";
     return;
   }
-  isLoading.value = true
+  isLoading.value = true;
   await auth.signUpWithEmail(email.value, password.value, name.value);
   if (!auth.errorMsg) {
     isLoading.value = false;
     isConfirmationSent.value = true;
     console.log("Signup successful", "user:", auth.data);
   } else {
-    isLoading.value = false
+    isLoading.value = false;
     console.log("error:", auth.errorMsg);
   }
 };
 
 async function handleSignInWithGoogle() {
   await auth.signInWithGoogle();
+}
+
+function togglePasswordVisibility() {
+  isPasswordVisible.value = !isPasswordVisible.value;
 }
 </script>
 

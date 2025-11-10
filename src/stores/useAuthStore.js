@@ -48,13 +48,16 @@ export const useAuthStore = defineStore("UseAuthStore", () => {
     }
   };
 
-  const signInWithEmail = async (email, password) => {
+  const signInWithEmail = async (email, password, rememberMe) => {
     errorMsg.value = null;
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error } = await supabase.auth.signInWithPassword(
+        {
+          email,
+          password,
+        },
+        { persistSession: rememberMe }
+      );
       if (error) throw error;
 
       if (data) {

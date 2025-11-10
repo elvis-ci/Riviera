@@ -23,11 +23,11 @@ onMounted(async () => {
 });
 
 const breakpoints = {
-  0: { itemsToShow: 1.1, snapAlign: "center" },
-  640: { itemsToShow: 1.5, snapAlign: "center" },
-  768: { itemsToShow: 2, snapAlign: "center" },
-  1024: { itemsToShow: 3.04, snapAlign: "start" },
-  1200: { itemsToShow: 3.1, snapAlign: "start" },
+  0: { itemsToShow: 1.3, snapAlign: "center" }, // Slight gap for mobile
+  640: { itemsToShow: 1.5, snapAlign: "center" }, // Small tablets
+  768: { itemsToShow: 2.2, snapAlign: "center" },
+  1024: { itemsToShow: 3.2, snapAlign: "start" },
+  1200: { itemsToShow: 3.2, snapAlign: "start" },
 };
 </script>
 
@@ -149,10 +149,6 @@ article:hover {
 
 /* Responsive balance */
 @media (max-width: 640px) {
-  article {
-    height: 400px;
-  }
-
   .category-carousel {
     padding-inline: 0.5rem;
   }

@@ -60,12 +60,10 @@ const renderStars = (rating) => {
 <template>
   <!-- Actual Fragrance Cards -->
   <article
-    class="relative group bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl sm:hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 mx-1 sm:mx-3 h-[24rem] sm:h-[26rem] md:h-[28rem]"
+    class="relative group bg-background border border-border overflow-hidden shadow-md hover:shadow-xl sm:hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-500 mx-1 sm:mx-3 h-fit max-w-[350px]"
   >
     <!-- Image Section -->
-    <div
-      class="relative overflow-hidden h-[13rem] sm:h-[15rem] md:h-[16rem] lg:h-[17rem] rounded-t-2xl"
-    >
+    <div class="relative overflow-hidden h-[10rem] sm:h-[15rem]">
       <img
         :src="fragrance.image_url"
         :alt="fragrance.name"
@@ -80,10 +78,10 @@ const renderStars = (rating) => {
 
     <!-- Details Section -->
     <div
-      class="relative flex flex-col items-start justify-center z-10 p-2 sm:p-4 text-center bg-background rounded-t-3xl -mt-6"
+      class="relative flex flex-col items-start justify-center z-10 p-2 sm:p-4 text-center bg-background"
     >
       <div class="flex w-full justify-between items-start gap-3">
-        <h3 class="text-lg sm:text-xl font-semibold text-accent mb-2 text-start leading-tight">
+        <h3 class="text-sm sm:text-xl font-semibold text-accent mb-2 text-start leading-tight">
           {{ fragrance.name }}
         </h3>
 
@@ -96,7 +94,7 @@ const renderStars = (rating) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
               viewBox="0 0 24 24"
-              class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-600"
+              class="w-2.5 h-2.5 sm:w-4 sm:h-4 text-yellow-600"
               aria-hidden="true"
             >
               <path
@@ -109,7 +107,7 @@ const renderStars = (rating) => {
               v-else-if="star === 'half'"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
-              class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-600"
+              class="w-2.5 h-2.5 sm:w-4 sm:h-4 text-yellow-600"
               aria-hidden="true"
             >
               <defs>
@@ -138,7 +136,7 @@ const renderStars = (rating) => {
               stroke="currentColor"
               stroke-width="1.5"
               viewBox="0 0 24 24"
-              class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-600"
+              class="w-2.5 h-2.5 sm:w-4 sm:h-4 text-yellow-600"
               aria-hidden="true"
             >
               <path
@@ -151,14 +149,14 @@ const renderStars = (rating) => {
         </div>
       </div>
 
-      <p class="text-text/70 text-sm sm:text-base mb-4 line-clamp-2 text-start leading-snug">
+      <p class="text-text/70 text-xs sm:text-base mb-4 line-clamp-2 text-start leading-snug">
         {{ fragrance.description }}
       </p>
       <div class="flex w-full justify-between items-end">
         <div class="flex flex-col items-start">
-          <span class="text-sm sm:text-md font-semibold text-text/70">Price</span>
+          <span class="text-xs sm:text-base font-semibold text-text/70">Price</span>
           <div class="flex items-center gap-2">
-            <span class="text-lg sm:text-xl font-bold text-accent">
+            <span class="text-sm sm:text-xl font-bold text-accent">
               ${{ calculateCurrentPrice(fragrance.price, fragrance.discount) }}
             </span>
             <span class="text-xs sm:text-sm font-semibold text-border line-through">
@@ -170,15 +168,15 @@ const renderStars = (rating) => {
           <div class="flex items-center justify-end mb-2 gap-2">
             <button
               @click="decreaseQuantity(fragrance)"
-              class="w-6 h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              class="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
               aria-label="Decrease quantity"
             >
               −
             </button>
-            <span class="w-6 text-center font-bold text-sm">{{ quantity }}</span>
+            <span class="w-6 text-center font-bold text-xs sm:text-sm">{{ quantity }}</span>
             <button
               @click="increaseQuantity(fragrance)"
-              class="w-6 h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              class="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
               aria-label="Increase quantity"
             >
               +
@@ -190,7 +188,7 @@ const renderStars = (rating) => {
                 ? cartStore.addToCart(fragrance, quantity)
                 : cartStore.removeFromCart(fragrance.id)
             "
-            class="group/btn w-fit flex items-center px-4 sm:px-6 py-3 rounded-lg text-xs sm:text-sm font-medium shadow-md transition-all duration-200 gap-1 sm:gap-2"
+            class="group/btn ml-auto w-fit flex items-center px-3 sm:px-6 py-3 rounded-lg text-xs sm:text-sm font-medium shadow-md transition-all duration-200 gap-1 sm:gap-2"
             aria-label="Add {{ fragrance.name }} to cart"
             :class="[
               !isInCart(fragrance.id)
@@ -199,7 +197,7 @@ const renderStars = (rating) => {
             ]"
           >
             <IconMdiCartOutline size="20" />
-            {{ !isInCart(fragrance.id) ? "Add to Cart" : "Remove from Cart" }}
+            <span class="text-xs sm:text-base"> {{ !isInCart(fragrance.id) ? "Add to Cart" : "Remove from Cart" }} </span>
           </button>
         </div>
       </div>

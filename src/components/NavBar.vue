@@ -10,7 +10,7 @@
   >
     <div class="relative">
       <div
-        class="relative max-w-full mx-auto px-6 py-2 flex flex-wrap items-center justify-between text-gray-900 dark:text-gray-100"
+        class="relative max-w-full mx-auto px-1 sm:px-6 py-2 flex flex-wrap items-center justify-between text-gray-900 dark:text-gray-100"
       >
         <!-- Logo -->
         <RouterLink
@@ -76,7 +76,7 @@
               ({ isActive }) =>
                 isActive
                   ? 'text-accent font-semibold transition-colors'
-                  : 'text-gray-800 dark:text-gray-200 hover:text-accent font-medium transition-colors'
+                  : 'text-gray-800 dark:text-gray-600 hover:text-accent font-medium transition-colors'
             "
           >
             {{ item.title }}
@@ -84,19 +84,18 @@
         </nav>
 
         <!-- Right Icons -->
-        <div class="hidden lg:flex items-center gap-6 relative">
+        <div class="hidden lg:flex items-center gap-6">
           <!-- Cart -->
           <RouterLink
             to="/cart"
             class="text-text flex items-center gap-1 hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1 relative"
             aria-label="Shopping cart"
           >
-            <IconMdiCartOutline class="scale-110" size="22" />
-            <span class="hidden sm:inline">Cart</span>
+            <IconMdiCartOutline class="scale-120" size="22" />
             <span
               v-if="cartCount > 0"
               :class="[
-                'absolute -top-1 -right-2 bg-accent text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold transform transition-transform duration-300',
+                'absolute -top-2 -right-2 bg-accent text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold transform transition-transform duration-300',
                 animate ? 'bounce' : '',
               ]"
             >
@@ -105,73 +104,76 @@
           </RouterLink>
 
           <!-- Conditional Auth Buttons -->
-          <div v-if="!auth.user">
-            <RouterLink
-              to="/signIn"
-              class="text-text hover:text-accent transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-accent rounded-md px-2 py-1"
-            >
-              <IconMdiLogin size="22" />
-              <span class="hidden sm:inline">Sign In</span>
-            </RouterLink>
-          </div>
-
-          <div v-else class="relative">
+          <div class="">
             <!-- Settings button toggles the menu on click -->
-            <button
-              ref="settingsButton"
-              @click.stop="toggleSettings"
-              :aria-expanded="isSettingsOpen"
-              aria-haspopup="true"
-              class="text-text hover:text-accent transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-accent rounded-md px-2 py-1"
-            >
-              <IconMdiAccountCircle size="22" />
-              <span class="hidden sm:inline">Settings</span>
-            </button>
+            <div>
+              <RouterLink
+                v-if="!auth.user"
+                to="/signIn"
+                class="flex gap-2 items-center px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent transition-colors"
+              >
+                <IconMdiLogin size="22" />
+                <span class="hidden sm:inline">Sign In</span>
+              </RouterLink>
 
+              <button
+                v-else
+                ref="settingsButton"
+                @click.stop="toggleSettings"
+                :aria-expanded="isSettingsOpen"
+                aria-haspopup="true"
+                class="text-text hover:text-accent transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-accent rounded-md px-2 py-1"
+              >
+                <IconMdiAccountCircleOutline class="scale-120" size="22" />
+              </button>
+            </div>
             <!-- Dropdown: visible when isSettingsOpen -->
             <div
               ref="settingsMenu"
               v-show="isSettingsOpen"
               @click.stop
-              class="absolute right-0 mt-2 w-48 text-text bg-surface dark:bg-surface border border-border rounded-lg shadow-lg py-2 transition-all duration-150 z-50"
+              class="absolute top-full right-0 w-48 text-text bg-surface dark:bg-surface border border-border border-t-0 shadow-lg py-2 transition-all duration-150 z-50"
             >
-              <RouterLink
-                to="/profile"
-                class="flex gap-2 items-center px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                <IconMdiAccountCircle size="22" />
-                Profile
-              </RouterLink>
-              <RouterLink
-                to="/orders"
-                class="flex gap-2 px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                <IconMdiClipboardTextOutline size="22" />
-                Orders</RouterLink
-              >
-              <button
-                @click="handleSignOut"
-                class="flex gap-2 w-full font-semibold text-left px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent transition-colors"
-              >
-                <IconMdiLogout size="22" />
+              <div>
+                <RouterLink
+                  to="/profile"
+                  class="flex gap-2 items-center px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent transition-colors"
+                >
+                  <IconMdiAccountCircle size="22" />
+                  Profile
+                </RouterLink>
 
-                Sign Out
-              </button>
+                <RouterLink
+                  to="/orders"
+                  class="flex gap-2 px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent transition-colors"
+                >
+                  <IconMdiClipboardTextOutline size="22" />
+                  Orders</RouterLink
+                >
+                <button
+                  @click="handleSignOut"
+                  class="flex gap-2 w-full font-semibold text-left px-4 py-2 text-sm hover:bg-accent/10 hover:text-accent transition-colors"
+                >
+                  <IconMdiLogout size="22" />
+
+                  Sign Out
+                </button>
+              </div>
             </div>
           </div>
           <button
             @click="toggleTheme"
-            class="text-text hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
+            class="text-text scale-120 hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
             aria-label="Toggle dark mode"
           >
-            <IconMdiWeatherSunny v-if="!isDark" size="24" />
-            <IconMdiWeatherNight v-else size="24" />
+            <IconMdiWeatherSunny v-if="!isDark" size="22" />
+            <IconMdiWeatherNight v-else size="22" />
           </button>
         </div>
       </div>
 
       <!-- Mobile Menu -->
-      <transition name="slide-fade" >
+      <transition name="slide-fade">
         <nav
           ref="navArea"
           v-if="isMobileMenuOpen"
@@ -204,6 +206,9 @@
               <RouterLink to="/orders" class="hover:text-accent transition-colors"
                 >Orders</RouterLink
               >
+              <RouterLink to="/help" class="hover:text-accent transition-colors">
+                Help & Support
+              </RouterLink>
 
               <button
                 @click="auth.logout"
@@ -216,17 +221,17 @@
             </template>
 
             <template v-else>
+              <RouterLink to="/help" class="px-1 hover:text-accent transition-colors">
+                Help & Support
+              </RouterLink>
+
               <RouterLink
                 to="/SignIn"
-                class="flex gap-2 items-center hover:text-accent transition-colors"
+                class="flex gap-2 items-center px-1 hover:text-accent transition-colors"
               >
                 <IconMdiLogin aria-hidden="true" size="22" />
 
                 Sign In
-              </RouterLink>
-
-              <RouterLink to="/help" class="hover:text-accent transition-colors">
-                Help & Support
               </RouterLink>
             </template>
           </div>
