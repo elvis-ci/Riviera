@@ -48,8 +48,8 @@
             class="text-text hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
             aria-label="Toggle dark mode"
           >
-            <IconMdiWeatherSunny v-if="!isDark" size="24" />
-            <IconMdiWeatherNight v-else size="24" />
+            <IconMdiWeatherSunny v-if="!isDark" class="scale-130" size="24" />
+            <IconMdiWeatherNight v-else class="scale-130" size="24" />
           </button>
 
           <button
@@ -57,8 +57,8 @@
             class="text-text hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
             aria-label="Toggle navigation menu"
           >
-            <IconMdiMenu v-if="!isMobileMenuOpen" size="26" />
-            <IconMdiClose v-else size="26" />
+            <IconMdiMenu v-if="!isMobileMenuOpen" class="scale-130" size="22" />
+            <IconMdiClose v-else class="scale-130" size="22" />
           </button>
         </div>
 
