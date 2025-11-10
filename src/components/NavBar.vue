@@ -10,7 +10,7 @@
   >
     <div class="relative">
       <div
-        class="relative max-w-full mx-auto px-6 py-2 flex flex-wrap items-center justify-between text-gray-900 dark:text-gray-100"
+        class="relative max-w-full mx-auto px-1 sm:px-6 py-2 flex flex-wrap items-center justify-between text-gray-900 dark:text-gray-100"
       >
         <!-- Logo -->
         <RouterLink
@@ -76,7 +76,7 @@
               ({ isActive }) =>
                 isActive
                   ? 'text-accent font-semibold transition-colors'
-                  : 'text-gray-800 dark:text-gray-200 hover:text-accent font-medium transition-colors'
+                  : 'text-gray-800 dark:text-gray-600 hover:text-accent font-medium transition-colors'
             "
           >
             {{ item.title }}
@@ -84,7 +84,7 @@
         </nav>
 
         <!-- Right Icons -->
-        <div class=" hidden lg:flex items-center gap-6">
+        <div class="hidden lg:flex items-center gap-6">
           <!-- Cart -->
           <RouterLink
             to="/cart"
@@ -221,7 +221,7 @@
             </template>
 
             <template v-else>
-              <RouterLink to="/help" class=" px-1 hover:text-accent transition-colors">
+              <RouterLink to="/help" class="px-1 hover:text-accent transition-colors">
                 Help & Support
               </RouterLink>
 
