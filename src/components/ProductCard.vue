@@ -128,10 +128,10 @@ watch(
 
         <button
           @click="isInCart ? removeFromCart() : addToCart()"
-          class="flex justify-center gap-3 w-full py-2 font-semibold mb-1 rounded-lg text-xs sm:text-sm shadow-md transition focus:ring-1 focus:ring-accent "
+          class="flex justify-center gap-3 w-full py-2 font-semibold mb-1 rounded-lg text-xs sm:text-sm shadow-md transition "
           :class="[
             isInCart
-              ? 'text-accent border-accent hover:bg-accent/10'
+              ? 'text-accent border-accent border-1 hover:bg-accent/10'
               : 'bg-accent text-white hover:bg-accent-hover',
           ]"
         >
