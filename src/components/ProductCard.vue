@@ -51,7 +51,7 @@ watch(
 
 <template>
   <article
-    class="bg-background  overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2  flex flex-col mx-auto"
+    class="bg-background overflow-hidden  hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2  flex flex-col mx-auto"
     :class="[style]"
   >
     <!-- Image Section (shorter height now) -->
@@ -59,18 +59,18 @@ watch(
       <img
         :src="item.image_url"
         :alt="item.name"
-        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        class="w-full h-full rounded-lg object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         loading="lazy"
       />
     </div>
 
     <!-- Content Section -->
     <div
-      class="relative z-10 shadow-md px-1.5 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
+      class="relative z-10 shadow-md sm:py-1 py-1 flex flex-col justify-between"
     >
       <div>
         <div class="flex w-full justify-between items-center pb-1">
-          <h2 class="text-base sm:text-md font-semibold text-accent-hover truncate">
+          <h2 class="text-sm sm:text-base font-semibold text-accent-hover truncate">
             {{ item.name }}
           </h2>
           <!-- Rating -->

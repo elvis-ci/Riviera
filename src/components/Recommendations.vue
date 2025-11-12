@@ -4,7 +4,7 @@
       Explore Our Recommendations
     </h2>
 
-    <div class="max-w-7xl relative overflow-hidden">
+    <div class="relative overflow-hidden">
       <Carousel
         :wrap-around="false"
         :transition="600"
@@ -37,14 +37,14 @@
           <Navigation v-slot="{ goPrev, goNext }">
             <button
               @click="goPrev"
-              class="absolute left-2 sm:left-0 top-1/2 -translate-y-1/2 bg-accent text-white px-3 py-2 rounded-full hover:bg-accent-hover focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 transition"
+              class="absolute hidden md:block left-2 sm:left-0 top-1/2 -translate-y-1/2 bg-accent text-white px-3 py-2 rounded-full hover:bg-accent-hover focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 transition"
               aria-label="Previous category"
             >
               ‹
             </button>
             <button
               @click="goNext"
-              class="absolute right-2 sm:right-0 top-1/2 -translate-y-1/2 bg-accent text-white px-3 py-2 rounded-full hover:bg-accent-hover focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 transition"
+              class="absolute hidden md:block right-2 sm:right-0 top-1/2 -translate-y-1/2 bg-accent text-white px-3 py-2 rounded-full hover:bg-accent-hover focus:outline-none focus-visible:ring-4 focus-visible:ring-accent/40 transition"
               aria-label="Next category"
             >
               ›
@@ -57,6 +57,10 @@
         </template>
       </Carousel>
     </div>
+  </div>
+
+  <div aria-live="polite" class="....">
+    <p>Form submission failed. Please try again.</p>
   </div>
 </template>
 
@@ -79,18 +83,17 @@ const recommendations = computed(() =>
 const showSkeleton = computed(() => recommendations.value?.length === 0);
 
 const breakpoints = {
-  0: { itemsToShow: 1.7, snapAlign: "center" }, // Slight gap for mobile
-  640: { itemsToShow: 1.5, snapAlign: "center" }, // Small tablets
-  768: { itemsToShow: 2.2, snapAlign: "center" },
-  1024: { itemsToShow: 3.2, snapAlign: "start" },
-  1200: { itemsToShow: 3.2, snapAlign: "start" },
+  0: { itemsToShow: 1.5, snapAlign: "center" }, // Slight gap for mobile
+  640: { itemsToShow: 3.3, snapAlign: "center" }, // Small tablets
+  768: { itemsToShow: 3.2, snapAlign: "center" },
+  1024: { itemsToShow: 3.8, snapAlign: "start" },
+  1200: { itemsToShow: 4.2, snapAlign: "start" },
 };
 
 const recommendationsStyle = [
-  "max-w-[94%] min-w-[94%] sm:min-w-[94%] sm:max-w-[94%] md:min-w-[94%] md:max-w-[94%] lg:max-w-[94%] lg:min-w-[94%]"
+  "max-w-[82%] ml-0 min-w-[82%] sm:min-w-[80%] sm:max-w-[80%] md:min-w-[80%] md:max-w-[80%] lg:max-w-[80%] lg:min-w-[80%]",
 ];
 </script>
-
 <style scoped>
 .category-carousel {
   --carousel-gap: 1rem;
@@ -136,7 +139,7 @@ const recommendationsStyle = [
   border-radius: 9999px;
   width: 36px;
   height: 36px;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   transition: background-color 0.3s ease;
@@ -155,6 +158,14 @@ article:hover {
 /* Responsive balance */
 @media (max-width: 640px) {
   .category-carousel {
+  }
+}
+
+@media (min-width: 769px) {
+  /* ✅ Navigation buttons on mobile */
+  .category-carousel :deep(.carousel__prev),
+  .category-carousel :deep(.carousel__next) {
+    display: flex;
   }
 }
 </style>

@@ -160,7 +160,7 @@ watch(
         <!-- Sidebar (Desktop) -->
 
         <aside
-          class="hidden lg:block sticky top-24 self-start h-fit bg-surface border border-border rounded-2xl p-6 shadow-sm"
+          class="hidden mx-auto lg:block sticky top-24 self-start h-fit bg-surface border border-border rounded-2xl p-6 shadow-sm"
         >
           <!-- Category -->
           <div class="mb-6">
