@@ -59,9 +59,6 @@
     </div>
   </div>
 
-  <div aria-live="polite" class="....">
-    <p>Form submission failed. Please try again.</p>
-  </div>
 </template>
 
 <script setup>
