@@ -19,7 +19,7 @@
           aria-label="Go to homepage"
         >
           <img src="@/assets/logo.png" alt="Perfume Brand Logo" class="h-10 w-auto" />
-          <span class="font-semibold text-lg inline font-serif">Riviera</span>
+          <span class="font-semibold text-lg inline font-serif text-accent-hover">Riviera</span>
         </RouterLink>
 
         <!-- Mobile Menu & Theme Toggle -->
