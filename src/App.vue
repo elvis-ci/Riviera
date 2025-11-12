@@ -38,7 +38,7 @@ onUnmounted(() => {
     <Footer />
 
     <!-- Scroll To Top Button -->
-    <transition name="fade">
+    <!-- <transition name="fade">
       <button
         v-if="showScrollTop"
         @click="scrollToTop"
@@ -47,7 +47,7 @@ onUnmounted(() => {
       >
         ^
       </button>
-    </transition>
+    </transition> -->
   </div>
 </template>
 
