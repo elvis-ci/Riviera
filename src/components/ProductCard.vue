@@ -51,7 +51,7 @@ watch(
 
 <template>
   <article
-    class="bg-background border border-border overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2  flex flex-col mx-auto"
+    class="bg-background  overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2  flex flex-col mx-auto"
     :class="[style]"
   >
     <!-- Image Section (shorter height now) -->
