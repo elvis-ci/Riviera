@@ -128,7 +128,7 @@ watch(
 
         <button
           @click="isInCart ? removeFromCart() : addToCart()"
-          class="flex justify-center gap-3 w-full py-2 font-semibold mb-1 rounded-lg text-xs sm:text-sm shadow-md transition "
+          class="flex justify-center gap-3 w-[99%] py-2 font-semibold mb-1 rounded-lg text-xs sm:text-sm shadow-md transition "
           :class="[
             isInCart
               ? 'text-accent border-accent border-1 hover:bg-accent/10'
