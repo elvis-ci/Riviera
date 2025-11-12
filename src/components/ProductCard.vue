@@ -6,6 +6,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  style:{
+    type: Object,
+    required: true
+  },
   cartStore: {
     type: Object,
     required: true,
@@ -47,21 +51,22 @@ watch(
 
 <template>
   <article
-    class="bg-background border border-border rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 max-w-lg sm:max-w-md mx-auto flex flex-col"
+    class="bg-background  overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2  flex flex-col mx-auto"
+    :class="[style]"
   >
     <!-- Image Section (shorter height now) -->
-    <div class="relative w-full overflow-hidden h-44 sm:h-52 md:h-50">
+    <div class="w-full overflow-hidden h-35 md:h-50">
       <img
         :src="item.image_url"
         :alt="item.name"
-        class="w-full h-full object-cover scale-96 rounded-xl transition-transform duration-700 ease-out group-hover:scale-105"
+        class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         loading="lazy"
       />
     </div>
 
     <!-- Content Section -->
     <div
-      class="relative z-10 bg-background rounded-t-2xl -mt-3 shadow-md p-3 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
+      class="relative z-10 shadow-md px-1.5 sm:p-3 sm:py-1 py-1 flex flex-col justify-between"
     >
       <div>
         <div class="flex w-full justify-between items-center pb-1">
@@ -70,10 +75,10 @@ watch(
           </h2>
           <!-- Rating -->
           <div class="flex items-end gap-0.5">
-            <p  class="flex items-center text-sm text-gray-500">
+            <p  class="flex items-center text-xs sm:text-sm text-gray-500">
               <span
                 class="text-[13px] sm:text-xl text-yellow-500"
-                :class="i <= item.rating ? 'text-yellow-400' : 'text-gray-300'"
+                :class=" item.rating >= 1 ? 'text-yellow-400' : 'text-gray-300'"
                 aria-hidden="true"
               >
                 ★
@@ -88,32 +93,32 @@ watch(
       <div class="flex flex-col gap-2 mt-1">
         <div class="flex justify-between items-end">
           <div class="flex flex-col items-start">
-            <span class="text-sm sm:text-xs text-text/70">Price</span>
+            <span class="text-xs sm:text-sm text-text/70">Price</span>
             <div class="flex items-center gap-2">
-              <span class="text-accent font-bold text-lg sm:text-lg">
+              <span class="text-accent font-bold text-xs sm:text-lg">
                 ${{ item.currentPrice }}
               </span>
               <span
                 v-if="item.currentPrice < item.price"
-                class="text-gray-500 line-through text-xs sm:text-xs"
+                class="text-text/60 line-through text-xs sm:text-sm"
               >
                 ${{ item.price }}
               </span>
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 ml-1">
             <button
               @click="decreaseQuantity"
-              class="w-6 h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              class="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
               aria-label="Decrease quantity"
             >
               −
             </button>
-            <span class="w-6 text-center font-bold text-sm">{{ quantity }}</span>
+            <span class="w-5 text-center font-bold text-sm">{{ quantity }}</span>
             <button
               @click="increaseQuantity"
-              class="w-6 h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
+              class="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center border border-border rounded-md hover:bg-accent/10 transition text-sm"
               aria-label="Increase quantity"
             >
               +

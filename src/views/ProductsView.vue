@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import { useFragranceStore } from "@/stores/useFragranceStore";
 import { useCartStore } from "@/stores/useCartStore";
 import ProductCard from "@/components/ProductCard.vue";
+import Recommendations from "../components/Recommendations.vue";
 
 // --- Pinia stores ---
 const store = useFragranceStore();
@@ -96,6 +97,8 @@ const paginatedFragrances = computed(() => {
   return filteredFragrances.value.slice(start, end);
 });
 
+const shopStyle = ['max-w-[94%] min-w-[94%] sm:min-w-[94%] sm:max-w-[94%] md:min-w-[94%] md:max-w-[94%] lg:max-w-[94%] lg:min-w-[94%]']
+
 watch(filteredFragrances, () => {
   currentPage.value = 1; // Reset to first page on filter change
   // window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top on filter change
@@ -109,7 +112,7 @@ watch(
 </script>
 
 <template>
-  <div class="py-12 bg-background text-text">
+  <div class="max-w-[1400px] mx-auto py-12 bg-background text-text">
     <!-- Header -->
     <!-- Modern Hero / Intro Section -->
     <section class="relative overflow-hidden py-20 sm:py-28">
@@ -127,7 +130,7 @@ watch(
       </div>
     </section>
 
-    <div class="max-w-[1400px] mx-auto">
+    <div class="">
       <div class="mx-2 relative mb-0 max-w-2xl sm:mx-auto lg:mb-8 lg:h-15">
         <IconMdiSearch
           class="absolute top-1/2 left-3 text-text/60 -translate-y-1/2 scale-130"
@@ -153,7 +156,7 @@ watch(
       </div>
 
       <!-- Layout -->
-      <div class="max-w-7xl mx-auto grid lg:grid-cols-[280px_1fr] gap-8 relative">
+      <div class="mx-auto grid lg:grid-cols-[280px_1fr] gap-8 relative">
         <!-- Sidebar (Desktop) -->
 
         <aside
@@ -388,11 +391,15 @@ watch(
             No fragrances match your filters.
           </div>
 
-          <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div
+            v-else
+            class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-1 md-gap-x-4 gap-y-5 pt-2"
+          >
             <ProductCard
               v-for="item in paginatedFragrances"
               :key="item.id"
               :item="item"
+              :style="shopStyle"
               :cartStore="cartStore"
             />
           </div>
@@ -409,6 +416,10 @@ watch(
         </section>
       </div>
     </div>
+
+    <section class="px-2 py-20">
+      <recommendations />
+    </section>
   </div>
 </template>
 
