@@ -1,5 +1,5 @@
 <template>
-  <section
+  <main
     class="py-16 px-6 md:px-10 bg-surface text-text min-h-screen flex flex-col items-center"
     aria-labelledby="cart-heading"
   >
@@ -14,42 +14,40 @@
     <!-- Cart Grid -->
     <div
       class="max-w-6xl w-full grid lg:grid-cols-[2fr_1fr] gap-10"
-      role="region"
       aria-label="Shopping cart content"
     >
       <!-- 🛍 Cart Items -->
       <section
-        class="space-y-6 bg-background/40 backdrop-blur-md border border-border rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300"
+        class="space-y-3 bg-background/40 backdrop-blur-md  rounded-lg md:p-0 transition-all duration-300"
         aria-label="Cart items"
       >
         <article
           v-for="(item, index) in cartItems"
           :key="item.id || index"
-          class="flex flex-col sm:flex-row sm:items-center gap-6 bg-background border border-border/60 rounded-2xl shadow-sm p-5 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-          role="group"
+          class="relative flex items-start gap-6 bg-background border border-border/60 rounded-lg shadow-sm p-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
           :aria-labelledby="`item-${index}-name`"
         >
           <!-- Product Image -->
-          <div class="relative shrink-0 self-center sm:self-start">
+          <div class="relative shrink-0 self-start sm:self-start">
             <img
               :src="item.image_url"
               :alt="`Image of ${item.name}`"
-              class="w-28 h-28 rounded-xl object-cover group-hover:scale-105 transition-transform duration-300 shadow-md"
+              class="w-20 h-20 sm:w-38 sm:h-30 rounded-lg object-cover group-hover:scale-105 transition-transform duration-300 shadow-md"
               loading="lazy"
             />
           </div>
 
           <!-- Item Info -->
-          <div class="flex flex-col justify-between flex-1 min-w-0">
+          <div class="flex flex-col justify-between flex-1">
             <div>
               <h2
                 :id="`item-${index}-name`"
-                class="text-lg font-semibold text-heading truncate tracking-wide"
+                class="text-sm md:text-lg font-semibold text-heading truncate tracking-wide"
               >
                 {{ item.name }}
               </h2>
               <p
-                class="text-sm text-text/70 mt-1 line-clamp-2"
+                class=" sm:block text-xs md:text-sm text-text/70 mt-1 line-clamp-2"
                 :aria-label="`Description: ${item.short}`"
               >
                 {{ item.description }}
@@ -57,45 +55,45 @@
             </div>
 
             <!-- Price + Quantity -->
-            <div class="mt-4 flex items-center justify-between flex-wrap gap-4">
+            <div class="mt-2 flex items-center justify-between flex-wrap gap-4">
               <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-bold text-accent">${{ item.currentPrice }}</span>
+                <span class="text-base md:text-2xl font-bold text-accent"
+                  >${{ item.currentPrice }}</span
+                >
               </div>
 
               <!-- Quantity + Remove -->
               <div
-                class="flex flex-wrap items-center gap-3 sm:gap-4 sm:flex-nowrap justify-end"
-                role="group"
+                class="flex flex-wrap items-start gap-3 sm:gap-4 sm:flex-nowrap justify-end"
                 :aria-label="`Quantity controls for ${item.name}`"
               >
                 <div class="flex items-center gap-2">
                   <button
                     @click="decreaseQuantity(item)"
-                    class="w-9 h-9 flex items-center justify-center border border-border rounded-lg hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent transition"
+                    class="w-6 h-6 md:w-9 md:h-9 flex items-center justify-center border border-border rounded-lg hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent transition"
                     aria-label="Decrease quantity"
                   >
                     −
                   </button>
-                  <span class="text-heading font-medium w-8 text-center" aria-live="polite">
+                  <span class="text-heading font-medium w-5 md:w-8 text-center" aria-live="polite">
                     {{ item.quantity }}
                   </span>
                   <button
                     @click="increaseQuantity(item)"
-                    class="w-9 h-9 flex items-center justify-center border border-border rounded-lg hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent transition"
+                    class="w-6 h-6 md:w-9 md:h-9 flex items-center justify-center border border-border rounded-lg hover:bg-accent/10 text-heading focus-visible:ring-2 focus-visible:ring-accent transition"
                     aria-label="Increase quantity"
                   >
                     +
                   </button>
                 </div>
-
-                <button
-                  @click="removeFromCart(item.id)"
-                  class="text-sm font-medium px-3 py-1.5 rounded-lg border border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700 transition"
-                >
-                  Remove
-                </button>
               </div>
             </div>
+            <button
+              @click="removeFromCart(item.id)"
+              class="absolute top-1 right-0 text-sm font-medium px-3 py-1.5 rounded-lg  transition"
+            >
+              <IconMdiBinOutline class="scale-120 md:scale-150 text-red-400" size="22" />
+            </button>
           </div>
         </article>
 
@@ -151,7 +149,7 @@
         </div>
       </aside>
     </div>
-  </section>
+  </main>
 </template>
 
 <script setup>
@@ -204,5 +202,4 @@ function click() {
 button {
   transition: all 0.25s ease;
 }
-
 </style>
