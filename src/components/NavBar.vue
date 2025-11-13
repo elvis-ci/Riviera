@@ -9,7 +9,7 @@
     ]"
     role="banner"
   >
-    <div class="relative">
+    <div class="relative max-w-[1440px] mx-auto">
       <div
         class="relative max-w-full mx-auto px-1 sm:px-6 py-2 flex flex-wrap items-center justify-between text-gray-900 dark:text-gray-100"
       >
