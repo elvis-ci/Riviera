@@ -14,9 +14,9 @@ const handleScroll = () => {
   showScrollTop.value = window.scrollY > 200; // show after 200px scroll
 };
 
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+// const scrollToTop = () => {
+//   window.scrollTo({ top: 0, behavior: "smooth" });
+// };
 
 onMounted(async () => {
   // Register scroll listener
