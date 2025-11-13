@@ -132,6 +132,9 @@ const router = createRouter({
       meta: { title: "Riviera | Page Not Found" },
     },
   ],
+  scrollBehavior() {
+  return { top: 0 };
+}
 });
 
 // Automatically set page title
