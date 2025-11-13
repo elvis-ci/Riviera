@@ -51,7 +51,7 @@ watch(
 
 <template>
   <article
-    class="bg-background overflow-hidden  hover:shadow-xl transition-all duration-500 flex flex-col mx-auto"
+    class=" overflow-hidden  hover:shadow-xl transition-all duration-500 flex flex-col mx-auto"
     :class="[style]"
   >
     <!-- Image Section (shorter height now) -->
@@ -69,7 +69,7 @@ watch(
       class="relative z-10 shadow-md sm:py-1 py-1 flex flex-col justify-between"
     >
       <div>
-        <div class="flex w-full justify-between items-center pb-1">
+        <div class="flex w-full px-1 justify-between items-center pb-1">
           <h2 class="text-sm sm:text-base font-semibold text-accent-hover truncate">
             {{ item.name }}
           </h2>
@@ -91,7 +91,7 @@ watch(
 
       <!-- Price + Quantity + Button -->
       <div class="flex flex-col gap-2 mt-1">
-        <div class="flex justify-between items-end">
+        <div class="flex px-1 justify-between items-end">
           <div class="flex flex-col items-start">
             <span class="text-xs sm:text-sm text-text/70">Price</span>
             <div class="flex items-center gap-2">
