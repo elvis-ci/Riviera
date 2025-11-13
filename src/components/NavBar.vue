@@ -1,5 +1,6 @@
 <template>
   <header
+    @click="isMobileMenuOpen = !isMobileMenuOpen"
     :class="[
       'sticky top-0 left-0 w-full z-50 transition-all duration-500 backdrop-blur-md border-b',
       isScrolled
@@ -8,7 +9,7 @@
     ]"
     role="banner"
   >
-    <div class="relative">
+    <div class="relative max-w-[1440px] mx-auto">
       <div
         class="relative max-w-full mx-auto px-1 sm:px-6 py-2 flex flex-wrap items-center justify-between text-gray-900 dark:text-gray-100"
       >
@@ -19,7 +20,7 @@
           aria-label="Go to homepage"
         >
           <img src="@/assets/logo.png" alt="Perfume Brand Logo" class="h-10 w-auto" />
-          <span class="font-semibold text-lg inline font-serif">Riviera</span>
+          <span class="font-semibold text-lg inline font-serif text-accent-hover">Riviera</span>
         </RouterLink>
 
         <!-- Mobile Menu & Theme Toggle -->
@@ -120,6 +121,7 @@
                 v-else
                 ref="settingsButton"
                 @click.stop="toggleSettings"
+                aria-label="account menu"
                 :aria-expanded="isSettingsOpen"
                 aria-haspopup="true"
                 class="text-text hover:text-accent transition-colors flex items-center gap-1 focus-visible:ring-2 focus-visible:ring-accent rounded-md px-2 py-1"
@@ -243,6 +245,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/useCartStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import IconMdiWeatherSunny from "~icons/mdi/weather-sunny";
@@ -257,7 +260,7 @@ import IconMdiLogoutVariant from "~icons/mdi/logout-variant";
 // Auth store (composition store)
 const auth = useAuthStore();
 auth.fetchUser(); // ensure we have the user if already signed in
-
+const router = useRouter();
 // Cart
 const cartStore = useCartStore();
 const cartCount = ref(cartStore.itemCount);
@@ -365,9 +368,11 @@ function onKeydown(e) {
 }
 
 function handleSignOut() {
-  // prefer auth.logout so store can handle supabase signOut + state
   auth.logout();
   isSettingsOpen.value = false;
+  router.push("/");
+  const cached = localStorage.getItem("userData");
+  console.log(cached);
 }
 </script>
 

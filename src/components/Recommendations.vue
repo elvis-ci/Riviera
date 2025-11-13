@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <h2 class="text-3xl sm:text-4xl mb-10 font-semibold text-heading tracking-tight">
+    <h2 class="text-2xl sm:text-4xl mb-10 font-semibold text-heading/80 tracking-tight">
       Explore Our Recommendations
     </h2>
 
@@ -59,9 +59,6 @@
     </div>
   </div>
 
-  <div aria-live="polite" class="....">
-    <p>Form submission failed. Please try again.</p>
-  </div>
 </template>
 
 <script setup>

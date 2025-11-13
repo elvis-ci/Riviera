@@ -1,241 +1,251 @@
 <template>
-  <!-- Hero Section -->
-  <section
-    class="relative flex flex-col md:flex-row items-center justify-between bg-background text-text overflow-hidden min-h-[90vh] max-w-[1400px] lg:mx-auto"
-    :style="mobileBgStyle"
-  >
-    <!-- Overlay for better contrast (mobile only) -->
-    <div
-      class="absolute inset-0 md:hidden bg-gradient-to-t from-background/95 via-background/70 to-transparent z-0"
-    ></div>
-
-    <!-- Left: Text Content -->
-    <div
-      class="relative w-full my-auto md:w-3/5 px-6 sm:px-10 md:px-16 sm:py-20 flex flex-col items-start justify-center md:items-start text-start md:text-left z-10 animate-fadeIn"
+  <main>
+    <!-- Hero Section -->
+    <section
+      class="relative flex flex-col md:flex-row items-center justify-between bg-background text-text overflow-hidden min-h-[90vh] max-w-[1400px] lg:mx-auto"
+      :style="mobileBgStyle"
     >
-      <h1
-        class="text-3xl sm:text-5xl md:text-6xl font-serif font-semibold text-heading leading-tight mb-4"
-      >
-        Timeless <span class="sm:text-accent">Elegance</span> in Every Scent
-      </h1>
-
-      <p
-        class="text-base sm:text-lg md:text-xl text-text/80 max-w-md mx-auto md:mx-0 leading-relaxed mb-8"
-      >
-        Discover fragrances that capture your essence — crafted for those who value sophistication,
-        simplicity, and self-expression.
-      </p>
-
-      <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center md:justify-start">
-        <RouterLink
-          to="/products"
-          class="cta bg-accent hover:bg-accent-hover text-center font-semibold py-3 px-8 rounded-full sm:text-lg shadow-md transition-transform transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-accent/50 w-full sm:w-auto"
-        >
-          Shop Now
-        </RouterLink>
-
-        <RouterLink
-          to="/about"
-          class="border border-border text-center hover:bg-accent/30 hover:border-accent text-heading py-3 px-8 rounded-full text-base sm:text-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent/30 w-full sm:w-auto !important"
-        >
-          Learn More
-        </RouterLink>
-      </div>
-    </div>
-
-    <!-- Right: Hero Image -->
-    <div
-      class="hidden md:block relative sm:w-full md:w-2/5 h-[60vh] lg:h-screen overflow-hidden rounded-none md:rounded-l-2xl z-10"
-      role="img"
-      aria-label="Luxury perfume bottle display"
-    >
-      <img
-        :src="heroImg"
-        alt="Luxury fragrance bottles on a marble table"
-        class="absolute w-fit h-full mx-auto scale-120 object-cover object-center transform transition-transform duration-[2000ms] ease-out"
-      />
+      <!-- Overlay for better contrast (mobile only) -->
       <div
-        class="absolute inset-0 bg-gradient-to-l from-background/70 via-transparent to-background/30"
+        class="absolute inset-0 md:hidden bg-gradient-to-t from-background/95 via-background/70 to-transparent z-0"
       ></div>
-    </div>
 
-    <!-- Decorative Gradient Line -->
-    <div
-      class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-border to-transparent opacity-70 hidden md:block"
-      aria-hidden="true"
-    ></div>
-  </section>
-
-  <!-- Featured Fragrances Section -->
-  <section class="py-16 sm:py-20 bg-surface sm:px-6" aria-labelledby="featured-heading">
-    <div class="max-w-7xl mx-auto text-center mb-10 sm:mb-12">
-      <h2 id="featured-heading" class="text-4xl sm:text-5xl font-heading text-heading mb-4 tracking-tight">
-        Best Deals
-      </h2>
-      <p class="text-text/80 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
-        Indulge in our curated collection of captivating fragrances, each telling its own unique
-        story.
-      </p>
-    </div>
-    <Featured />
-  </section>
-
-  <section
-    class="py-24 sm:px-6 text-text bg-background relative overflow-hidden"
-    aria-labelledby="fragrance-categories-heading"
-  >
-    <div class="max-w-7xl mx-auto relative z-10 text-center mb-16">
-      <h2
-        id="fragrance-categories-heading"
-        class="text-4xl sm:text-5xl font-heading text-heading mb-4 tracking-tight"
+      <!-- Left: Text Content -->
+      <div
+        class="relative w-full my-auto md:w-3/5 px-6 sm:px-10 md:px-16 sm:py-20 flex flex-col items-start justify-center md:items-start text-start md:text-left z-10 animate-fadeIn"
       >
-        Explore Fragrance Categories
-      </h2>
-      <p class="text-text/90 text-lg max-w-2xl mx-auto">
-        From floral elegance to woody allure — find a scent that speaks to your essence.
-      </p>
-    </div>
-    <Categories />
-  </section>
+        <h1
+          class="text-3xl sm:text-5xl md:text-6xl font-serif font-semibold text-heading leading-tight mb-4"
+        >
+          Timeless <span class="sm:text-accent">Elegance</span> in Every Scent
+        </h1>
 
-  <!-- 🪞 Brand Story -->
-  <section class="py-20 bg-surface text-text">
-    <div class="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-10">
-      <div class="w-full md:w-1/2">
-        <img
-          src="@/assets/img/amber.jpg"
-          alt="Perfume artisan crafting fragrance"
-          class="rounded-2xl shadow-lg object-cover w-full h-[400px]"
-        />
-      </div>
-
-      <div class="w-full md:w-1/2 space-y-6">
-        <h2 class="text-3xl sm:text-4xl font-heading text-heading">The Art Behind the Scent</h2>
-        <p class="text-text/80 leading-relaxed">
-          At <span class="font-semibold text-accent">Echelon Fragrances</span>, we believe every
-          scent tells a story. Our artisans blend rare ingredients from around the world to create
-          perfumes that celebrate individuality, elegance, and timeless sophistication.
+        <p
+          class="text-base sm:text-lg md:text-xl text-text/80 max-w-md mx-auto md:mx-0 leading-relaxed mb-8"
+        >
+          Discover fragrances that capture your essence — crafted for those who value
+          sophistication, simplicity, and self-expression.
         </p>
-        <RouterLink
-          to="/about"
-          class="cta inline-block bg-accent font-semibold py-3 px-8 rounded-lg hover:bg-accent-hover transition-all focus:outline-none focus:ring-4 focus:ring-accent/50"
+
+        <div
+          class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center md:justify-start"
         >
-          Discover Our Story
-        </RouterLink>
+          <RouterLink
+            to="/products"
+            class="cta bg-accent hover:bg-accent-hover text-center font-semibold py-3 px-8 rounded-full sm:text-lg shadow-md transition-transform transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-accent/50 w-full sm:w-auto"
+          >
+            Shop Now
+          </RouterLink>
+
+          <RouterLink
+            to="/about"
+            class="border border-border text-center hover:bg-accent/30 hover:border-accent text-heading py-3 px-8 rounded-full text-base sm:text-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent/30 w-full sm:w-auto !important"
+          >
+            Learn More
+          </RouterLink>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <!-- 💎 Testimonials -->
-  <section class="py-20 bg-background text-text relative" aria-labelledby="testimonial-heading">
-    <div class="max-w-6xl mx-auto px-6 text-center">
-      <h2 id="testimonial-heading" class="text-3xl sm:text-4xl font-heading text-heading mb-10">
-        What Our Customers Say
-      </h2>
-
-      <div class="grid gap-10 md:grid-cols-3">
-        <article class="p-6 bg-surface rounded-2xl shadow-md">
-          <p class="italic text-text/80 mb-4">
-            “Every fragrance feels like it was made just for me. The attention to detail is
-            unmatched.”
-          </p>
-          <h3 class="font-semibold text-heading">— Ada O., Lagos</h3>
-        </article>
-
-        <article class="p-6 bg-surface rounded-2xl shadow-md">
-          <p class="italic text-text/80 mb-4">
-            “I’ve never had so many compliments on a scent before. Truly luxurious and
-            long-lasting.”
-          </p>
-          <h3 class="font-semibold text-heading">— James K., Abuja</h3>
-        </article>
-
-        <article class="p-6 bg-surface rounded-2xl shadow-md">
-          <p class="italic text-text/80 mb-4">
-            “The packaging, the aroma, the experience — everything speaks sophistication.”
-          </p>
-          <h3 class="font-semibold text-heading">— Ifeoma A., Port Harcourt</h3>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="py-20 bg-background text-text" aria-labelledby="faq-heading">
-    <div class="max-w-4xl mx-auto px-6">
-      <h2 id="faq-heading" class="text-3xl sm:text-4xl font-heading text-heading mb-8 text-center">
-        Frequently Asked Questions
-      </h2>
-
-      <div class="space-y-6">
-        <details class="faq-item border-b border-border pb-4">
-          <summary class="cursor-pointer font-medium text-heading focus:outline-accent">
-            How long do your fragrances last?
-          </summary>
-          <div class="faq-content">
-            <p class="mt-2 text-text/80 leading-relaxed">
-              Our fragrances are designed to last 6–8 hours depending on your skin type and
-              environment.
-            </p>
-          </div>
-        </details>
-
-        <details class="faq-item border-b border-border pb-4">
-          <summary class="cursor-pointer font-medium text-heading focus:outline-accent">
-            Are your perfumes unisex?
-          </summary>
-          <div class="faq-content">
-            <p class="mt-2 text-text/80 leading-relaxed">
-              Yes. We design scents that transcend gender — elegant, expressive, and balanced for
-              everyone.
-            </p>
-          </div>
-        </details>
-
-        <details class="faq-item border-b border-border pb-4">
-          <summary class="cursor-pointer font-medium text-heading focus:outline-accent">
-            Do you offer international shipping?
-          </summary>
-          <div class="faq-content">
-            <p class="mt-2 text-text/80 leading-relaxed">
-              We currently ship across Africa, Europe, and North America with reliable global
-              logistics partners.
-            </p>
-          </div>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- Newsletter -->
-  <section class="py-16 md:py-20 bg-secondary/10 text-center px-6">
-    <div class="max-w-2xl mx-auto space-y-6">
-      <h3 class="text-2xl sm:text-3xl md:text-4xl font-heading text-heading">
-        Join Our Inner Circle
-      </h3>
-      <p class="text-text/80 text-base sm:text-lg max-w-lg mx-auto">
-        Get early access to exclusive launches, private sales, and scent stories from our atelier.
-      </p>
-
-      <form
-        class="flex flex-col sm:flex-row gap-4 justify-center items-center"
-        aria-label="Subscribe to our newsletter"
+      <!-- Right: Hero Image -->
+      <div
+        class="hidden md:block relative sm:w-full md:w-2/5 h-[60vh] lg:h-screen overflow-hidden rounded-none md:rounded-l-2xl z-10"
+        role="img"
+        aria-label="Luxury perfume bottle display"
       >
-        <input
-          type="email"
-          placeholder="Enter your email"
-          aria-label="Email address"
-          class="w-full sm:w-80 p-3 rounded-lg border border-border bg-background text-text focus:ring-2 focus:ring-accent focus:outline-none placeholder:text-text/50"
+        <img
+          :src="heroImg"
+          alt="Luxury fragrance bottles on a marble table"
+          class="absolute w-fit h-full mx-auto scale-120 object-cover object-center transform transition-transform duration-[2000ms] ease-out"
         />
-        <button
-          type="submit"
-          class="bg-accent hover:bg-accent-hover text-white font-semibold py-3 px-8 rounded-lg transition-all focus:outline-none focus:ring-4 focus:ring-accent/50 w-full sm:w-auto"
+        <div
+          class="absolute inset-0 bg-gradient-to-l from-background/70 via-transparent to-background/30"
+        ></div>
+      </div>
+
+      <!-- Decorative Gradient Line -->
+      <div
+        class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-border to-transparent opacity-70 hidden md:block"
+        aria-hidden="true"
+      ></div>
+    </section>
+
+    <!-- Featured Fragrances Section -->
+    <section class="py-16 sm:py-20 bg-surface sm:px-6" aria-labelledby="featured-heading">
+      <div class="max-w-7xl mx-auto text-center mb-10 sm:mb-12">
+        <h2
+          id="featured-heading"
+          class="text-4xl sm:text-5xl font-heading text-heading mb-4 tracking-tight"
         >
-          Subscribe
-        </button>
-      </form>
-    </div>
-  </section>
+          Best Deals
+        </h2>
+        <p class="text-text/80 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+          Indulge in our curated collection of captivating fragrances, each telling its own unique
+          story.
+        </p>
+      </div>
+      <Featured />
+    </section>
+
+    <section
+      class="py-24 sm:px-6 text-text bg-background relative overflow-hidden"
+      aria-labelledby="fragrance-categories-heading"
+    >
+      <div class="max-w-7xl mx-auto relative z-10 text-center mb-16">
+        <h2
+          id="fragrance-categories-heading"
+          class="text-4xl sm:text-5xl font-heading text-heading mb-4 tracking-tight"
+        >
+          Explore Fragrance Categories
+        </h2>
+        <p class="text-text/90 text-lg max-w-2xl mx-auto">
+          From floral elegance to woody allure — find a scent that speaks to your essence.
+        </p>
+      </div>
+      <Categories />
+    </section>
+
+    <!-- 🪞 Brand Story -->
+    <section class="py-20 bg-surface text-text">
+      <div class="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-10">
+        <div class="w-full md:w-1/2">
+          <img
+            src="@/assets/img/amber.jpg"
+            alt="Perfume artisan crafting fragrance"
+            class="rounded-2xl shadow-lg object-cover w-full h-[400px]"
+          />
+        </div>
+
+        <div class="w-full md:w-1/2 space-y-6">
+          <h2 class="text-3xl sm:text-4xl font-heading text-heading">The Art Behind the Scent</h2>
+          <p class="text-text/80 leading-relaxed">
+            At <span class="font-semibold text-accent-hover">Echelon Fragrances</span>, we believe
+            every scent tells a story. Our artisans blend rare ingredients from around the world to
+            create perfumes that celebrate individuality, elegance, and timeless sophistication.
+          </p>
+          <RouterLink
+            to="/about"
+            class="cta inline-block bg-accent font-semibold py-3 px-8 rounded-lg hover:bg-accent-hover transition-all focus:outline-none focus:ring-4 focus:ring-accent/50"
+          >
+            Discover Our Story
+          </RouterLink>
+        </div>
+      </div>
+    </section>
+
+    <!-- 💎 Testimonials -->
+    <section class="py-20 bg-background text-text relative" aria-labelledby="testimonial-heading">
+      <div class="max-w-6xl mx-auto px-6 text-center">
+        <h2 id="testimonial-heading" class="text-3xl sm:text-4xl font-heading text-heading mb-10">
+          What Our Customers Say
+        </h2>
+
+        <div class="grid gap-10 md:grid-cols-3">
+          <article class="p-6 bg-surface rounded-2xl shadow-md">
+            <p class="italic text-text/80 mb-4">
+              “Every fragrance feels like it was made just for me. The attention to detail is
+              unmatched.”
+            </p>
+            <h3 class="font-semibold text-heading">— Ada O., Lagos</h3>
+          </article>
+
+          <article class="p-6 bg-surface rounded-2xl shadow-md">
+            <p class="italic text-text/80 mb-4">
+              “I’ve never had so many compliments on a scent before. Truly luxurious and
+              long-lasting.”
+            </p>
+            <h3 class="font-semibold text-heading">— James K., Abuja</h3>
+          </article>
+
+          <article class="p-6 bg-surface rounded-2xl shadow-md">
+            <p class="italic text-text/80 mb-4">
+              “The packaging, the aroma, the experience — everything speaks sophistication.”
+            </p>
+            <h3 class="font-semibold text-heading">— Ifeoma A., Port Harcourt</h3>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-20 bg-background text-text" aria-labelledby="faq-heading">
+      <div class="max-w-4xl mx-auto px-6">
+        <h2
+          id="faq-heading"
+          class="text-3xl sm:text-4xl font-heading text-heading mb-8 text-center"
+        >
+          Frequently Asked Questions
+        </h2>
+
+        <div class="space-y-6">
+          <details class="faq-item border-b border-border pb-4">
+            <summary class="cursor-pointer font-medium text-heading focus:outline-accent">
+              How long do your fragrances last?
+            </summary>
+            <div class="faq-content">
+              <p class="mt-2 text-text/80 leading-relaxed">
+                Our fragrances are designed to last 6–8 hours depending on your skin type and
+                environment.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item border-b border-border pb-4">
+            <summary class="cursor-pointer font-medium text-heading focus:outline-accent">
+              Are your perfumes unisex?
+            </summary>
+            <div class="faq-content">
+              <p class="mt-2 text-text/80 leading-relaxed">
+                Yes. We design scents that transcend gender — elegant, expressive, and balanced for
+                everyone.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item border-b border-border pb-4">
+            <summary class="cursor-pointer font-medium text-heading focus:outline-accent">
+              Do you offer international shipping?
+            </summary>
+            <div class="faq-content">
+              <p class="mt-2 text-text/80 leading-relaxed">
+                We currently ship across Africa, Europe, and North America with reliable global
+                logistics partners.
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-16 md:py-20 bg-secondary/10 text-center px-6">
+      <div class="max-w-2xl mx-auto space-y-6">
+        <h3 class="text-2xl sm:text-3xl md:text-4xl font-heading text-heading">
+          Join Our Inner Circle
+        </h3>
+        <p class="text-text/80 text-base sm:text-lg max-w-lg mx-auto">
+          Get early access to exclusive launches, private sales, and scent stories from our atelier.
+        </p>
+
+        <form
+          class="flex flex-col sm:flex-row gap-4 justify-center items-center"
+          aria-label="Subscribe to our newsletter"
+        >
+          <input
+            type="email"
+            placeholder="Enter your email"
+            aria-label="Email address"
+            class="w-full sm:w-80 p-3 rounded-lg border border-border bg-background text-text focus:ring-2 focus:ring-accent focus:outline-none placeholder:text-text/50"
+          />
+          <button
+            type="submit"
+            class="bg-accent hover:bg-accent-hover text-white font-semibold py-3 px-8 rounded-lg transition-all focus:outline-none focus:ring-4 focus:ring-accent/50 w-full sm:w-auto"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
 </template>
 
 <script setup>

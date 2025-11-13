@@ -1,6 +1,6 @@
 <template>
   <footer class="bg-surface text-text border-t border-border py-12 px-6">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-10">
+    <div class="max-w-[1440px] mx-auto grid md:grid-cols-4 gap-10">
       <!-- Brand Section -->
       <div class="space-y-4">
         <RouterLink to="/" class="flex items-center gap-2" aria-label="Go to homepage">
