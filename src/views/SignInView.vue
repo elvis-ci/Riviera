@@ -82,7 +82,7 @@
         <button
           type="submit"
           class="w-full bg-accent hover:bg-accent-hover text-white font-semibold py-2.5 rounded-lg shadow-md focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 transition-all duration-200"
-          :aria-busy="loading"
+          :aria-busy="isLoading"
         >
           <span v-if="!isLoading">Sign In</span>
           <span v-else class="inline-flex items-center gap-2 justify-center">
