@@ -10,24 +10,62 @@ export const useAuthStore = defineStore("UseAuthStore", () => {
 
   // -- actions --
   const fetchUser = async () => {
-    loading.value = true;
-    const { data, error } = await supabase.auth.getUser();
-    user.value = data?.user || null;
-    loading.value = false;
-    console.log(user);
-    if (error) console.log("fetch user error:", error);
+    try {
+      // Check cache first
+      const cachedUser = localStorage.getItem("userData");
+      if (cachedUser) {
+        user.value = JSON.parse(cachedUser); // Already formatted
+        return;
+      }
+
+      //Fetch user from Supabase
+      loading.value = true;
+      const { data, error } = await supabase.auth.getUser();
+      loading.value = false;
+
+      if (error || !data?.user) throw new Error(error?.message || "No user found");
+
+      const userData = data.user;
+      const date = new Date(userData.created_at);
+
+      // Format user data
+      const formattedUser = {
+        name: userData.user_metadata?.name || "No Name",
+        email: userData.user_metadata?.email || "No Email",
+        phone: userData.user_metadata?.phone || "012345678",
+        address: userData.user_metadata?.address || "5, plutomania",
+        joined: `${date.toLocaleString("default", { month: "long" })} ${date.getFullYear()}`,
+      };
+
+      // Assign to reactive state
+      user.value = formattedUser;
+
+      //Cache the formatted user
+      localStorage.setItem("userData", JSON.stringify(formattedUser));
+    } catch (err) {
+      errorMsg.value = `Error fetching user: ${err.message}`;
+      user.value = null;
+      localStorage.removeItem("userData");
+      loading.value = false;
+    }
   };
 
   const signInWithGoogle = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + "/",
-      },
-    });
-    if (error) errorMsg.value = error.message;
-    user.value = data.user;
-    return data;
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + "/",
+        },
+      });
+
+      if (error) {
+        errorMsg.value = error.message;
+        return;
+      }
+    } catch (err) {
+      errorMsg.value = err.message;
+    }
   };
 
   const signUpWithEmail = async (email, password, name) => {
@@ -69,9 +107,11 @@ export const useAuthStore = defineStore("UseAuthStore", () => {
       errorMsg.value = err.message;
     }
   };
+
   const logout = async () => {
     await supabase.auth.signOut();
     user.value = null;
+    localStorage.removeItem("userData");
   };
 
   // --- Auth listener (optional but recommended) ---
