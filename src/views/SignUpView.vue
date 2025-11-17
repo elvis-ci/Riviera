@@ -193,7 +193,6 @@ const handleSignUp = async () => {
   if (!auth.errorMsg) {
     isLoading.value = false;
     isConfirmationSent.value = true;
-    console.log("Signup successful", "user:", auth.data);
   } else {
     isLoading.value = false;
     console.log("error:", auth.errorMsg);

@@ -213,7 +213,7 @@
               </RouterLink>
 
               <button
-                @click="auth.logout"
+                @click="handleSignOut"
                 class="flex gap-2 items-center p-3 mt-4 text-center font-semibold bg-accent text-white hover:bg-accent-hover transition-colors"
               >
                 <IconMdiLogout aria-hidden="true" size="22" />
@@ -259,7 +259,6 @@ import IconMdiLogoutVariant from "~icons/mdi/logout-variant";
 
 // Auth store (composition store)
 const auth = useAuthStore();
-auth.fetchUser(); // ensure we have the user if already signed in
 const router = useRouter();
 // Cart
 const cartStore = useCartStore();
@@ -288,14 +287,6 @@ function handleClickOutsideNav(event) {
     isMobileMenuOpen.value = false;
   }
 }
-
-onMounted(() => {
-  document.addEventListener("click", handleClickOutsideNav);
-});
-
-onUnmounted(() => {
-  document.removeEventListener("click", handleClickOutsideNav);
-});
 
 // new: settings dropdown state + refs
 const isSettingsOpen = ref(false);
@@ -341,12 +332,15 @@ onMounted(() => {
   document.addEventListener("click", onDocumentClick);
   // close with Escape key
   document.addEventListener("keydown", onKeydown);
+
+  document.addEventListener("click", handleClickOutsideNav);
 });
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
   document.removeEventListener("click", onDocumentClick);
   document.removeEventListener("keydown", onKeydown);
+  document.removeEventListener("click", handleClickOutsideNav);
 });
 
 function toggleSettings() {
@@ -367,12 +361,12 @@ function onKeydown(e) {
   if (e.key === "Escape") isSettingsOpen.value = false;
 }
 
-function handleSignOut() {
-  auth.logout();
+async function handleSignOut() {
+  console.log("Sign out clicked", auth.user); // debug
+  await auth.logout();
+  console.log("After logout", auth.user);
   isSettingsOpen.value = false;
-  router.push("/");
-  const cached = localStorage.getItem("userData");
-  console.log(cached);
+  router.push("/signIn");
 }
 </script>
 
