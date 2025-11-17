@@ -10,10 +10,10 @@
     >
       <!-- Heading -->
       <div class="text-center">
-        <h1 id="signin-heading" class="text-3xl sm:text-4xl font-bold text-heading mb-2">
+        <h1 id="signin-heading" class="text-xl sm:text-4xl font-bold text-heading mb-2">
           Welcome Back
         </h1>
-        <p id="signin-description" class="text-text/80 text-sm">
+        <p id="signin-description" class="text-text/80 text-xs sm:text-sm">
           Sign in to continue to your account
         </p>
       </div>
@@ -22,7 +22,9 @@
       <form @submit.prevent="handleSignIn" class="space-y-5">
         <!-- Email -->
         <div class="flex flex-col">
-          <label for="email" class="text-sm font-medium text-heading mb-1"> Email Address </label>
+          <label for="email" class="text-xs sm:text-sm font-semibold text-heading mb-1">
+            Email
+          </label>
           <input
             id="email"
             v-model="email"
@@ -36,12 +38,14 @@
 
         <!-- Password -->
         <div class="flex flex-col">
-          <label for="password" class="text-sm font-medium text-heading mb-1"> Password </label>
+          <label for="password" class="text-xs sm:text-sm font-semibold text-heading mb-1">
+            Password
+          </label>
           <div class="flex items-center relative">
             <input
               v-model="password"
               id="password"
-              :type="isPasswordVisible ? 'text' : 'password'" 
+              :type="isPasswordVisible ? 'text' : 'password'"
               minlength="8"
               required
               placeholder="enter your password"
@@ -68,11 +72,11 @@
               class="accent-accent w-4 h-4 rounded"
               aria-label="Remember me"
             />
-            Remember me
+            <span class="text-sm"> Remember me </span>
           </label>
           <router-link
             to="/forgot-password"
-            class="text-accent hover:text-accent-hover font-medium focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-md"
+            class="text-accent text-xs hover:text-accent-hover font-medium focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-md"
           >
             Forgot password?
           </router-link>
@@ -143,7 +147,7 @@ const email = ref("");
 const password = ref("");
 const rememberMe = ref(true);
 const isLoading = ref(false);
-const isPasswordVisible = ref(false)
+const isPasswordVisible = ref(false);
 
 async function handleSignIn() {
   isLoading.value = true;
@@ -151,7 +155,7 @@ async function handleSignIn() {
   if (!auth.errorMsg) {
     isLoading.value = false;
     router.push("/");
-    console.log("Signup successful", "user:", auth.user);
+    // console.log("Signup successful", "user:", auth.userProfile);
   } else {
     isLoading.value = false;
     console.log("error:", auth.errorMsg);
@@ -159,8 +163,9 @@ async function handleSignIn() {
 }
 
 function togglePasswordVisibility() {
-  isPasswordVisible.value = !isPasswordVisible.value
+  isPasswordVisible.value = !isPasswordVisible.value;
 }
+
 function handleSignInWithGoogle() {
   auth.signInWithGoogle();
 }
