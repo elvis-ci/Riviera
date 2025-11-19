@@ -37,10 +37,17 @@ export const useCartStore = defineStore("cartStore", () => {
   };
 
   // --- Getters ---
-  const cartTotal = computed(() => {
-    const total = cartItems.value.reduce((sum, item) => sum + item.currentPrice * item.quantity, 0);
+  const cartSubTotal = computed(() =>
+    cartItems.value.reduce((sum, item) => {
+      return sum + item.currentPrice * item.quantity;
+    }, 0)
+  );
 
-    return generalDiscount.value > 0 ? total - total * (generalDiscount.value / 100) : total;
+  const cartTotal = computed(() => {
+    const subtotal = cartSubTotal.value; // number
+    const discount = generalDiscount.value; // percent number
+
+    return discount > 0 ? subtotal - subtotal * (discount / 100) : subtotal;
   });
 
   const itemCount = computed(() => cartItems.value.reduce((sum, item) => sum + item.quantity, 0));
@@ -49,6 +56,7 @@ export const useCartStore = defineStore("cartStore", () => {
     cartItems,
     loading,
     generalDiscount,
+    cartSubTotal,
     cartTotal,
     itemCount,
     addToCart,

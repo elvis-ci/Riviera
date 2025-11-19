@@ -249,12 +249,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onBeforeUnmount } from "vue";
+import { ref, computed, onBeforeUnmount, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import { useFragranceStore } from "@/stores/useFragranceStore";
 import Categories from "@/components/Categories.vue";
 import Featured from "@/components/Featured.vue";
 import heroImg from "@/assets/img/chat.png";
+import { useAuthStore } from "@/stores/useAuthStore";
+
+const auth = useAuthStore();
 
 const isMobile = ref(window.innerWidth < 768);
 const mobileBgStyle = computed(() =>
@@ -266,6 +269,11 @@ const mobileBgStyle = computed(() =>
       }
     : {}
 );
+
+onMounted(() => {
+  console.log("user data:", auth.user)
+  console.log("user profie data:", auth.userProfile)
+});
 
 const handleResize = () => {
   isMobile.value = window.innerWidth < 768;
