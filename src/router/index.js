@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,11 +89,17 @@ const router = createRouter({
       path: "/signout",
       name: "signout",
       beforeEnter: (to, from, next) => {
-        // Example sign-out logic (adjust if using Supabase or Firebase)
-        localStorage.removeItem("user");
         next("/signin");
       },
       meta: { title: "Signing Out..." },
+    },
+
+    // checkout
+    {
+      path: "/checkout",
+      name: "checkout",
+      component: () => import("../views/CheckoutView.vue"),
+      meta: { requiresAuth: true, title: "Checkout" },
     },
 
     // Admin Dashboard
@@ -102,7 +109,7 @@ const router = createRouter({
       component: () => import("../views/AdminView.vue"),
       meta: {
         requiresAuth: true,
-        requiresAdmin: true
+        requiresAdmin: true,
       },
       children: [
         {
@@ -137,14 +144,40 @@ const router = createRouter({
     },
   ],
   scrollBehavior() {
-  return { top: 0 };
-}
+    return { top: 0 };
+  },
 });
 
-// Automatically set page title
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  // 1. Always set the document title first
   document.title = to.meta.title || "Riviera";
+
+  const auth = useAuthStore();
+  const user = await auth.userProfile;
+  const requiresAuth = to.meta.requiresAuth;
+  const requiresAdmin = to.meta.requiresAdmin;
+
+  // --- Authentication Check ---
+  if (requiresAuth && !user) {
+    // If auth is required but the user is not logged in, redirect to signin.
+    next({ name: "signin" });
+    return;
+  }
+
+  // --- Admin/Role Check (Only runs if user is logged in) ---
+  if (requiresAdmin) {
+    if (user?.role === "admin") {
+      // User is logged in and is an admin, allow navigation.
+      next();
+      return;
+    } else {
+      // User is logged in but is NOT an admin, redirect to home.
+      next({ name: "home" });
+      return;
+    }
+  }
+
+  // --- Default: Allow navigation ---
   next();
 });
-
 export default router;

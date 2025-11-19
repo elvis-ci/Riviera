@@ -1,7 +1,6 @@
 <template>
   <section
     class="min-h-screen my-5 flex items-center justify-center bg-background text-text px-6 sm:px-10"
-    aria-labelledby="signin-heading"
   >
     <div
       class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg p-8 sm:p-10 space-y-6"
@@ -57,8 +56,8 @@
               @click="togglePasswordVisibility"
               class="absolute right-4 text-text/70"
             >
-              <IconMdiEye v-if="isPasswordVisible" />
-              <IconMdiEyeOff v-else />
+              <IconMdiEye aria-label="Hide Password" v-if="isPasswordVisible" />
+              <IconMdiEyeOff aria-label="Show Password" v-else />
             </button>
           </div>
         </div>
@@ -80,6 +79,18 @@
           >
             Forgot password?
           </router-link>
+        </div>
+
+        <!-- Error Message (Live Region) -->
+        <div
+          v-if="errorMsg"
+          ref="errorRef"
+          tabindex="-1"
+          role="alert"
+          aria-live="assertive"
+          class="text-red-600 font-semibold text-sm sm:text-base mt-2 text-center"
+        >
+          {{ errorMsg }}
         </div>
 
         <!-- Sign In Button -->
@@ -111,7 +122,7 @@
         <button
           @click="handleSignInWithGoogle"
           type="button"
-          class="w-full border text- border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-surface transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          class="w-full border border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-surface transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -137,28 +148,44 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/useAuthStore.js";
 
 const auth = useAuthStore();
 const router = useRouter();
+
 const email = ref("");
 const password = ref("");
 const rememberMe = ref(true);
-const isLoading = ref(false);
+const isLoading = ref(auth.loading);
 const isPasswordVisible = ref(false);
+const errorMsg = ref(null);
+const errorRef = ref(null);
+
+// handle signout when after signinpage loads this prevents showing no user before the redirect
+onMounted(async () => {
+  const logoutFlag = new URLSearchParams(window.location.search).get("logout");
+  if (logoutFlag) {
+    await auth.logout();
+  }
+});
 
 async function handleSignIn() {
   isLoading.value = true;
   await auth.signInWithEmail(email.value, password.value, rememberMe.value);
+
   if (!auth.errorMsg) {
+    errorMsg.value = null;
     isLoading.value = false;
-    router.push("/");
-    // console.log("Signup successful", "user:", auth.userProfile);
+    window.location.href = "/";
   } else {
+    errorMsg.value = auth.errorMsg;
     isLoading.value = false;
     console.log("error:", auth.errorMsg);
+
+    // Focus live region for screen readers
+    nextTick(() => errorRef.value?.focus());
   }
 }
 

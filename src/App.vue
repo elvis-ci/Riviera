@@ -27,8 +27,6 @@ onMounted(async () => {
 
   // Fetch fragrances (only once when app mounts)
   await fragranceStore.fetchFragrances();
-  await auth.restoreSession();
-  auth.initAuthListener();
 });
 
 onUnmounted(() => {

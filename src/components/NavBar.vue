@@ -264,6 +264,7 @@ const router = useRouter();
 const cartStore = useCartStore();
 const cartCount = ref(cartStore.itemCount);
 const animate = ref(false);
+const isLoading = ref(false);
 
 watch(
   () => cartStore.itemCount,
@@ -362,11 +363,17 @@ function onKeydown(e) {
 }
 
 async function handleSignOut() {
-  console.log("Sign out clicked", auth.user); // debug
-  await auth.logout();
-  console.log("After logout", auth.user);
+  // isSettingsOpen.value = false;
+
+  // // Logout without waiting for reactivity to fire
+  // await auth.logout();
+
+  // // Instant redirect — prevents UI flicker
+  // window.location.href = "/signIn";
   isSettingsOpen.value = false;
-  router.push("/signIn");
+
+  // redirects before logout completes to prevent flicker
+  window.location.assign("/signIn?logout=1");
 }
 </script>
 
