@@ -18,7 +18,7 @@
     >
       <!-- 🛍 Cart Items -->
       <section
-        class="space-y-3 bg-background/40 backdrop-blur-md  rounded-lg md:p-0 transition-all duration-300"
+        class="space-y-3 bg-background/40 backdrop-blur-md rounded-lg md:p-0 transition-all duration-300"
         aria-label="Cart items"
       >
         <article
@@ -47,7 +47,7 @@
                 {{ item.name }}
               </h2>
               <p
-                class=" sm:block text-xs md:text-sm text-text/70 mt-1 line-clamp-2"
+                class="sm:block text-xs md:text-sm text-text/70 mt-1 line-clamp-2"
                 :aria-label="`Description: ${item.short}`"
               >
                 {{ item.description }}
@@ -90,7 +90,7 @@
             </div>
             <button
               @click="removeFromCart(item.id)"
-              class="absolute top-1 right-0 text-sm font-medium px-3 py-1.5 rounded-lg  transition"
+              class="absolute top-1 right-0 text-sm font-medium px-3 py-1.5 rounded-lg transition"
             >
               <IconMdiBinOutline class="scale-120 md:scale-150 text-red-400" size="22" />
             </button>
@@ -117,19 +117,19 @@
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
             <span>Subtotal</span>
-            <span class="font-medium">${{ subtotal.toFixed(2) }}</span>
+            <span class="font-medium">${{ subtotal }}</span>
           </div>
           <div class="flex justify-between">
             <span>Discount</span>
             <span class="font-medium text-green-700"
-              >${{ cartStore.generalDiscount.toFixed(2) }}</span
+              >${{ discount }}</span
             >
           </div>
           <div
             class="flex justify-between border-t border-border pt-3 text-base font-semibold text-heading"
           >
             <span>Total</span>
-            <span aria-label="Total price">${{ total.toFixed(2) }}</span>
+            <span aria-label="Total price">${{ total }}</span>
           </div>
         </div>
 
@@ -140,12 +140,12 @@
           >
             Clear Cart
           </button>
-          <button
-            @click="checkout"
-            class="w-full sm:w-1/2 px-6 py-2 bg-accent text-white font-medium rounded-lg shadow-md hover:bg-accent/90 transition"
+          <router-link
+            to="/checkout"
+            class="cta w-full sm:w-1/2 px-6 py-2 bg-accent text-center text-white font-medium rounded-lg shadow-md hover:bg-accent/90 transition"
           >
             Checkout
-          </button>
+          </router-link>
         </div>
       </aside>
     </div>
@@ -159,10 +159,9 @@ import { useCartStore } from "@/stores/useCartStore";
 const cartStore = useCartStore();
 const cartItems = computed(() => cartStore.cartItems || []);
 
-const subtotal = computed(() =>
-  cartItems.value.reduce((sum, item) => sum + item.currentPrice * item.quantity, 0)
-);
-const total = computed(() => cartStore.cartTotal);
+const subtotal = computed(() => cartStore.cartSubTotal.toFixed(2));
+const total = computed(() => cartStore.cartTotal.toFixed(2));
+const discount = computed(() => cartStore.generalDiscount.toFixed(2));
 
 function increaseQuantity(item) {
   cartStore.updateQuantity(item.id, item.quantity + 1);
@@ -192,6 +191,10 @@ function click() {
 </script>
 
 <style scoped>
+.cta {
+  color: white;
+}
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
