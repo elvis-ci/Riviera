@@ -1,15 +1,18 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const auth = useAuthStore();
-auth.fetchUser();
 // User data
-const user = computed(() => auth.user);
+const user = computed(() => auth.userProfile);
+
+onMounted(() => {
+  console.log(user.value);
+});
+
 // Form state
 const editing = ref(false);
-const form = ref({ ...user.value });
-
+const form = ref(null);
 // Sidebar / Tabs
 const tabs = ["Profile", "Favorites", "Orders", "Account Settings"];
 const currentTab = ref("Profile");
@@ -19,11 +22,27 @@ function toggleEdit() {
   form.value = { ...user.value };
 }
 
-function saveProfile() {
-  user.value = { ...form.value };
-  editing.value = false;
-  alert("Profile updated successfully!");
+async function saveProfile() {
+  console.log("Saving profile:", form.value);
+  try {
+    await auth.updateUserProfile(form.value);
+    editing.value = false;
+    alert("Profile updated successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update.");
+  }
 }
+
+watch(
+  user,
+  (val) => {
+    if (val) {
+      form.value = { ...val };
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -62,11 +81,20 @@ function saveProfile() {
           <div
             class="w-24 h-24 md:w-28 md:h-28 rounded-full bg-accent/20 flex items-center justify-center text-4xl font-bold text-accent"
           >
-            {{ user.name.charAt(0) }}
+            {{ user.full_name.charAt(0) }}
           </div>
-          <h2 class="mt-4 text-2xl font-semibold text-heading text-center">{{ user.name }}</h2>
+          <h2 class="mt-4 text-2xl font-semibold text-heading text-center">{{ user.full_name }}</h2>
           <p class="text-text/70">{{ user.email }}</p>
-          <p class="text-sm text-text/60 mt-1 text-center">Member since {{ user.joined }}</p>
+          <p>
+            <span class="text-text/70 text-sm"> Joined </span>
+            <span>
+              {{
+                `${new Date(user.created_at).toLocaleString("default", {
+                  month: "long",
+                })} ${new Date(user.created_at).getFullYear()}`
+              }}
+            </span>
+          </p>
         </div>
 
         <!-- Editable Profile Form -->
@@ -78,7 +106,7 @@ function saveProfile() {
               >
               <input
                 id="name"
-                v-model="form.name"
+                v-model="form.full_name"
                 :disabled="!editing"
                 type="text"
                 class="w-full p-3 rounded-lg border border-border bg-surface focus:outline-none focus:ring-4 focus:ring-accent/40 disabled:opacity-60"
@@ -104,7 +132,7 @@ function saveProfile() {
                 id="phone"
                 v-model="form.phone"
                 :disabled="!editing"
-                type="tel"
+                type="number"
                 class="w-full p-3 rounded-lg border border-border bg-surface focus:outline-none focus:ring-4 focus:ring-accent/40 disabled:opacity-60"
               />
             </div>

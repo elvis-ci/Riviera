@@ -4,6 +4,7 @@ import { RouterLink, RouterView } from "vue-router";
 import NavBar from "./components/NavBar.vue";
 import Footer from "./components/Footer.vue";
 import { useFragranceStore } from "@/stores/useFragranceStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const fragranceStore = useFragranceStore();
 
@@ -17,6 +18,8 @@ const handleScroll = () => {
 // const scrollToTop = () => {
 //   window.scrollTo({ top: 0, behavior: "smooth" });
 // };
+
+const auth = useAuthStore();
 
 onMounted(async () => {
   // Register scroll listener
