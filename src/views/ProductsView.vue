@@ -214,7 +214,7 @@ watch(
               <!-- Dual range price filter (desktop) -->
               <div class="mb-6">
                 <label for="range" class="text-sm font-medium mb-2"
-                  >Price (max: NGN {{ maxPrice }})</label
+                  >Price (max: ₦ {{ maxPrice }})</label
                 >
 
                 <!-- Range Track -->
@@ -261,7 +261,7 @@ watch(
                     placeholder="Max"
                   />
                 </div>
-                <div class="text-xs mt-1">Range: NGN {{ minPrice }} - NGN {{ maxPriceVal }}</div>
+                <div class="text-xs mt-1">Range: ₦ {{ minPrice }} - ₦ {{ maxPriceVal }}</div>
               </div>
 
               <!-- Ratings -->
@@ -336,7 +336,7 @@ watch(
 
                     <!-- Dual slider (mobile) -->
                     <div>
-                      <p class="font-medium text-sm mb-1">Price (max: NGN {{ maxPrice }})</p>
+                      <p class="font-medium text-sm mb-1">Price (max: ₦ {{ maxPrice }})</p>
                       <div class="relative w-full h-2 rounded-md" :style="rangeTrackStyle">
                         <input
                           type="range"
@@ -378,7 +378,7 @@ watch(
                         />
                       </div>
                       <div class="text-xs mt-1">
-                        Range: NGN {{ minPrice }} - NGN {{ maxPriceVal }}
+                        Range: ₦ {{ minPrice }} - ₦ {{ maxPriceVal }}
                       </div>
                     </div>
 
