@@ -24,7 +24,9 @@ const showFiltersMobile = ref(false);
 
 // --- Route category pre-filter ---
 const route = useRoute();
-onMounted(() => {
+onMounted(async () => {
+  await store.fetchFragrances();
+
   if (route.query.category) {
     selectedCategory.value = route.query.category;
   }
@@ -97,9 +99,11 @@ const paginatedFragrances = computed(() => {
   return filteredFragrances.value.slice(start, end);
 });
 
-const shopStyle = [
-  "max-w-[94%] min-w-[94%] sm:min-w-[94%] sm:max-w-[94%] md:min-w-[94%] md:max-w-[94%] lg:max-w-[94%] lg:min-w-[94%]",
-];
+const shopStyle = {
+  general:
+    "max-w-[94%] min-w-[94%] sm:min-w-[94%] sm:max-w-[94%] md:min-w-[94%] md:max-w-[94%] lg:max-w-[94%] lg:min-w-[94%] bg-surface",
+  details: "bg-surface",
+};
 
 watch(filteredFragrances, () => {
   currentPage.value = 1; // Reset to first page on filter change
@@ -133,7 +137,7 @@ watch(
     </section>
     <div class="mx-auto">
       <section class="w-full pb-10">
-        <div class="max-w-[1440px] mx-auto">
+        <div class="max-w-[1440px] mx-auto px-1 sm:px-6">
           <div class="mx-2 relative mb-0 mt-10 max-w-2xl sm:mx-auto lg:mb-8 lg:h-15">
             <IconMdiSearch
               class="absolute top-1/2 left-3 text-text/60 -translate-y-1/2 scale-130"
@@ -157,13 +161,13 @@ watch(
               <IconMdiChevronDown v-else />
             </button>
           </div>
-  
+
           <!-- Layout -->
           <div class="mx-auto grid lg:grid-cols-[280px_1fr] gap-8 relative">
             <!-- Sidebar (Desktop) -->
-  
-            <aside aria-label="product filter panel"
-              class="hidden mx-auto lg:block sticky top-24 self-start h-fit bg-surface border border-border rounded-2xl p-6 shadow-sm"
+            <aside
+              aria-label="product filter panel"
+              class="hidden w-full mx-auto lg:block sticky top-15 self-start h-fit bg-surface border border-border rounded-2xl p-6 shadow-sm"
             >
               <!-- Category -->
               <div class="mb-6">
@@ -178,7 +182,7 @@ watch(
                     >▼
                   </span>
                 </button>
-  
+
                 <transition name="fade">
                   <ul v-if="showCategories" class="flex flex-col gap-1">
                     <li v-for="cat in store.categories" :key="cat.id">
@@ -206,13 +210,13 @@ watch(
                   </ul>
                 </transition>
               </div>
-  
+
               <!-- Dual range price filter (desktop) -->
               <div class="mb-6">
                 <label for="range" class="text-sm font-medium mb-2"
-                  >Price (max: ${{ maxPrice }})</label
+                  >Price (max: NGN {{ maxPrice }})</label
                 >
-  
+
                 <!-- Range Track -->
                 <div class="relative w-full h-2 rounded-md" :style="rangeTrackStyle">
                   <input
@@ -236,7 +240,7 @@ watch(
                     style="z-index: 2"
                   />
                 </div>
-  
+
                 <!-- Numeric Inputs -->
                 <div class="flex items-center justify-between mt-3 gap-2">
                   <input
@@ -257,9 +261,9 @@ watch(
                     placeholder="Max"
                   />
                 </div>
-                <div class="text-xs mt-1">Range: ${{ minPrice }} - ${{ maxPriceVal }}</div>
+                <div class="text-xs mt-1">Range: NGN {{ minPrice }} - NGN {{ maxPriceVal }}</div>
               </div>
-  
+
               <!-- Ratings -->
               <div>
                 <button
@@ -274,7 +278,7 @@ watch(
                     ▼
                   </span>
                 </button>
-  
+
                 <transition name="fade">
                   <ul v-if="showRatings" class="flex flex-col gap-1">
                     <li v-for="r in ratingsOptions" :key="r">
@@ -306,7 +310,7 @@ watch(
                 </transition>
               </div>
             </aside>
-  
+
             <!-- Main section -->
             <section class="min-h-[70vh]">
               <!-- Mobile Filters -->
@@ -329,10 +333,10 @@ watch(
                         </option>
                       </select>
                     </div>
-  
+
                     <!-- Dual slider (mobile) -->
                     <div>
-                      <p class="font-medium text-sm mb-1">Price (max: ${{ maxPrice }})</p>
+                      <p class="font-medium text-sm mb-1">Price (max: NGN {{ maxPrice }})</p>
                       <div class="relative w-full h-2 rounded-md" :style="rangeTrackStyle">
                         <input
                           type="range"
@@ -353,7 +357,7 @@ watch(
                           style="z-index: 2"
                         />
                       </div>
-  
+
                       <div class="flex items-center justify-between mt-3 gap-2">
                         <input
                           type="number"
@@ -373,9 +377,11 @@ watch(
                           placeholder="Max"
                         />
                       </div>
-                      <div class="text-xs mt-1">Range: ${{ minPrice }} - ${{ maxPriceVal }}</div>
+                      <div class="text-xs mt-1">
+                        Range: NGN {{ minPrice }} - NGN {{ maxPriceVal }}
+                      </div>
                     </div>
-  
+
                     <!-- Rating -->
                     <div>
                       <p class="font-medium text-sm mb-1">Minimum Rating</p>
@@ -392,25 +398,47 @@ watch(
                   </div>
                 </transition>
               </div>
-  
+
               <!-- Products Grid -->
-              <div v-if="filteredFragrances.length === 0" class="text-center text-text/70 py-20">
+              <!-- IF LOADING: SKELETON GRID -->
+              <div
+                v-if="store.loading"
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-4 gap-4 pt-2"
+              >
+                <div
+                  v-for="n in 8"
+                  :key="n"
+                  class="border border-border bg-surface rounded-xl p-3 animate-pulse"
+                >
+                  <div class="w-full h-40 bg-accent/20 rounded-lg mb-4"></div>
+                  <div class="h-4 w-3/4 bg-accent/20 rounded mb-2"></div>
+                  <div class="h-4 w-1/2 bg-accent/20 rounded mb-3"></div>
+                  <div class="h-8 w-full bg-accent/30 rounded"></div>
+                </div>
+              </div>
+
+              <!-- IF EMPTY -->
+              <div
+                v-else-if="filteredFragrances.length === 0"
+                class="text-center text-text/70 py-20"
+              >
                 No fragrances match your filters.
               </div>
-  
+
+              <!-- PRODUCTS -->
               <div
                 v-else
-                class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-1 md-gap-x-4 gap-y-5 pt-2"
+                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-4 gap-1 md-gap-x-4 gap-y-5 pt-2"
               >
                 <ProductCard
                   v-for="item in paginatedFragrances"
                   :key="item.id"
                   :item="item"
                   :style="shopStyle"
-                  :cartStore="cartStore"
+                  :cart-store="cartStore"
                 />
               </div>
-  
+
               <!-- Pagination Controls -->
               <div class="w-full flex justify-center items-center mt-10">
                 <button
@@ -426,7 +454,7 @@ watch(
       </section>
 
       <section class="w-[100vw] px-2 py-15 bg-surface">
-        <div class="max-w-[1440px] mx-auto">
+        <div class="max-w-[1440px] mx-auto px-1 sm:px-6">
           <recommendations />
         </div>
       </section>
