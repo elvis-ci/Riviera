@@ -40,7 +40,7 @@ const breakpoints = {
       :wrap-around="false"
       :transition="500"
       :breakpoints="breakpoints"
-      class="fragrance-carousel"
+      class="fragrance-carousel "
       aria-label="Featured fragrances carousel"
     >
       <!-- Skeleton Slides -->
@@ -65,7 +65,7 @@ const breakpoints = {
 
       <Slide
         v-for="fragrance in !showSkeleton ? featuredFragrances : []"
-        :key="fragrance.id || index"
+        :key="fragrance.id || index" class="bg-background p-0 w-fit"
       >
         <FeaturedCard :fragrance="fragrance" :cartStore="cartStore" />
       </Slide>

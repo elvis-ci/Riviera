@@ -1,17 +1,29 @@
 <template>
   <section
-    class="min-h-screen flex items-center justify-center bg-background text-text px-6 py-12"
+    class="my-24 flex items-center justify-center bg-background text-text px-2 sm:px-10"
     aria-labelledby="signup-heading"
   >
     <div
-      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg p-8 sm:p-10 space-y-6"
+      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg py-8 px-4 sm:p-10 space-y-6"
     >
-      <h1 id="signup-heading" class="text-2xl sm:text-3xl font-bold text-heading text-center mb-6">
-        {{ isConfirmationSent ? "Creating Your Account" : "Create Your Account" }}
+      <!-- Heading -->
+      <h1
+        id="signup-heading"
+        class="text-2xl sm:text-3xl font-bold text-heading text-center mb-6"
+      >
+        Create Your Account
       </h1>
-      <div v-if="isConfirmationSent" class="text-center">
-        <p>A Confirmation link has been sent to your email</p>
+
+      <!-- Confirmation Message -->
+      <div
+        v-if="isConfirmationSent"
+        class="text-center text-green-700 font-medium"
+        role="status"
+        aria-live="polite"
+      >
+        A confirmation link has been sent to your email.
       </div>
+
       <!-- Sign Up Form -->
       <form
         v-else
@@ -19,13 +31,15 @@
         class="flex flex-col gap-5"
         aria-describedby="signup-instructions"
       >
-        <p id="signup-instructions" class="sr-only">Fill in all fields to create your account</p>
+        <p id="signup-instructions" class="sr-only">
+          Fill in all fields to create your account
+        </p>
 
         <!-- Full Name -->
         <div>
           <label for="name" class="block text-sm font-medium mb-1">
-            Full Name <span class="text-red-600">*</span></label
-          >
+            Full Name <span class="text-red-600">*</span>
+          </label>
           <input
             v-model="name"
             id="name"
@@ -39,8 +53,8 @@
         <!-- Email -->
         <div>
           <label for="email" class="block text-sm font-medium mb-1">
-            Email Address <span class="text-red-600">*</span></label
-          >
+            Email Address <span class="text-red-600">*</span>
+          </label>
           <input
             v-model="email"
             id="email"
@@ -55,8 +69,8 @@
         <!-- Password -->
         <div>
           <label for="password" class="block text-sm font-medium mb-1">
-            Password <span class="text-red-600">*</span></label
-          >
+            Password <span class="text-red-600">*</span>
+          </label>
           <div class="flex items-center relative">
             <input
               v-model="password"
@@ -66,26 +80,34 @@
               required
               placeholder="••••••••"
               autocomplete="new-password"
+              aria-describedby="password-requirements"
               class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
             />
             <button
               type="button"
               @click="togglePasswordVisibility"
               class="absolute right-4 text-text/70"
+              aria-label="Toggle password visibility"
             >
               <IconMdiEye v-if="isPasswordVisible" />
               <IconMdiEyeOff v-else />
             </button>
           </div>
-
-          <p v-if="password && password.length < 6" class="text-red-500 text-xs mt-1" role="alert">
+          <p
+            id="password-requirements"
+            v-if="password && password.length < 8"
+            class="text-red-500 text-xs mt-1"
+            role="alert"
+          >
             Password must be at least 8 characters
           </p>
         </div>
 
         <!-- Confirm Password -->
         <div>
-          <label for="confirm" class="block text-sm font-medium mb-1"> Confirm Password </label>
+          <label for="confirm" class="block text-sm font-medium mb-1">
+            Confirm Password
+          </label>
           <div class="flex items-center relative">
             <input
               v-model="confirmPassword"
@@ -94,24 +116,30 @@
               required
               placeholder="••••••••"
               autocomplete="new-password"
+              aria-describedby="confirm-password-requirements"
               class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
             />
-            <button
-              type="button"
-              @click="togglePasswordVisibility"
-              class="absolute right-4 text-text/70"
-            >
-              <IconMdiEye v-if="isPasswordVisible" />
-              <IconMdiEyeOff v-else />
-            </button>
           </div>
           <p
+            id="confirm-password-requirements"
             v-if="confirmPassword && confirmPassword !== password"
-            class="text-red-700 text-lg mt-1"
+            class="text-red-700 text-xs mt-1"
             role="alert"
           >
             Passwords do not match
           </p>
+        </div>
+
+        <!-- Error Message (Live Region) -->
+        <div
+          v-if="errorMsg"
+          ref="errorRef"
+          tabindex="-1"
+          role="alert"
+          aria-live="assertive"
+          class="text-red-600 text-sm mt-2 text-center"
+        >
+          {{ errorMsg }}
         </div>
 
         <!-- Submit Button -->
@@ -137,12 +165,12 @@
           <span class="border-t border-border flex-grow"></span>
         </div>
 
-        <!-- Social Buttons -->
+        <!-- Social Signin -->
         <div class="flex flex-col sm:flex-row gap-3">
           <button
             @click="handleSignInWithGoogle"
             type="button"
-            class="w-full border text- border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-accent/30 transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            class="w-full border border-border bg-background text-heading py-2 rounded-lg font-medium hover:bg-accent/30 transition focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
           >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -169,12 +197,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/useAuthStore.js";
 
 const auth = useAuthStore();
 const router = useRouter();
+
 const name = ref("");
 const email = ref("");
 const password = ref("");
@@ -182,19 +211,30 @@ const confirmPassword = ref("");
 const isLoading = ref(false);
 const isConfirmationSent = ref(false);
 const isPasswordVisible = ref(false);
+const errorMsg = ref(null);
+const errorRef = ref(null);
 
 const handleSignUp = async () => {
+  // Reset error
+  errorMsg.value = null;
+
+  // Password match check
   if (password.value !== confirmPassword.value) {
     errorMsg.value = "Passwords do not match";
+    nextTick(() => errorRef.value?.focus());
     return;
   }
+
   isLoading.value = true;
   await auth.signUpWithEmail(email.value, password.value, name.value);
+
   if (!auth.errorMsg) {
     isLoading.value = false;
     isConfirmationSent.value = true;
   } else {
     isLoading.value = false;
+    errorMsg.value = auth.errorMsg;
+    nextTick(() => errorRef.value?.focus());
     console.log("error:", auth.errorMsg);
   }
 };

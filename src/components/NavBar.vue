@@ -20,11 +20,20 @@
           aria-label="Go to homepage"
         >
           <img src="@/assets/logo.png" alt="Perfume Brand Logo" class="h-10 w-auto" />
-          <span class="font-semibold text-lg inline font-serif text-accent-hover">Riviera</span>
+          <span class="font-semibold text-lg inline font-helvetica text-accent-hover">Riviera</span>
         </RouterLink>
 
         <!-- Mobile Menu & Theme Toggle -->
-        <div class="flex items-center gap-4 lg:hidden">
+        <div class="flex items-center gap-5 lg:hidden">
+          <button
+            @click="toggleTheme"
+            class="text-text hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
+            aria-label="Toggle dark mode"
+          >
+            <IconMdiWeatherSunny v-if="!isDark" class="scale-110" size="24" />
+            <IconMdiWeatherNight v-else class="scale-110" size="24" />
+          </button>
+
           <!-- Cart -->
           <RouterLink
             to="/cart"
@@ -43,15 +52,6 @@
               {{ cartCount }}
             </span>
           </RouterLink>
-
-          <button
-            @click="toggleTheme"
-            class="text-text hover:text-accent transition-colors focus-visible:ring-2 focus-visible:ring-accent rounded-full p-1"
-            aria-label="Toggle dark mode"
-          >
-            <IconMdiWeatherSunny v-if="!isDark" class="scale-110" size="24" />
-            <IconMdiWeatherNight v-else class="scale-110" size="24" />
-          </button>
 
           <button
             @click.stop="toggleMobileMenu"
@@ -264,6 +264,7 @@ const router = useRouter();
 const cartStore = useCartStore();
 const cartCount = ref(cartStore.itemCount);
 const animate = ref(false);
+const isLoading = ref(false);
 
 watch(
   () => cartStore.itemCount,
@@ -362,11 +363,17 @@ function onKeydown(e) {
 }
 
 async function handleSignOut() {
-  console.log("Sign out clicked", auth.user); // debug
-  await auth.logout();
-  console.log("After logout", auth.user);
+  // isSettingsOpen.value = false;
+
+  // // Logout without waiting for reactivity to fire
+  // await auth.logout();
+
+  // // Instant redirect — prevents UI flicker
+  // window.location.href = "/signIn";
   isSettingsOpen.value = false;
-  router.push("/signIn");
+
+  // redirects before logout completes to prevent flicker
+  window.location.assign("/signIn?logout=1");
 }
 </script>
 

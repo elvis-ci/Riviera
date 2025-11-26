@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 const auth = useAuthStore();
 // User data
-const user = computed(() => auth.userProfile ?? null);
+const user = computed(() => auth.userProfile);
 
 onMounted(() => {
   console.log(user.value);
@@ -12,7 +12,7 @@ onMounted(() => {
 
 // Form state
 const editing = ref(false);
-const form = ref({ ...user.value });
+const form = ref(null);
 // Sidebar / Tabs
 const tabs = ["Profile", "Favorites", "Orders", "Account Settings"];
 const currentTab = ref("Profile");
@@ -22,11 +22,27 @@ function toggleEdit() {
   form.value = { ...user.value };
 }
 
-function saveProfile() {
-  user.value = { ...form.value };
-  editing.value = false;
-  alert("Profile updated successfully!");
+async function saveProfile() {
+  console.log("Saving profile:", form.value);
+  try {
+    await auth.updateUserProfile(form.value);
+    editing.value = false;
+    alert("Profile updated successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update.");
+  }
 }
+
+watch(
+  user,
+  (val) => {
+    if (val) {
+      form.value = { ...val };
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -69,14 +85,15 @@ function saveProfile() {
           </div>
           <h2 class="mt-4 text-2xl font-semibold text-heading text-center">{{ user.full_name }}</h2>
           <p class="text-text/70">{{ user.email }}</p>
-          <p class="text-sm text-text/60 mt-1 text-center">
-            Member since
-            {{
-              new Date(user.joined).toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })
-            }}
+          <p>
+            <span class="text-text/70 text-sm"> Joined </span>
+            <span>
+              {{
+                `${new Date(user.created_at).toLocaleString("default", {
+                  month: "long",
+                })} ${new Date(user.created_at).getFullYear()}`
+              }}
+            </span>
           </p>
         </div>
 
@@ -115,7 +132,7 @@ function saveProfile() {
                 id="phone"
                 v-model="form.phone"
                 :disabled="!editing"
-                type="tel"
+                type="number"
                 class="w-full p-3 rounded-lg border border-border bg-surface focus:outline-none focus:ring-4 focus:ring-accent/40 disabled:opacity-60"
               />
             </div>

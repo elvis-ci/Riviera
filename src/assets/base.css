@@ -5,13 +5,15 @@
    ---------------------------------------------------- */
 @theme {
   /* 🌤️ LIGHT THEME — Radiant Luxury */
-  --color-primary: rgb(255, 249, 244);   /* Silk Ivory — background */
+  --color-primary: rgb(255, 249, 244); /* Silk Ivory — background */
   --color-secondary: rgb(255, 222, 230); /* Blush Veil — soft supporting tone */
-  --color-accent: rgb(169, 104, 20);     /* Rich Amber — darker gold for contrast */
-  --color-accent-hover: rgb(140, 85, 15);/* Deep Bronze — hover/focus */
-  --color-neutral: rgb(25, 20, 18);      /* Espresso Noir — text */
-  --color-muted: rgb(248, 240, 235);     /* Champagne Mist — surfaces */
-  --color-border: rgb(210, 180, 160);    /* Warm Sandstone — borders */
+  --color-accent: rgb(169, 104, 20); /* Rich Amber — darker gold for contrast */
+  --color-accent-light: rgb(159, 98, 19);
+
+  --color-accent-hover: rgb(140, 85, 15); /* Deep Bronze — hover/focus */
+  --color-neutral: rgb(25, 20, 18); /* Espresso Noir — text */
+  --color-muted: rgb(248, 240, 235); /* Champagne Mist — surfaces */
+  --color-border: rgb(210, 180, 160); /* Warm Sandstone — borders */
 
   --color-background: var(--color-primary);
   --color-surface: var(--color-muted);
@@ -23,13 +25,15 @@
 @media (prefers-color-scheme: dark) {
   @theme {
     /* 🌙 DARK THEME — Velvet Opulence */
-    --color-primary: rgb(20, 14, 12);     /* Deep Mocha — background */
-    --color-secondary: rgb(92, 54, 68);   /* Rosewood Plum — secondary */
-    --color-accent: rgb(159, 98, 19);     /* Dark Amber — strong enough for white text */
+    --color-primary: rgb(20, 14, 12); /* Deep Mocha — background */
+    --color-secondary: rgb(92, 54, 68); /* Rosewood Plum — secondary */
+    --color-accent: rgb(159, 98, 19); /* Dark Amber — strong enough for white text */
+    --color-accent-light: rgb(207, 130, 30);
+
     --color-accent-hover: rgb(160, 90, 25); /* Glowing Amber Hover */
-    --color-neutral: rgb(252, 247, 240);  /* Porcelain Ivory — text */
-    --color-muted: rgb(38, 30, 28);       /* Truffle Brown — surfaces */
-    --color-border: rgb(95, 65, 55);      /* Cocoa Edge — borders */
+    --color-neutral: rgb(252, 247, 240); /* Porcelain Ivory — text */
+    --color-muted: rgb(38, 30, 28); /* Truffle Brown — surfaces */
+    --color-border: rgb(95, 65, 55); /* Cocoa Edge — borders */
 
     --color-background: var(--color-primary);
     --color-surface: var(--color-muted);
@@ -46,6 +50,7 @@
   --color-primary: rgb(255, 249, 244);
   --color-secondary: rgb(255, 222, 230);
   --color-accent: rgb(159, 98, 19);
+  --color-accent-light: rgb(159, 98, 19);
   --color-accent-hover: rgb(140, 85, 15);
   --color-neutral: rgb(25, 20, 18);
   --color-muted: rgb(248, 240, 235);
@@ -62,6 +67,7 @@
   --color-primary: rgb(20, 14, 12);
   --color-secondary: rgb(92, 54, 68);
   --color-accent: rgb(125, 70, 20);
+  --color-accent-light: rgb(206, 149, 75);
   --color-accent-hover: rgb(160, 90, 25);
   --color-neutral: rgb(252, 247, 240);
   --color-muted: rgb(38, 30, 28);
@@ -79,13 +85,10 @@
 body {
   min-height: 100vh;
   @apply bg-background text-text transition-colors duration-300 ease-in-out;
-  font-family: "Playfair Display", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   line-height: 1.7;
   font-size: 16px;
 }
-
-
 
 /* Links — clear focus & hover */
 a,
