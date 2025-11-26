@@ -13,11 +13,11 @@
 
     <!-- Layout Grid -->
     <div class="max-w-6xl w-full grid lg:grid-cols-[2fr_1fr] gap-5 md:gap-10">
-      <div class="relative pb-5 md:pb-0">
+      <div class="relative pb-15 md:pb-0">
         <!-- Error message live region -->
         <div
           v-if="errorMsg || formErrorMsg"
-          class="w-full bg-red-200/50 absolute bottom-0 ml-[50%] md:ml-0 -translate-x-[50%] z-40 md:static md:translate-x-0 rounded-t-lg md:rounded-none md:mb-4"
+          class="w-full bg-red-200/50 absolute bottom-0 ml-[50%] md:ml-0 -translate-x-[50%] z-40 md:static md:translate-x-0 md:rounded-none md:mb-4"
         >
           <div
             v-if="formErrorMsg"
@@ -157,19 +157,19 @@
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
             <span>Subtotal</span>
-            <span class="font-medium">₦ {{ subtotal.toFixed(2) }}</span>
+            <span class="font-medium">NGN {{ subtotal.toFixed(2) }}</span>
           </div>
 
           <div class="flex justify-between">
             <span>Discount</span>
-            <span class="font-medium text-green-700">₦ {{ discount.toFixed(2) }}</span>
+            <span class="font-medium text-green-700">NGN {{ discount.toFixed(2) }}</span>
           </div>
 
           <div
             class="flex justify-between border-t border-border pt-3 text-base font-semibold text-heading"
           >
             <span>Total</span>
-            <span>₦ {{ total.toFixed(2) }}</span>
+            <span>NGN {{ total.toFixed(2) }}</span>
           </div>
         </div>
 
@@ -242,7 +242,7 @@ async function handlePayment() {
       key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
       email: email.value,
       amount: total.value * 100, // in kobo
-      currency: "₦",
+      currency: "NGN",
       onSuccess: async (res) => {
         console.log("Payment successful. Verifying...", res.reference);
         const {data, error} = await supabase.functions.invoke("paystack-verify", {
