@@ -38,7 +38,7 @@
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
             <span>Total Paid</span>
-            <span class="font-medium">NGN {{ order.total_amount.toFixed(2) }}</span>
+            <span class="font-medium">₦ {{ order.total_amount.toFixed(2) }}</span>
           </div>
 
           <div class="flex justify-between">
@@ -84,11 +84,11 @@
             <div>
               <p class="font-medium text-heading">{{ item.product_name }}</p>
               <p class="text-sm text-text/70">
-                Qty: {{ item.quantity }} × NGN {{ item.price.toFixed(2) }}
+                Qty: {{ item.quantity }} × ₦ {{ item.price.toFixed(2) }}
               </p>
             </div>
 
-            <p class="font-semibold">NGN {{ (item.price * item.quantity).toFixed(2) }}</p>
+            <p class="font-semibold">₦ {{ (item.price * item.quantity).toFixed(2) }}</p>
           </div>
         </div>
       </section>
