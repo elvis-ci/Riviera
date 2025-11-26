@@ -1,9 +1,9 @@
 <template>
   <section
-    class="min-h-screen my-5 flex items-center justify-center bg-background text-text px-6 sm:px-10"
+    class=" my-24 flex items-center justify-center bg-background text-text px-2 sm:px-10"
   >
     <div
-      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg p-8 sm:p-10 space-y-6"
+      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg py-8 px-4 sm:p-10 space-y-6"
       role="form"
       aria-describedby="signin-description"
     >
@@ -71,7 +71,7 @@
               class="accent-accent w-4 h-4 rounded"
               aria-label="Remember me"
             />
-            <span class="text-sm"> Remember me </span>
+            <span class="text-xs"> Remember me </span>
           </label>
           <router-link
             to="/forgot-password"
@@ -138,7 +138,7 @@
         Don’t have an account?
         <router-link
           to="/signup"
-          class="text-accent hover:text-accent-hover font-medium focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-md"
+          class="text-accent hover:text-accent-hover font-medium focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 rounded-md ml-2"
         >
           Sign Up
         </router-link>

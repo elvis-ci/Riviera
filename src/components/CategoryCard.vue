@@ -48,7 +48,7 @@ const props = defineProps({
       <div class="w-full flex items-center justify-center mb-2">
         <p>
           From
-          <span class="font-semibold text-accent"> ${{ category.priceRange.min }} </span>
+          <span class="font-semibold text-accent"> NGN {{ category.priceRange.min }} </span>
         </p>
       </div>
       <router-link

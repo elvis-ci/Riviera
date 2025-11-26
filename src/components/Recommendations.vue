@@ -87,9 +87,10 @@ const breakpoints = {
   1200: { itemsToShow: 4.2, snapAlign: "start" },
 };
 
-const recommendationsStyle = [
-  "max-w-[82%] ml-0 min-w-[82%] sm:min-w-[80%] sm:max-w-[80%] md:min-w-[80%] md:max-w-[80%] lg:max-w-[80%] lg:min-w-[80%]",
-];
+const recommendationsStyle = {
+  general: "max-w-[92%] ml-0 min-w-[92%] bg-background",
+  details: "bg-background",
+};
 </script>
 <style scoped>
 .category-carousel {

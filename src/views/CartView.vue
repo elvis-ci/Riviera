@@ -24,15 +24,15 @@
         <article
           v-for="(item, index) in cartItems"
           :key="item.id || index"
-          class="relative flex items-start gap-6 bg-background border border-border/60 rounded-lg shadow-sm p-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+          class="relative flex items-start gap-3 bg-background border border-border/60 rounded-lg shadow-sm p-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
           :aria-labelledby="`item-${index}-name`"
         >
           <!-- Product Image -->
-          <div class="relative shrink-0 self-start sm:self-start">
+          <div class="relative self-center sm:self-start">
             <img
               :src="item.image_url"
               :alt="`Image of ${item.name}`"
-              class="w-20 h-20 sm:w-38 sm:h-30 rounded-lg object-cover group-hover:scale-105 transition-transform duration-300 shadow-md"
+              class="w-19 h-20 sm:w-38 sm:h-30 rounded-lg object-cover"
               loading="lazy"
             />
           </div>
@@ -42,7 +42,7 @@
             <div>
               <h2
                 :id="`item-${index}-name`"
-                class="text-sm md:text-lg font-semibold text-heading truncate tracking-wide"
+                class="text-sm md:text-lg font-bold text-accent-hover truncate tracking-wide"
               >
                 {{ item.name }}
               </h2>
@@ -55,11 +55,10 @@
             </div>
 
             <!-- Price + Quantity -->
-            <div class="mt-2 flex items-center justify-between flex-wrap gap-4">
-              <div class="flex items-baseline gap-2">
-                <span class="text-base md:text-2xl font-bold text-accent"
-                  >${{ item.currentPrice }}</span
-                >
+            <div class="mt-2 flex items-center justify-between gap-4">
+              <div class="flex items-baseline gap-1">
+                <span class="text-xs md:text-sm font-semibold text-accent">₦ </span>
+                <span class="text-sm md:text-xl font-semibold text-accent">{{ item.currentPrice }}</span>
               </div>
 
               <!-- Quantity + Remove -->
@@ -117,19 +116,17 @@
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
             <span>Subtotal</span>
-            <span class="font-medium">${{ subtotal }}</span>
+            <span class="font-medium">₦ {{ subtotal }}</span>
           </div>
           <div class="flex justify-between">
             <span>Discount</span>
-            <span class="font-medium text-green-700"
-              >${{ discount }}</span
-            >
+            <span class="font-medium text-green-700">₦ {{ discount }}</span>
           </div>
           <div
             class="flex justify-between border-t border-border pt-3 text-base font-semibold text-heading"
           >
             <span>Total</span>
-            <span aria-label="Total price">${{ total }}</span>
+            <span aria-label="Total price">₦ {{ total }}</span>
           </div>
         </div>
 
@@ -142,7 +139,9 @@
           </button>
           <router-link
             to="/checkout"
-            class="cta w-full sm:w-1/2 px-6 py-2 bg-accent text-center text-white font-medium rounded-lg shadow-md hover:bg-accent/90 transition"
+            class="cta w-full sm:w-1/2 px-6 py-2 text-center bg-accent hover:bg-accent/90 text-white font-medium rounded-lg shadow-md transition"
+            :class="cartItems.length === 0 ? 'disabled pointer-events-none' : ''"
+            :aria-disabled="cartItems.length === 0"
           >
             Checkout
           </router-link>
@@ -193,6 +192,10 @@ function click() {
 <style scoped>
 .cta {
   color: white;
+}
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .line-clamp-2 {

@@ -101,7 +101,12 @@ const router = createRouter({
       component: () => import("../views/CheckoutView.vue"),
       meta: { requiresAuth: true, title: "Checkout" },
     },
-
+    {
+      path: "/order-confirmation/:ref",
+      name: "order-confirmation",
+      component: () => import("../views/OrderConfirmationView.vue"),
+      meta: { requiresAuth: true, title: "Order Confirmation" },
+    },
     // Admin Dashboard
     {
       path: "/admin",

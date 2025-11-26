@@ -52,7 +52,7 @@ watch(
 <template>
   <article
     class=" overflow-hidden  hover:shadow-xl transition-all duration-500 flex flex-col mx-auto"
-    :class="[style]"
+    :class="[style.general]"
   >
     <!-- Image Section (shorter height now) -->
     <div class="w-full overflow-hidden h-35 md:h-50">
@@ -66,7 +66,8 @@ watch(
 
     <!-- Content Section -->
     <div
-      class="relative z-10 shadow-md sm:py-1 py-1 flex flex-col justify-between"
+      class="relative z-10 shadow-md sm:py-1 pt-1 flex flex-col justify-between"
+      :class="[style.details]"
     >
       <div>
         <div class="flex w-full px-1 justify-between items-center pb-1">
@@ -95,15 +96,15 @@ watch(
           <div class="flex flex-col items-start">
             <span class="text-xs sm:text-sm text-text/70">Price</span>
             <div class="flex items-center gap-2">
-              <span class="text-accent font-bold text-xs sm:text-lg">
-                ${{ item.currentPrice }}
+              <span class="text-accent-light font-bold text-xs sm:text-lg">
+                ₦ {{ item.currentPrice }}
               </span>
-              <span
+              <!-- <span
                 v-if="item.currentPrice < item.price"
                 class="text-text/60 line-through text-xs sm:text-sm"
               >
-                ${{ item.price }}
-              </span>
+                ₦ {{ item.price }}
+              </span> -->
             </div>
           </div>
 
@@ -128,10 +129,10 @@ watch(
 
         <button
           @click="isInCart ? removeFromCart() : addToCart()"
-          class="flex justify-center gap-3 w-[99%] py-2 font-semibold mb-1 rounded-lg text-xs sm:text-sm shadow-md transition "
+          class="flex justify-center gap-3 w-[99%] py-3 font-semibold rounded-lg text-xs sm:text-sm  transition "
           :class="[
             isInCart
-              ? 'text-accent border-accent border-1 hover:bg-accent/10'
+              ? 'text-accent-light border-accent border-1 hover:bg-accent/10'
               : 'bg-accent text-white hover:bg-accent-hover',
           ]"
         >

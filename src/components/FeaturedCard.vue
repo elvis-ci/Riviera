@@ -156,11 +156,12 @@ const renderStars = (rating) => {
         <div class="flex flex-col items-start">
           <span class="text-xs sm:text-base font-semibold text-text/70">Price</span>
           <div class="flex items-center gap-2">
-            <span class="text-sm sm:text-xl font-bold text-accent">
-              ${{ calculateCurrentPrice(fragrance.price, fragrance.discount) }}
+            <span class="text-sm lg:text-lg font-bold text-accent">
+             ₦
+              {{ calculateCurrentPrice(fragrance.price, fragrance.discount) }}
             </span>
-            <span class="text-xs sm:text-sm font-semibold text-border line-through">
-              ${{ fragrance.price }}
+            <span class="text-xs sm:text-sm hidden sm:block text-border line-through">
+              ₦ {{ fragrance.price }}
             </span>
           </div>
         </div>
@@ -188,16 +189,16 @@ const renderStars = (rating) => {
                 ? cartStore.addToCart(fragrance, quantity)
                 : cartStore.removeFromCart(fragrance.id)
             "
-            class="group/btn ml-auto w-fit flex items-center px-3 sm:px-6 py-3 rounded-lg text-xs sm:text-sm font-medium shadow-md transition-all duration-200 gap-1 sm:gap-2"
+            class="group/btn ml-auto w-fit flex items-center py-2  rounded-lg font-medium shadow-md transition-all duration-200 gap-1 sm:gap-2"
             aria-label="Add {{ fragrance.name }} to cart"
             :class="[
               !isInCart(fragrance.id)
-                ? ' bg-accent text-white hover:bg-accent/90'
-                : 'bg-background text-accent-hover hover:bg-accent/10 border-2 border-accent',
+                ? ' bg-accent text-white hover:bg-accent/90 text-xs sm:text-sm xl:text-base px-3'
+                : 'bg-background text-accent-hover hover:bg-accent/10 border-2 border-accent text-xs xl:text-sm px-1',
             ]"
           >
-            <IconMdiCartOutline size="20" />
-            <span class="text-xs sm:text-base"> {{ !isInCart(fragrance.id) ? "Add to Cart" : "Remove from Cart" }} </span>
+            <IconMdiCartOutline size="20" class="hidden sm:block"/>
+            <span> {{ !isInCart(fragrance.id) ? "Add to Cart" : "Remove from Cart" }} </span>
           </button>
         </div>
       </div>

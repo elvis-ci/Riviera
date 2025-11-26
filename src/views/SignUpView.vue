@@ -1,10 +1,10 @@
 <template>
   <section
-    class="min-h-screen flex items-center justify-center bg-background text-text px-6 py-12"
+    class="my-24 flex items-center justify-center bg-background text-text px-2 sm:px-10"
     aria-labelledby="signup-heading"
   >
     <div
-      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg p-8 sm:p-10 space-y-6"
+      class="bg-surface border border-border rounded-2xl shadow-lg w-full max-w-lg py-8 px-4 sm:p-10 space-y-6"
     >
       <!-- Heading -->
       <h1
@@ -119,15 +119,6 @@
               aria-describedby="confirm-password-requirements"
               class="w-full border border-border rounded-lg px-4 py-2 text-sm bg-background focus:ring-2 focus:ring-accent focus:border-accent outline-none transition"
             />
-            <button
-              type="button"
-              @click="togglePasswordVisibility"
-              class="absolute right-4 text-text/70"
-              aria-label="Toggle password visibility"
-            >
-              <IconMdiEye v-if="isPasswordVisible" />
-              <IconMdiEyeOff v-else />
-            </button>
           </div>
           <p
             id="confirm-password-requirements"
@@ -174,7 +165,7 @@
           <span class="border-t border-border flex-grow"></span>
         </div>
 
-        <!-- Social Buttons -->
+        <!-- Social Signin -->
         <div class="flex flex-col sm:flex-row gap-3">
           <button
             @click="handleSignInWithGoogle"

@@ -1,11 +1,11 @@
 <template>
-  <footer class="bg-surface text-text border-t border-border py-12 px-6">
-    <div class="max-w-[1440px] mx-auto grid md:grid-cols-4 gap-10">
+  <footer class="bg-surface text-text border-t border-border py-4 px-3 sm:px-6 lg:px-12 space-y-5">
+    <div class="max-w-[1440px] mx-auto flex flex-col sm:flex-row justify-evenly gap-10">
       <!-- Brand Section -->
-      <div class="space-y-4">
-        <RouterLink to="/" class="flex items-center gap-2" aria-label="Go to homepage">
+      <div class="space-y-4 md:w-[20%]">
+        <RouterLink to="/" class="flex items-center gap-1" aria-label="Go to homepage">
           <img src="@/assets/logo.png" alt="Perfume Brand Logo" class="h-10 w-auto" />
-          <span class="font-semibold text-lg font-sans">Riviera</span>
+          <span class="font-semibold text-lg inline font-serif text-accent-hover">Riviera</span>
         </RouterLink>
 
         <p class="text-sm text-text/70 leading-relaxed">
@@ -29,8 +29,8 @@
       </div>
 
       <!-- Dynamic Footer Link Groups -->
-      <div v-for="(group, index) in footerLinks" :key="index" class="space-y-3">
-        <h3 class="font-semibold text-heading text-lg">{{ group.title }}</h3>
+      <div v-for="(group, index) in footerLinks" :key="index" class="space-y-3 w-[20%]">
+        <h3 class="font-semibold text-accent-hover text-lg">{{ group.title }}</h3>
         <ul class="space-y-2">
           <li v-for="link in group.links" :key="link.name">
             <RouterLink
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Bottom Bar -->
-    <div class="max-w-7xl mx-auto mt-12 pt-6 border-t border-border text-center text-sm text-text/80">
+    <div class="max-w-7xl mx-auto mt-2 pt-2 border-t border-border text-center text-sm text-text/80">
       © {{ new Date().getFullYear() }} Perfume. All rights reserved.
     </div>
   </footer>
