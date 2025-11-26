@@ -13,11 +13,11 @@
 
     <!-- Layout Grid -->
     <div class="max-w-6xl w-full grid lg:grid-cols-[2fr_1fr] gap-5 md:gap-10">
-      <div class="relative pb-5 md:pb-0">
+      <div class="relative pb-15 md:pb-0">
         <!-- Error message live region -->
         <div
           v-if="errorMsg || formErrorMsg"
-          class="w-full bg-red-200/50 absolute bottom-0 ml-[50%] md:ml-0 -translate-x-[50%] z-40 md:static md:translate-x-0 rounded-t-lg md:rounded-none md:mb-4"
+          class="w-full bg-red-200/50 absolute bottom-0 ml-[50%] md:ml-0 -translate-x-[50%] z-40 md:static md:translate-x-0 md:rounded-none md:mb-4"
         >
           <div
             v-if="formErrorMsg"
