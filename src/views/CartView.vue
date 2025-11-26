@@ -57,7 +57,7 @@
             <!-- Price + Quantity -->
             <div class="mt-2 flex items-center justify-between gap-4">
               <div class="flex items-baseline gap-1">
-                <span class="text-xs md:text-sm font-semibold text-accent">NGN </span>
+                <span class="text-xs md:text-sm font-semibold text-accent">₦ </span>
                 <span class="text-sm md:text-xl font-semibold text-accent">{{ item.currentPrice }}</span>
               </div>
 
@@ -116,17 +116,17 @@
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
             <span>Subtotal</span>
-            <span class="font-medium">NGN {{ subtotal }}</span>
+            <span class="font-medium">₦ {{ subtotal }}</span>
           </div>
           <div class="flex justify-between">
             <span>Discount</span>
-            <span class="font-medium text-green-700">NGN {{ discount }}</span>
+            <span class="font-medium text-green-700">₦ {{ discount }}</span>
           </div>
           <div
             class="flex justify-between border-t border-border pt-3 text-base font-semibold text-heading"
           >
             <span>Total</span>
-            <span aria-label="Total price">NGN {{ total }}</span>
+            <span aria-label="Total price">₦ {{ total }}</span>
           </div>
         </div>
 
