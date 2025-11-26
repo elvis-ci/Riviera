@@ -20,7 +20,6 @@ export const useAuthStore = defineStore("auth", () => {
     if (error) throw error;
 
     userProfile.value = data;
-    localStorage.setItem("profileData", JSON.stringify(data));
 
     return data;
   };
@@ -37,7 +36,6 @@ export const useAuthStore = defineStore("auth", () => {
     if (data) {
       // profile exists
       userProfile.value = data;
-      localStorage.setItem("profileData", JSON.stringify(data));
       return;
     }
 
@@ -59,7 +57,6 @@ export const useAuthStore = defineStore("auth", () => {
     if (insertError) throw insertError;
 
     userProfile.value = newProfile;
-    localStorage.setItem("profileData", JSON.stringify(newProfile));
   };
 
   // ---------------------
@@ -76,7 +73,6 @@ export const useAuthStore = defineStore("auth", () => {
         // signed out
         user.value = null;
         userProfile.value = null;
-        localStorage.removeItem("profileData");
         return;
       }
 
@@ -97,9 +93,6 @@ export const useAuthStore = defineStore("auth", () => {
     try {
       loading.value = true;
 
-      // Load cached profile immediately for fast UI
-      const cached = localStorage.getItem("profileData");
-      if (cached) userProfile.value = JSON.parse(cached);
 
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
@@ -108,7 +101,6 @@ export const useAuthStore = defineStore("auth", () => {
       if (!sessionUser) {
         user.value = null;
         userProfile.value = null;
-        localStorage.removeItem("profileData");
         return;
       }
 
@@ -117,12 +109,10 @@ export const useAuthStore = defineStore("auth", () => {
       // Fetch fresh profile
       const profile = await loadUserProfile(sessionUser.id);
       userProfile.value = profile;
-      localStorage.setItem("profileData", JSON.stringify(profile));
     } catch (err) {
       console.error("RESTORE SESSION ERROR:", err);
       user.value = null;
       userProfile.value = null;
-      localStorage.removeItem("profileData");
     } finally {
       loading.value = false;
     }
@@ -189,7 +179,6 @@ export const useAuthStore = defineStore("auth", () => {
     } finally {
       user.value = null;
       userProfile.value = null;
-      localStorage.removeItem("profileData");
       loading.value = false;
     }
   };
@@ -205,7 +194,6 @@ export const useAuthStore = defineStore("auth", () => {
     if (error) throw error;
 
     userProfile.value = data;
-    localStorage.setItem("profileData", JSON.stringify(userProfile.value));
   };
 
   // ---------------------
