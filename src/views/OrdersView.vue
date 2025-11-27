@@ -5,19 +5,13 @@
   >
     <div class="max-w-6xl mx-auto">
       <!-- Page Title -->
-      <h1
-        id="orders-heading"
-        class="text-2xl sm:text-3xl font-bold text-heading mb-8"
-      >
+      <h1 id="orders-heading" class="text-2xl sm:text-3xl font-bold text-heading mb-8">
         My Orders
       </h1>
 
       <!-- Ongoing Orders -->
-      <div v-if="ongoingOrders.length" class="mb-12">
-        <h2
-          class="text-xl font-semibold text-accent-hover mb-4"
-          id="ongoing-heading"
-        >
+      <div v-if="orders.length" class="mb-12">
+        <h2 class="text-xl font-semibold text-accent-hover mb-4" id="ongoing-heading">
           Ongoing Orders
         </h2>
 
@@ -31,9 +25,7 @@
             class="border border-border rounded-xl p-5 bg-background shadow-sm hover:shadow-lg transition-all focus-within:ring-2 focus-within:ring-accent"
           >
             <header class="flex justify-between items-center mb-3">
-              <h3 class="font-semibold text-lg text-accent">
-                Order #{{ order.id }}
-              </h3>
+              <h3 class="font-semibold text-lg text-accent">Order #{{ order.ref }}</h3>
               <span
                 class="px-3 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded-full"
               >
@@ -77,12 +69,7 @@
 
       <!-- Past Orders -->
       <div v-if="pastOrders.length">
-        <h2
-          class="text-xl font-semibold text-accent-hover mb-4"
-          id="past-heading"
-        >
-          Past Orders
-        </h2>
+        <h2 class="text-xl font-semibold text-accent-hover mb-4" id="past-heading">Past Orders</h2>
 
         <div
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -94,9 +81,7 @@
             class="border border-border rounded-xl p-5 bg-background shadow-sm hover:shadow-lg transition-all focus-within:ring-2 focus-within:ring-accent"
           >
             <header class="flex justify-between items-center mb-3">
-              <h3 class="font-semibold text-lg text-accent-hover">
-                Order #{{ order.id }}
-              </h3>
+              <h3 class="font-semibold text-lg text-accent-hover">Order #{{ order.ref }}</h3>
               <span
                 class="px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full"
               >
@@ -138,11 +123,10 @@
         </div>
       </div>
 
+      <orderModal :order="selecteedOrder" :open="showOrderModal" />
+
       <!-- No Orders -->
-      <div
-        v-if="!ongoingOrders.length && !pastOrders.length"
-        class="text-center py-20"
-      >
+      <div v-if="!ongoingOrders.length" class="text-center py-20">
         <p class="text-text/70 text-lg mb-4">You haven’t placed any orders yet.</p>
         <router-link
           to="/products"
@@ -156,39 +140,71 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useCartStore } from "@/stores/useCartStore";
+import { supabase } from "@/lib/supabaseClient.js";
+import OrderModal from "@/components/orderModal.vue";
 
 const router = useRouter();
+const auth = useAuthStore();
+const cart = useCartStore();
+const loading = ref(false);
+const errorMsg = ref(null);
+const orders = ref([]);
+const selecteedOrder = ref(null);
+const showOrderModal = ref(false);
 
-// Mock orders data (replace with Supabase/Firebase data)
-const orders = ref([
-  {
-    id: "A102",
-    status: "Shipped",
-    total: 89.99,
-    date: "2025-10-18",
-    items: [{}, {}, {}],
-  },
-  {
-    id: "A101",
-    status: "Delivered",
-    total: 129.49,
-    date: "2025-09-22",
-    items: [{}, {}, {}, {}],
-  },
-  {
-    id: "A099",
-    status: "Processing",
-    total: 45.0,
-    date: "2025-10-19",
-    items: [{}],
-  },
-]);
+async function getOrders() {
+  // Fetch orders from Supabase/Firebase here
+  const user = auth.user;
+  loading.value = true;
+  try {
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      errorMsg.value = "Failed to load orders.";
+      loading.value = false;
+      return;
+    }
+
+    orders.value = data.map((order) => ({
+      id: order.id,
+      ref: order.order_ref,
+      status: order.order_status,
+      total: order.total_amount,
+      date: order.created_at,
+      items: order.items, // Assuming items is an array stored in the order record
+    }));
+  } catch (e) {
+    errorMsg.value = "An unexpected error occurred.";
+    console.error(e);
+  } finally {
+    loading.value = false;
+  }
+}
+
+watch(
+  () => auth.user,
+  (u) => u && getOrders(),
+  { immediate: true }
+);
 
 // Computed separation of ongoing vs past
-const ongoingOrders = ref(orders.value.filter((o) => o.status !== "Delivered"));
-const pastOrders = ref(orders.value.filter((o) => o.status === "Delivered"));
+const ongoingOrders = computed(() =>
+  orders.value.filter(
+    (o) => o.status === "processing" || o.status === "shipped" || o.status === "out for delivery"
+  )
+);
+
+const pastOrders = computed(() =>
+  orders.value.filter((o) => o.status === "delivered" || o.status === "cancelled")
+);
 
 const formatDate = (dateStr) =>
   new Date(dateStr).toLocaleDateString("en-US", {
@@ -197,16 +213,9 @@ const formatDate = (dateStr) =>
     day: "numeric",
   });
 
-function viewOrder(id) {
-  router.push(`/orders/${id}`);
-}
-
-function trackOrder(id) {
-  alert(`Tracking order ${id}...`);
-}
-
-function reorder(order) {
-  alert(`Reordered items from order ${order.id}`);
+function viewOrder(orderId) {
+  showOrderModal.value = true;
+  selecteedOrder.value = orders.value.find((o) => o.id === orderId);
 }
 </script>
 
