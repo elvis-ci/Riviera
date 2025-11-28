@@ -1,12 +1,14 @@
 <template>
   <div
-    v-if="open"
     class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
     role="dialog"
     aria-modal="true"
+    @click.self="close"
+    @keydown.esc="close"
   >
     <!-- Modal -->
     <div
+      ref="modalref"
       class="bg-background text-text w-full max-w-xl rounded-2xl shadow-xl border border-border p-6 relative animate-fadeIn"
     >
       <!-- Close button -->
@@ -20,9 +22,7 @@
 
       <!-- Order Reference -->
       <div class="mb-4">
-        <h2 class="text-2xl font-semibold text-heading">
-          Order #{{ order?.ref }}
-        </h2>
+        <h2 class="text-2xl font-semibold text-heading">Order #{{ order?.ref }}</h2>
 
         <span
           class="px-3 py-1 text-xs font-semibold rounded-full inline-block mt-2"
@@ -68,11 +68,26 @@
 </template>
 
 <script setup>
+import { defineProps, defineEmits, watch, ref, computed, nextTick, onMounted } from "vue";
+import { createFocusTrap } from "focus-trap";
+
 const props = defineProps({
-  open: Boolean,
   order: Object,
 });
 
+const modalref = ref(null);
+onMounted(() => {
+  nextTick(() => {
+    const modalElement = modalref.value;
+    const focusTrap = createFocusTrap(modalElement, {
+      escapeDeactivates: true,
+      clickOutsideDeactivates: true,
+      initialFocus: modalElement,
+      returnFocusOnDeactivate: true,
+    });
+    focusTrap.activate();
+  });
+});
 const emits = defineEmits(["close", "reorder"]);
 
 function close() {
@@ -108,8 +123,14 @@ const statusClasses = (status) => {
 
 <style scoped>
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fadeIn {
