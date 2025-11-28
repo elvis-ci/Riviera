@@ -61,11 +61,39 @@ const router = createRouter({
     },
 
     // Profile
+    // Profile
     {
       path: "/profile",
       name: "profile",
+      redirect: "/profile/myprofile",
       component: () => import("../views/ProfileView.vue"),
       meta: { title: "Riviera | Profile", requiresAuth: true },
+      children: [
+        {
+          path: "myprofile", // default tab
+          name: "profile-info",
+          meta: { title: "Riviera | Profile", requiresAuth: true },
+          component: () => import("../views/profile/MyProfile.vue"),
+        },
+        {
+          path: "favorites",
+          name: "profile-favorites",
+          meta: { title: "Riviera | Favorites", requiresAuth: true },
+          component: () => import("../views/profile/Favourites.vue"),
+        },
+        {
+          path: "orders",
+          name: "profile-orders",
+          meta: { title: "Riviera | Orders", requiresAuth: true },
+          component: () => import("../views/OrdersView.vue"),
+        },
+        {
+          path: "account-settings",
+          name: "profile-settings",
+          meta: { title: "Riviera | Account Settings", requiresAuth: true },
+          component: () => import("../views/profile/Settings.vue"),
+        },
+      ],
     },
 
     // Sign In
